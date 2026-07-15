@@ -9,38 +9,101 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjectHeroHomesRouteImport } from './routes/project.hero-homes'
+import { Route as PlacesNewChandigarhRouteImport } from './routes/places.new-chandigarh'
+import { Route as BuilderOmaxeRouteImport } from './routes/builder.omaxe'
 
+const JourneyRoute = JourneyRouteImport.update({
+  id: '/journey',
+  path: '/journey',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectHeroHomesRoute = ProjectHeroHomesRouteImport.update({
+  id: '/project/hero-homes',
+  path: '/project/hero-homes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlacesNewChandigarhRoute = PlacesNewChandigarhRouteImport.update({
+  id: '/places/new-chandigarh',
+  path: '/places/new-chandigarh',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuilderOmaxeRoute = BuilderOmaxeRouteImport.update({
+  id: '/builder/omaxe',
+  path: '/builder/omaxe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/journey': typeof JourneyRoute
+  '/builder/omaxe': typeof BuilderOmaxeRoute
+  '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
+  '/project/hero-homes': typeof ProjectHeroHomesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/journey': typeof JourneyRoute
+  '/builder/omaxe': typeof BuilderOmaxeRoute
+  '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
+  '/project/hero-homes': typeof ProjectHeroHomesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/journey': typeof JourneyRoute
+  '/builder/omaxe': typeof BuilderOmaxeRoute
+  '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
+  '/project/hero-homes': typeof ProjectHeroHomesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/journey'
+    | '/builder/omaxe'
+    | '/places/new-chandigarh'
+    | '/project/hero-homes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/journey'
+    | '/builder/omaxe'
+    | '/places/new-chandigarh'
+    | '/project/hero-homes'
+  id:
+    | '__root__'
+    | '/'
+    | '/journey'
+    | '/builder/omaxe'
+    | '/places/new-chandigarh'
+    | '/project/hero-homes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  JourneyRoute: typeof JourneyRoute
+  BuilderOmaxeRoute: typeof BuilderOmaxeRoute
+  PlacesNewChandigarhRoute: typeof PlacesNewChandigarhRoute
+  ProjectHeroHomesRoute: typeof ProjectHeroHomesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/journey': {
+      id: '/journey'
+      path: '/journey'
+      fullPath: '/journey'
+      preLoaderRoute: typeof JourneyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +111,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/project/hero-homes': {
+      id: '/project/hero-homes'
+      path: '/project/hero-homes'
+      fullPath: '/project/hero-homes'
+      preLoaderRoute: typeof ProjectHeroHomesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/places/new-chandigarh': {
+      id: '/places/new-chandigarh'
+      path: '/places/new-chandigarh'
+      fullPath: '/places/new-chandigarh'
+      preLoaderRoute: typeof PlacesNewChandigarhRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/builder/omaxe': {
+      id: '/builder/omaxe'
+      path: '/builder/omaxe'
+      fullPath: '/builder/omaxe'
+      preLoaderRoute: typeof BuilderOmaxeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  JourneyRoute: JourneyRoute,
+  BuilderOmaxeRoute: BuilderOmaxeRoute,
+  PlacesNewChandigarhRoute: PlacesNewChandigarhRoute,
+  ProjectHeroHomesRoute: ProjectHeroHomesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
