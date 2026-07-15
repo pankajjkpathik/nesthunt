@@ -83,14 +83,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "NestHunt is a property decision intelligence platform. Verified information, structured comparisons, and transparent explanations for confident property decisions.",
       },
       { name: "author", content: "NestHunt" },
-      { property: "og:title", content: "NestHunt — Property Decision Intelligence" },
+      { property: "og:title", content: "NestHunt — Make your next property decision with confidence" },
       {
         property: "og:description",
         content:
-          "Make your next property decision with confidence. Verified data, structured comparisons, transparent insights.",
+          "NestHunt is a property decision intelligence platform. Verified information, structured comparisons, and transparent explanations for confident property decisions.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "NestHunt — Make your next property decision with confidence" },
+      { name: "twitter:description", content: "NestHunt is a property decision intelligence platform. Verified information, structured comparisons, and transparent explanations for confident property decisions." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9471d1c9-304b-4e47-9847-65fc97f88baf/id-preview-095ab6e1--05125b68-1c29-49a1-ae8f-0a25a14f8684.lovable.app-1784118590439.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9471d1c9-304b-4e47-9847-65fc97f88baf/id-preview-095ab6e1--05125b68-1c29-49a1-ae8f-0a25a14f8684.lovable.app-1784118590439.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
