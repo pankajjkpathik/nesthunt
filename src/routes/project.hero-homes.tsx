@@ -13,31 +13,51 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { MetricCard } from "@/components/common/MetricCard";
 import { InsightListCard } from "@/components/common/InsightListCard";
 import { Card, CardContent } from "@/components/ui/card";
-import { heroHomes, omaxe, newChandigarh } from "@/mocks";
+import { useProject, useBuilder, usePlace } from "@/hooks/useNestHunt";
+import type { Project } from "@/types";
 
 export const Route = createFileRoute("/project/hero-homes")({
   head: () => ({
     meta: [
-      { title: `${heroHomes.name} — Project Overview | NestHunt` },
+      { title: "Hero Homes — Project Overview | NestHunt" },
       {
         name: "description",
-        content: `Verified project overview for ${heroHomes.name}: unit mix, pricing, possession, and builder track record.`,
+        content:
+          "Verified project overview for Hero Homes: unit mix, pricing, possession, and builder track record.",
       },
-      { property: "og:title", content: `${heroHomes.name} — NestHunt` },
-      { property: "og:description", content: heroHomes.summary },
+      { property: "og:title", content: "Hero Homes — NestHunt" },
+      {
+        property: "og:description",
+        content:
+          "A mid-to-premium residential development in New Chandigarh with low-density planning and structured amenities.",
+      },
     ],
   }),
   component: ProjectPage,
 });
 
-const STATUS_LABEL: Record<typeof heroHomes.status, string> = {
+const STATUS_LABEL: Record<Project["status"], string> = {
   planning: "Planning",
   "under-construction": "Under construction",
   ready: "Ready to move",
 };
 
 function ProjectPage() {
-  const project = heroHomes;
+  const { data: project, isLoading } = useProject("hero-homes");
+  const { data: builder } = useBuilder("omaxe");
+  const { data: place } = usePlace("new-chandigarh");
+
+  if (isLoading || !project) {
+    return (
+      <AppLayout>
+        <Container>
+          <div className="py-24 text-center text-sm text-muted-foreground">
+            {isLoading ? "Loading project…" : "Project not found."}
+          </div>
+        </Container>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
@@ -52,25 +72,31 @@ function ProjectPage() {
             <span className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-foreground">
               {STATUS_LABEL[project.status]}
             </span>
-            <span>
-              By{" "}
-              <Link
-                to="/builder/omaxe"
-                className="font-medium text-foreground underline-offset-4 hover:underline"
-              >
-                {omaxe.name}
-              </Link>
-            </span>
-            <span aria-hidden>·</span>
-            <span>
-              In{" "}
-              <Link
-                to="/places/new-chandigarh"
-                className="font-medium text-foreground underline-offset-4 hover:underline"
-              >
-                {newChandigarh.name}
-              </Link>
-            </span>
+            {builder && (
+              <span>
+                By{" "}
+                <Link
+                  to="/builder/omaxe"
+                  className="font-medium text-foreground underline-offset-4 hover:underline"
+                >
+                  {builder.name}
+                </Link>
+              </span>
+            )}
+            {place && (
+              <>
+                <span aria-hidden>·</span>
+                <span>
+                  In{" "}
+                  <Link
+                    to="/places/new-chandigarh"
+                    className="font-medium text-foreground underline-offset-4 hover:underline"
+                  >
+                    {place.name}
+                  </Link>
+                </span>
+              </>
+            )}
           </div>
 
           <section aria-labelledby="project-metrics">
