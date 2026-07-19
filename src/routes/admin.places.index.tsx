@@ -32,7 +32,7 @@ import {
 import { toast } from "sonner";
 import { useAdminPlaces, useDeletePlace } from "@/hooks/useAdmin";
 
-export const Route = createFileRoute("/admin/places")({
+export const Route = createFileRoute("/admin/places/")({
   component: PlacesList,
 });
 
