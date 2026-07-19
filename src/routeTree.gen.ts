@@ -21,6 +21,8 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminPlacesIndexRouteImport } from './routes/admin.places.index'
+import { Route as AdminPlacesNewRouteImport } from './routes/admin.places.new'
+import { Route as AdminPlacesIdRouteImport } from './routes/admin.places.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const McpRoute = McpRouteImport.update({
@@ -85,6 +87,16 @@ const AdminPlacesIndexRoute = AdminPlacesIndexRouteImport.update({
   path: '/places/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPlacesNewRoute = AdminPlacesNewRouteImport.update({
+  id: '/places/new',
+  path: '/places/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPlacesIdRoute = AdminPlacesIdRouteImport.update({
+  id: '/places/$id',
+  path: '/places/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -105,6 +117,8 @@ export interface FileRoutesByFullPath {
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/places/$id': typeof AdminPlacesIdRoute
+  '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -119,6 +133,8 @@ export interface FileRoutesByTo {
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin': typeof AdminIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/places/$id': typeof AdminPlacesIdRoute
+  '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/places': typeof AdminPlacesIndexRoute
 }
 export interface FileRoutesById {
@@ -135,6 +151,8 @@ export interface FileRoutesById {
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/places/$id': typeof AdminPlacesIdRoute
+  '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
 }
 export interface FileRouteTypes {
@@ -152,6 +170,8 @@ export interface FileRouteTypes {
     | '/project/hero-homes'
     | '/admin/'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/places/$id'
+    | '/admin/places/new'
     | '/admin/places/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -166,6 +186,8 @@ export interface FileRouteTypes {
     | '/project/hero-homes'
     | '/admin'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/places/$id'
+    | '/admin/places/new'
     | '/admin/places'
   id:
     | '__root__'
@@ -181,6 +203,8 @@ export interface FileRouteTypes {
     | '/project/hero-homes'
     | '/admin/'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/places/$id'
+    | '/admin/places/new'
     | '/admin/places/'
   fileRoutesById: FileRoutesById
 }
@@ -283,6 +307,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlacesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/places/new': {
+      id: '/admin/places/new'
+      path: '/places/new'
+      fullPath: '/admin/places/new'
+      preLoaderRoute: typeof AdminPlacesNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/places/$id': {
+      id: '/admin/places/$id'
+      path: '/places/$id'
+      fullPath: '/admin/places/$id'
+      preLoaderRoute: typeof AdminPlacesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -296,12 +334,16 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminPlacesIdRoute: typeof AdminPlacesIdRoute
+  AdminPlacesNewRoute: typeof AdminPlacesNewRoute
   AdminPlacesIndexRoute: typeof AdminPlacesIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminPlacesIdRoute: AdminPlacesIdRoute,
+  AdminPlacesNewRoute: AdminPlacesNewRoute,
   AdminPlacesIndexRoute: AdminPlacesIndexRoute,
 }
 
