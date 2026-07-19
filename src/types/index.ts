@@ -1,3 +1,20 @@
+export interface CategoryRating {
+  label: string;
+  score: number;
+}
+
+export interface DecisionSummary {
+  score: number;
+  confidence: "Low" | "Medium" | "High";
+  categoryRatings?: CategoryRating[];
+  verdict: string;
+}
+
+export interface TimelineEntry {
+  year: number;
+  label: string;
+}
+
 export interface Place {
   id: string;
   slug: string;
@@ -11,6 +28,10 @@ export interface Place {
     activeProjects: number;
     verifiedBuilders: number;
   };
+  executiveSummary: string;
+  decision: DecisionSummary;
+  opportunities: string[];
+  risks: string[];
 }
 
 export interface Builder {
@@ -26,6 +47,10 @@ export interface Builder {
     onTimeDeliveryRate: string;
     reraRegistered: boolean;
   };
+  decision: DecisionSummary;
+  strengths: string[];
+  watchOuts: string[];
+  timeline: TimelineEntry[];
 }
 
 export interface Project {
@@ -42,4 +67,10 @@ export interface Project {
     possessionYear: number;
     totalUnits: number;
   };
+  suitableFor: string[];
+  lessSuitableFor: string[];
+  strengths: string[];
+  risks: string[];
+  legal: string[];
+  progress: string[];
 }

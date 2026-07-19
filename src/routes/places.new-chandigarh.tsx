@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, LineChart, Layers, Users } from "lucide-react";
+import { MapPin, LineChart, Layers, Users, Sparkles, AlertTriangle } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { PageHeader } from "@/components/common/PageHeader";
 import { MetricCard } from "@/components/common/MetricCard";
 import { PlaceholderCard } from "@/components/common/PlaceholderCard";
+import { DecisionScoreCard } from "@/components/common/DecisionScoreCard";
+import { InsightListCard } from "@/components/common/InsightListCard";
 import { newChandigarh } from "@/mocks";
 
 export const Route = createFileRoute("/places/new-chandigarh")({
@@ -57,6 +59,58 @@ function PlacePage() {
                   value={place.metrics.verifiedBuilders}
                 />
               </div>
+            </section>
+
+            <section aria-labelledby="exec-summary">
+              <h2
+                id="exec-summary"
+                className="mb-4 font-display text-lg font-semibold text-foreground"
+              >
+                Executive summary
+              </h2>
+              <div className="rounded-xl border border-border bg-surface p-6">
+                <p className="text-sm leading-relaxed text-foreground">
+                  {place.executiveSummary}
+                </p>
+              </div>
+            </section>
+
+            <section aria-labelledby="decision-heading">
+              <h2
+                id="decision-heading"
+                className="mb-4 font-display text-lg font-semibold text-foreground"
+              >
+                Decision score
+              </h2>
+              <DecisionScoreCard
+                title="Overall decision score"
+                score={place.decision.score}
+                scale={10}
+                confidence={place.decision.confidence}
+                categoryRatings={place.decision.categoryRatings}
+                verdict={place.decision.verdict}
+              />
+            </section>
+
+            <section
+              aria-labelledby="signals-heading"
+              className="grid gap-3 sm:grid-cols-2"
+            >
+              <h2 id="signals-heading" className="sr-only">
+                Opportunities and risks
+              </h2>
+              <InsightListCard
+                title="Opportunities"
+                items={place.opportunities}
+                icon={<Sparkles className="h-4 w-4" />}
+                tone="positive"
+              />
+              <InsightListCard
+                title="Risks"
+                items={place.risks}
+                icon={<AlertTriangle className="h-4 w-4" />}
+                tone="negative"
+              />
             </section>
 
             <section aria-labelledby="modules-heading">

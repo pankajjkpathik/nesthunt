@@ -1,10 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Home, CalendarClock, Layers3, FileText } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Sparkles,
+  AlertTriangle,
+  Scale,
+  HardHat,
+} from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { PageHeader } from "@/components/common/PageHeader";
 import { MetricCard } from "@/components/common/MetricCard";
-import { PlaceholderCard } from "@/components/common/PlaceholderCard";
+import { InsightListCard } from "@/components/common/InsightListCard";
+import { Card, CardContent } from "@/components/ui/card";
 import { heroHomes, omaxe, newChandigarh } from "@/mocks";
 
 export const Route = createFileRoute("/project/hero-homes")({
@@ -83,35 +91,76 @@ function ProjectPage() {
             </div>
           </section>
 
-          <section aria-labelledby="project-modules">
+          <section aria-labelledby="should-you-buy">
             <h2
-              id="project-modules"
+              id="should-you-buy"
               className="mb-4 font-display text-lg font-semibold text-foreground"
             >
-              Coming to this page
+              Should you buy?
             </h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <PlaceholderCard
-                icon={<Home className="h-4 w-4" />}
-                title="Unit configurations"
-                description="Floor plans, carpet area, and orientation-level details."
-              />
-              <PlaceholderCard
-                icon={<CalendarClock className="h-4 w-4" />}
-                title="Construction timeline"
-                description="Milestone-by-milestone progress verified against RERA filings."
-              />
-              <PlaceholderCard
-                icon={<Layers3 className="h-4 w-4" />}
-                title="Amenities & layout"
-                description="Structured breakdown of shared spaces and open ground area."
-              />
-              <PlaceholderCard
-                icon={<FileText className="h-4 w-4" />}
-                title="Documents"
-                description="Approvals, RERA registration, and legal disclosures."
-              />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Card className="rounded-xl border-border bg-surface shadow-none">
+                <CardContent className="p-6">
+                  <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Suitable for
+                  </h3>
+                  <ul className="mt-4 space-y-2.5">
+                    {project.suitableFor.map((s) => (
+                      <li
+                        key={s}
+                        className="flex items-start gap-2 text-sm text-foreground"
+                      >
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card className="rounded-xl border-border bg-surface shadow-none">
+                <CardContent className="p-6">
+                  <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Less suitable for
+                  </h3>
+                  <ul className="mt-4 space-y-2.5">
+                    {project.lessSuitableFor.map((s) => (
+                      <li
+                        key={s}
+                        className="flex items-start gap-2 text-sm text-foreground"
+                      >
+                        <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
+          </section>
+
+          <section className="grid gap-3 sm:grid-cols-2">
+            <InsightListCard
+              title="Project strengths"
+              items={project.strengths}
+              icon={<Sparkles className="h-4 w-4" />}
+              tone="positive"
+            />
+            <InsightListCard
+              title="Project risks"
+              items={project.risks}
+              icon={<AlertTriangle className="h-4 w-4" />}
+              tone="negative"
+            />
+            <InsightListCard
+              title="Legal snapshot"
+              items={project.legal}
+              icon={<Scale className="h-4 w-4" />}
+            />
+            <InsightListCard
+              title="Construction progress"
+              items={project.progress}
+              icon={<HardHat className="h-4 w-4" />}
+            />
           </section>
         </div>
       </Container>
