@@ -14,8 +14,8 @@
     "tools": [
       {
         "name": "list_places",
-        "title": "List places",
-        "description": "List all locations covered by NestHunt Place Intelligence reports.",
+        "title": "List all places",
+        "description": "List every NestHunt Place with its slug, name, region, and short summary. Use `get_place` to fetch the full intelligence report.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -54,8 +54,8 @@
       },
       {
         "name": "list_builders",
-        "title": "List builders",
-        "description": "List all builders covered by NestHunt Builder Trust reports.",
+        "title": "List all builders",
+        "description": "List every NestHunt Builder with its slug, name, headquarters, and short summary. Use `get_builder` to fetch the full trust report.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -71,7 +71,7 @@
       {
         "name": "get_builder",
         "title": "Get builder intelligence report",
-        "description": "Fetch the full NestHunt Builder Intelligence report for a builder: trust score, delivery history, strengths, watch-outs, and NestHunt assessment.",
+        "description": "Fetch the full NestHunt Builder Intelligence report: trust score, strengths, watch-outs, delivery timeline and verdict.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -94,8 +94,8 @@
       },
       {
         "name": "list_projects",
-        "title": "List projects",
-        "description": "List all residential projects covered by NestHunt Project Intelligence reports.",
+        "title": "List all projects",
+        "description": "List every NestHunt Project with its slug, name, status, and short summary. Use `get_project` to fetch the full report.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -111,7 +111,7 @@
       {
         "name": "get_project",
         "title": "Get project intelligence report",
-        "description": "Fetch the full NestHunt Project Intelligence report for a project: suitability, strengths, risks, legal snapshot, and construction progress.",
+        "description": "Fetch the full NestHunt Project Intelligence report: metrics, suitability, strengths, risks, legal snapshot, and construction progress.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,

@@ -1,19 +1,20 @@
 import { defineTool } from "@lovable.dev/mcp-js";
-import { heroHomes } from "@/mocks";
+import { listProjects } from "@/lib/services/projects";
 
 export default defineTool({
   name: "list_projects",
-  title: "List projects",
-  description: "List all residential projects covered by NestHunt Project Intelligence reports.",
+  title: "List all projects",
+  description:
+    "List every NestHunt Project with its slug, name, status, and short summary. Use `get_project` to fetch the full report.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: () => {
-    const projects = [heroHomes].map((p) => ({
+  handler: async () => {
+    const rows = await listProjects();
+    const projects = rows.map((p) => ({
       slug: p.slug,
       name: p.name,
       status: p.status,
-      priceRange: p.metrics.priceRange,
-      possessionYear: p.metrics.possessionYear,
+      summary: p.summary,
     }));
     return {
       content: [{ type: "text", text: JSON.stringify(projects, null, 2) }],

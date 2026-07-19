@@ -25,6 +25,7 @@ import { Section } from "@/components/common/Section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useBuilder } from "@/hooks/useNestHunt";
 
 export const Route = createFileRoute("/builder/omaxe")({
   head: () => ({
@@ -224,6 +225,18 @@ const SIDEBAR = [
 /* -------------------------------- Component ------------------------------ */
 
 function BuilderPage() {
+  const { data: builder, isLoading } = useBuilder("omaxe");
+  if (isLoading || !builder) {
+    return (
+      <AppLayout>
+        <Container>
+          <div className="py-24 text-center text-sm text-muted-foreground">
+            {isLoading ? "Loading builder…" : "Builder not found."}
+          </div>
+        </Container>
+      </AppLayout>
+    );
+  }
   return (
     <AppLayout>
       {/* Breadcrumb */}
@@ -253,12 +266,10 @@ function BuilderPage() {
               Builder Intelligence Report
             </div>
             <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              Omaxe
+              {builder.name}
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              One of India's established real estate developers with
-              residential, commercial, and township projects across multiple
-              states.
+              {builder.summary}
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {TAGS.map((t) => (
@@ -339,11 +350,7 @@ function BuilderPage() {
               <Card className="mt-6 rounded-xl border-border bg-surface shadow-none">
                 <CardContent className="p-6 sm:p-8">
                   <p className="text-base leading-relaxed text-foreground">
-                    Omaxe has a long operating history and a broad portfolio of
-                    residential and commercial developments. While many projects
-                    have been delivered successfully, buyers should review
-                    project-specific timelines, legal approvals, and recent
-                    customer feedback before making a decision.
+                    {builder.decision.verdict}
                   </p>
                 </CardContent>
               </Card>
