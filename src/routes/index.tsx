@@ -75,32 +75,30 @@ const STEPS = [
   },
 ];
 
-const INTELLIGENCE = [
-  {
+const INTELLIGENCE_META = {
+  place: {
     icon: <Compass className="h-4 w-4" />,
     title: "Place Intelligence",
-    description:
+    fallback:
       "Understand neighbourhood growth, connectivity, schools, healthcare, and infrastructure.",
-    ctaLabel: "Explore Places",
-    to: "/places/new-chandigarh",
+    ctaLabel: "Explore Place",
   },
-  {
+  builder: {
     icon: <Building2 className="h-4 w-4" />,
     title: "Builder Intelligence",
-    description:
+    fallback:
       "Evaluate builder credibility, delivery history, and customer trust.",
-    ctaLabel: "Explore Builders",
-    to: "/builder/omaxe",
+    ctaLabel: "Explore Builder",
   },
-  {
+  project: {
     icon: <BarChart3 className="h-4 w-4" />,
     title: "Project Intelligence",
-    description:
+    fallback:
       "Compare amenities, legal status, pricing, and long-term potential.",
-    ctaLabel: "Explore Projects",
-    to: "/project/hero-homes",
+    ctaLabel: "Explore Project",
   },
-] as const;
+} as const;
+
 
 function HomePage() {
   return (
