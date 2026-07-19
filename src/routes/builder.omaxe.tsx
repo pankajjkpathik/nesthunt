@@ -1,10 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Building2, ClipboardCheck, TrendingUp, MessageSquare } from "lucide-react";
+import {
+  Building2,
+  ClipboardCheck,
+  TrendingUp,
+  MessageSquare,
+  CheckCircle2,
+  AlertTriangle,
+} from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { PageHeader } from "@/components/common/PageHeader";
 import { MetricCard } from "@/components/common/MetricCard";
 import { PlaceholderCard } from "@/components/common/PlaceholderCard";
+import { DecisionScoreCard } from "@/components/common/DecisionScoreCard";
+import { InsightListCard } from "@/components/common/InsightListCard";
 import { omaxe } from "@/mocks";
 
 export const Route = createFileRoute("/builder/omaxe")({
@@ -58,6 +67,70 @@ function BuilderPage() {
                 label="RERA status"
                 value={builder.metrics.reraRegistered ? "Registered" : "Not verified"}
               />
+            </div>
+          </section>
+
+          <section aria-labelledby="trust-score">
+            <h2
+              id="trust-score"
+              className="mb-4 font-display text-lg font-semibold text-foreground"
+            >
+              Builder trust score
+            </h2>
+            <DecisionScoreCard
+              title="Trust score"
+              score={builder.decision.score}
+              scale={100}
+              confidence={builder.decision.confidence}
+              verdict={builder.decision.verdict}
+            />
+          </section>
+
+          <section
+            aria-labelledby="signals"
+            className="grid gap-3 sm:grid-cols-2"
+          >
+            <h2 id="signals" className="sr-only">
+              Strengths and watch-outs
+            </h2>
+            <InsightListCard
+              title="Strengths"
+              items={builder.strengths}
+              icon={<CheckCircle2 className="h-4 w-4" />}
+              tone="positive"
+            />
+            <InsightListCard
+              title="Watch-outs"
+              items={builder.watchOuts}
+              icon={<AlertTriangle className="h-4 w-4" />}
+              tone="negative"
+            />
+          </section>
+
+          <section aria-labelledby="timeline">
+            <h2
+              id="timeline"
+              className="mb-4 font-display text-lg font-semibold text-foreground"
+            >
+              Company timeline
+            </h2>
+            <div className="rounded-xl border border-border bg-surface p-6">
+              <ol className="relative space-y-6 border-l border-border pl-6">
+                {builder.timeline.map((t) => (
+                  <li key={t.year} className="relative">
+                    <span
+                      aria-hidden
+                      className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-surface bg-accent"
+                    />
+                    <p className="font-display text-sm font-semibold tracking-tight text-foreground">
+                      {t.year}
+                    </p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
+                      {t.label}
+                    </p>
+                  </li>
+                ))}
+              </ol>
             </div>
           </section>
 

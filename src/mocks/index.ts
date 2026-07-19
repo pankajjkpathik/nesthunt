@@ -19,6 +19,28 @@ export const newChandigarh: Place = {
     activeProjects: 18,
     verifiedBuilders: 12,
   },
+  executiveSummary:
+    "New Chandigarh is emerging as one of the strongest long-term residential corridors around Chandigarh due to planned infrastructure, institutional growth and controlled development.",
+  decision: {
+    score: 8.9,
+    confidence: "High",
+    categoryRatings: [
+      { label: "Connectivity", score: 9.0 },
+      { label: "Education", score: 9.6 },
+      { label: "Livability", score: 8.2 },
+      { label: "Investment", score: 8.8 },
+      { label: "Safety", score: 8.0 },
+      { label: "Future Growth", score: 9.5 },
+    ],
+    verdict:
+      "Best suited for long-term end users and patient investors seeking a planned township with strong institutional anchors and improving infrastructure.",
+  },
+  opportunities: [
+    "Planned metro connectivity",
+    "Growing education corridor",
+    "Strong demand from Chandigarh spillover",
+  ],
+  risks: ["Infrastructure still evolving", "Premium pricing vs. peer suburbs"],
 };
 
 export const omaxe: Builder = {
@@ -35,6 +57,27 @@ export const omaxe: Builder = {
     onTimeDeliveryRate: "78%",
     reraRegistered: true,
   },
+  decision: {
+    score: 87,
+    confidence: "High",
+    verdict:
+      "A large, RERA-registered builder with a broad delivery history — dependable for structured townships, but expect premium positioning.",
+  },
+  strengths: [
+    "Timely delivery on recent townships",
+    "Strong balance-sheet and financials",
+    "Large, diversified project portfolio",
+  ],
+  watchOuts: [
+    "Premium pricing across most launches",
+    "Customer support response times",
+  ],
+  timeline: [
+    { year: 2008, label: "First integrated township delivered" },
+    { year: 2014, label: "100th project handover" },
+    { year: 2019, label: "Expansion into Tier-2 markets" },
+    { year: 2025, label: "132 completed, 24 ongoing" },
+  ],
 };
 
 export const heroHomes: Project = {
@@ -52,4 +95,25 @@ export const heroHomes: Project = {
     possessionYear: 2027,
     totalUnits: 480,
   },
+  suitableFor: ["Families", "Long-term investors", "End users"],
+  lessSuitableFor: ["Immediate possession", "High rental yield"],
+  strengths: [
+    "Low-density master plan",
+    "Reputed builder with RERA registration",
+    "Location within a planned township",
+  ],
+  risks: [
+    "Possession still ~2 years out",
+    "Premium pricing vs. immediate neighborhood",
+  ],
+  legal: [
+    "RERA registered — PBRERA-SAS80-PR0421",
+    "Land title verified — freehold",
+    "No pending litigation on file",
+  ],
+  progress: [
+    "Excavation completed",
+    "Tower A — 6 of 18 floors cast",
+    "Tower B — foundation in progress",
+  ],
 };
