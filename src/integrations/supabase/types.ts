@@ -14,7 +14,279 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      builders: {
+        Row: {
+          created_at: string
+          decision: Json
+          featured: boolean
+          headquarters: string
+          id: string
+          metrics: Json
+          name: string
+          slug: string
+          strengths: string[]
+          summary: string
+          timeline: Json
+          updated_at: string
+          watch_outs: string[]
+          years_active: number
+        }
+        Insert: {
+          created_at?: string
+          decision?: Json
+          featured?: boolean
+          headquarters: string
+          id?: string
+          metrics?: Json
+          name: string
+          slug: string
+          strengths?: string[]
+          summary: string
+          timeline?: Json
+          updated_at?: string
+          watch_outs?: string[]
+          years_active?: number
+        }
+        Update: {
+          created_at?: string
+          decision?: Json
+          featured?: boolean
+          headquarters?: string
+          id?: string
+          metrics?: Json
+          name?: string
+          slug?: string
+          strengths?: string[]
+          summary?: string
+          timeline?: Json
+          updated_at?: string
+          watch_outs?: string[]
+          years_active?: number
+        }
+        Relationships: []
+      }
+      entity_documents: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          kind: string
+          sort_order: number
+          title: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          kind?: string
+          sort_order?: number
+          title: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          kind?: string
+          sort_order?: number
+          title?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      entity_images: {
+        Row: {
+          alt: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          sort_order: number
+          storage_path: string
+        }
+        Insert: {
+          alt?: string
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          sort_order?: number
+          storage_path: string
+        }
+        Update: {
+          alt?: string
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          sort_order?: number
+          storage_path?: string
+        }
+        Relationships: []
+      }
+      entity_scores: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          label: string
+          scale: number
+          score: number
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          label: string
+          scale?: number
+          score: number
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          label?: string
+          scale?: number
+          score?: number
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      places: {
+        Row: {
+          created_at: string
+          decision: Json
+          executive_summary: string
+          featured: boolean
+          highlights: string[]
+          id: string
+          metrics: Json
+          name: string
+          opportunities: string[]
+          region: string
+          risks: string[]
+          slug: string
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          decision?: Json
+          executive_summary?: string
+          featured?: boolean
+          highlights?: string[]
+          id?: string
+          metrics?: Json
+          name: string
+          opportunities?: string[]
+          region: string
+          risks?: string[]
+          slug: string
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          decision?: Json
+          executive_summary?: string
+          featured?: boolean
+          highlights?: string[]
+          id?: string
+          metrics?: Json
+          name?: string
+          opportunities?: string[]
+          region?: string
+          risks?: string[]
+          slug?: string
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          builder_id: string | null
+          created_at: string
+          featured: boolean
+          id: string
+          legal: string[]
+          less_suitable_for: string[]
+          metrics: Json
+          name: string
+          place_id: string | null
+          progress: string[]
+          risks: string[]
+          slug: string
+          status: string
+          strengths: string[]
+          suitable_for: string[]
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          builder_id?: string | null
+          created_at?: string
+          featured?: boolean
+          id?: string
+          legal?: string[]
+          less_suitable_for?: string[]
+          metrics?: Json
+          name: string
+          place_id?: string | null
+          progress?: string[]
+          risks?: string[]
+          slug: string
+          status: string
+          strengths?: string[]
+          suitable_for?: string[]
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          builder_id?: string | null
+          created_at?: string
+          featured?: boolean
+          id?: string
+          legal?: string[]
+          less_suitable_for?: string[]
+          metrics?: Json
+          name?: string
+          place_id?: string | null
+          progress?: string[]
+          risks?: string[]
+          slug?: string
+          status?: string
+          strengths?: string[]
+          suitable_for?: string[]
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_builder_id_fkey"
+            columns: ["builder_id"]
+            isOneToOne: false
+            referencedRelation: "builders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "places"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

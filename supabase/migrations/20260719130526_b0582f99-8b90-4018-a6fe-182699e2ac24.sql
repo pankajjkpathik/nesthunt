@@ -1,0 +1,1 @@
+COMMENT ON TABLE public.places IS 'NestHunt places';
