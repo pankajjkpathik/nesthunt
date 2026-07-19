@@ -232,7 +232,96 @@ function HomePage() {
   );
 }
 
-function DashboardPreview() {
+type IntelKey = keyof typeof INTELLIGENCE_META;
+
+function FeaturedIntelligence() {
+  const places = usePlaces({ featuredOnly: true });
+  const builders = useBuilders({ featuredOnly: true });
+  const projects = useProjects({ featuredOnly: true });
+
+  const cards: Array<{
+    key: IntelKey;
+    href: string | null;
+    heading: string;
+    description: string;
+    loading: boolean;
+    error: boolean;
+  }> = [
+    {
+      key: "place",
+      href: places.data?.[0] ? `/places/${places.data[0].slug}` : null,
+      heading: places.data?.[0]?.name ?? INTELLIGENCE_META.place.title,
+      description: places.data?.[0]?.summary ?? INTELLIGENCE_META.place.fallback,
+      loading: places.isLoading,
+      error: !!places.error,
+    },
+    {
+      key: "builder",
+      href: builders.data?.[0] ? `/builder/${builders.data[0].slug}` : null,
+      heading: builders.data?.[0]?.name ?? INTELLIGENCE_META.builder.title,
+      description: builders.data?.[0]?.summary ?? INTELLIGENCE_META.builder.fallback,
+      loading: builders.isLoading,
+      error: !!builders.error,
+    },
+    {
+      key: "project",
+      href: projects.data?.[0] ? `/project/${projects.data[0].slug}` : null,
+      heading: projects.data?.[0]?.name ?? INTELLIGENCE_META.project.title,
+      description: projects.data?.[0]?.summary ?? INTELLIGENCE_META.project.fallback,
+      loading: projects.isLoading,
+      error: !!projects.error,
+    },
+  ];
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-3">
+      {cards.map((card) => {
+        const meta = INTELLIGENCE_META[card.key];
+        return (
+          <div
+            key={card.key}
+            className="flex flex-col rounded-xl border border-border bg-background p-8"
+          >
+            <div className="grid h-10 w-10 place-items-center rounded-md bg-muted text-muted-foreground">
+              {meta.icon}
+            </div>
+            <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              {meta.title}
+            </p>
+            <h3 className="mt-1 font-display text-xl font-semibold text-foreground">
+              {card.loading ? "Loading…" : card.error ? "Unavailable" : card.heading}
+            </h3>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+              {card.error
+                ? "We couldn't load this intelligence right now. Please try again shortly."
+                : card.description}
+            </p>
+            <div className="mt-6">
+              {card.href ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="gap-1.5 px-0 hover:bg-transparent"
+                  asChild
+                >
+                  <a href={card.href}>
+                    {meta.ctaLabel}
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                </Button>
+              ) : (
+                <span className="text-xs font-medium text-muted-foreground">
+                  {card.loading ? "Fetching latest reports…" : "No featured entries yet"}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
   return (
     <div aria-hidden className="relative">
       <div className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
