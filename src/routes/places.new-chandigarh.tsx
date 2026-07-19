@@ -28,6 +28,8 @@ import { Section } from "@/components/common/Section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { usePlace } from "@/hooks/useNestHunt";
+
 
 export const Route = createFileRoute("/places/new-chandigarh")({
   head: () => ({
@@ -241,6 +243,18 @@ const QUICK_FACTS = [
 /* -------------------------------- Component ------------------------------ */
 
 function PlacePage() {
+  const { data: place, isLoading } = usePlace("new-chandigarh");
+  if (isLoading || !place) {
+    return (
+      <AppLayout>
+        <Container>
+          <div className="py-24 text-center text-sm text-muted-foreground">
+            {isLoading ? "Loading place…" : "Place not found."}
+          </div>
+        </Container>
+      </AppLayout>
+    );
+  }
   return (
     <AppLayout>
       {/* Breadcrumb */}
@@ -267,18 +281,16 @@ function PlacePage() {
           <div className="py-12 sm:py-16">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-accent">
               <MapPin className="h-3.5 w-3.5" aria-hidden />
-              Punjab, India
+              {place.region}
             </div>
             <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              New Chandigarh
+              {place.name}
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              A rapidly developing planned city with strong infrastructure
-              investment, improving connectivity, and long-term residential
-              potential.
+              {place.summary}
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {TAGS.map((t) => (
+              {(place.highlights.length ? place.highlights : TAGS).map((t) => (
                 <span
                   key={t}
                   className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-foreground"
@@ -303,12 +315,7 @@ function PlacePage() {
               <Card className="mt-6 rounded-xl border-border bg-surface shadow-none">
                 <CardContent className="p-6 sm:p-8">
                   <p className="text-base leading-relaxed text-foreground">
-                    New Chandigarh continues to benefit from planned urban
-                    development, expanding road connectivity, educational
-                    institutions, and healthcare infrastructure. While several
-                    sectors are still under development, long-term growth
-                    prospects remain favourable for end-users and patient
-                    investors.
+                    {place.executiveSummary}
                   </p>
                 </CardContent>
               </Card>
