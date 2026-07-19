@@ -82,7 +82,7 @@ const VISITS: JourneyItem[] = [
   { primary: "Hero Homes site visit", secondary: "Sat, 26 Jul · 11:00 AM", meta: "Confirmed" },
 ];
 
-export default JourneyPage;
+
 
 function JourneyPage() {
   return (
