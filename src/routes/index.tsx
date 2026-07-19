@@ -2,87 +2,132 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   ShieldCheck,
+  Building2,
+  MapPinned,
+  TrainFront,
   Scale,
-  BookOpen,
-  FileCheck2,
-  Landmark,
-  Receipt,
-  Satellite,
-  MessagesSquare,
-  History,
+  Compass,
+  BarChart3,
+  CheckCircle2,
   TrendingUp,
   Activity,
-  Train,
   ShieldAlert,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { Section } from "@/components/common/Section";
-import { PlaceholderCard } from "@/components/common/PlaceholderCard";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const VERIFICATION_SOURCES = [
+const TRUST_ITEMS = [
   {
-    icon: <FileCheck2 className="h-4 w-4" />,
-    title: "RERA Records",
-    description: "Builder registrations and approvals.",
+    icon: <ShieldCheck className="h-4 w-4" />,
+    title: "Verified RERA Information",
+    description:
+      "Every builder and project is cross-checked against official RERA registrations.",
   },
   {
-    icon: <Landmark className="h-4 w-4" />,
-    title: "Government Master Plans",
-    description: "Future infrastructure and zoning.",
-  },
-  {
-    icon: <Receipt className="h-4 w-4" />,
-    title: "Registry Transactions",
-    description: "Historical price movement.",
-  },
-  {
-    icon: <Satellite className="h-4 w-4" />,
-    title: "Satellite Imagery",
-    description: "Construction verification.",
-  },
-  {
-    icon: <MessagesSquare className="h-4 w-4" />,
-    title: "Resident Feedback",
-    description: "Verified owner sentiment.",
-  },
-  {
-    icon: <History className="h-4 w-4" />,
+    icon: <Building2 className="h-4 w-4" />,
     title: "Builder Track Record",
-    description: "Historical delivery performance.",
+    description:
+      "Historical delivery, financial signals, and post-possession performance in one view.",
+  },
+  {
+    icon: <MapPinned className="h-4 w-4" />,
+    title: "Locality Intelligence",
+    description:
+      "Structured neighbourhood insights across livability, schools, and healthcare.",
+  },
+  {
+    icon: <TrainFront className="h-4 w-4" />,
+    title: "Infrastructure Insights",
+    description:
+      "Master plans, metro corridors, and connectivity signals mapped to each place.",
+  },
+  {
+    icon: <Scale className="h-4 w-4" />,
+    title: "Transparent Comparisons",
+    description:
+      "Compare projects side-by-side on the dimensions that actually matter.",
   },
 ];
+
+const STEPS = [
+  {
+    n: "01",
+    title: "Discover",
+    description: "Explore verified places, builders, and projects.",
+  },
+  {
+    n: "02",
+    title: "Evaluate",
+    description: "Understand risks, opportunities, and growth potential.",
+  },
+  {
+    n: "03",
+    title: "Decide",
+    description: "Make your property decision with confidence.",
+  },
+];
+
+const INTELLIGENCE = [
+  {
+    icon: <Compass className="h-4 w-4" />,
+    title: "Place Intelligence",
+    description:
+      "Understand neighbourhood growth, connectivity, schools, healthcare, and infrastructure.",
+    ctaLabel: "Explore Places",
+    to: "/places/new-chandigarh",
+  },
+  {
+    icon: <Building2 className="h-4 w-4" />,
+    title: "Builder Intelligence",
+    description:
+      "Evaluate builder credibility, delivery history, and customer trust.",
+    ctaLabel: "Explore Builders",
+    to: "/builder/omaxe",
+  },
+  {
+    icon: <BarChart3 className="h-4 w-4" />,
+    title: "Project Intelligence",
+    description:
+      "Compare amenities, legal status, pricing, and long-term potential.",
+    ctaLabel: "Explore Projects",
+    to: "/project/hero-homes",
+  },
+] as const;
 
 function HomePage() {
   return (
     <AppLayout>
       {/* Hero */}
       <Container>
-        <div className="grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:gap-16 lg:py-32">
+        <div className="grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:gap-16 lg:py-32">
           <div>
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
               Property Decision Intelligence
             </p>
             <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Make your next property decision with confidence.
+              Know the truth behind every property before you invest.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              NestHunt brings verified information, structured comparisons, and
-              transparent explanations to every step of your property journey — so
-              you can decide without the noise.
+              NestHunt helps you make confident property decisions by combining
+              verified builder information, locality intelligence, infrastructure
+              insights, legal transparency, and structured comparisons—all in
+              one place.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button size="lg" className="gap-2">
-                Get started
-                <ArrowRight className="h-4 w-4" />
+              <Button size="lg" className="gap-2" asChild>
+                <Link to="/places/new-chandigarh">
+                  Explore Places
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </Button>
               <Button size="lg" variant="ghost" asChild>
-                <Link to="/journey">Explore the journey</Link>
+                <a href="#how-it-works">See How It Works</a>
               </Button>
             </div>
           </div>
@@ -91,50 +136,22 @@ function HomePage() {
         </div>
       </Container>
 
-      {/* Principles */}
+      {/* Trust */}
       <Section className="border-t border-border bg-surface">
         <div className="mb-10 max-w-2xl">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Built on three principles
+            Why people trust NestHunt
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Every module in NestHunt is designed around clarity, not persuasion.
+            Independent, evidence-first intelligence for one of life's biggest
+            decisions.
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <PlaceholderCard
-            icon={<ShieldCheck className="h-4 w-4" />}
-            title="Verified information"
-            description="Every data point ties back to a source. No unverified listings, no marketing claims."
-          />
-          <PlaceholderCard
-            icon={<Scale className="h-4 w-4" />}
-            title="Structured comparisons"
-            description="Compare places, builders, and projects on the dimensions that actually matter."
-          />
-          <PlaceholderCard
-            icon={<BookOpen className="h-4 w-4" />}
-            title="Transparent explanations"
-            description="Every insight explains its reasoning, so you understand what you're deciding on."
-          />
-        </div>
-      </Section>
-
-      {/* Verification sources */}
-      <Section className="border-t border-border">
-        <div className="mb-10 max-w-2xl">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            How we verify every insight
-          </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Every recommendation is supported by publicly available evidence.
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {VERIFICATION_SOURCES.map((s) => (
+          {TRUST_ITEMS.map((s) => (
             <div
               key={s.title}
-              className="rounded-xl border border-border bg-surface p-6"
+              className="rounded-xl border border-border bg-background p-6"
             >
               <div className="grid h-9 w-9 place-items-center rounded-md bg-muted text-muted-foreground">
                 {s.icon}
@@ -149,17 +166,100 @@ function HomePage() {
           ))}
         </div>
       </Section>
+
+      {/* How it works */}
+      <Section id="how-it-works" className="border-t border-border">
+        <div className="mb-10 max-w-2xl">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            How it works
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            A structured path from exploration to a decision you can defend.
+          </p>
+        </div>
+        <ol className="relative grid gap-4 sm:grid-cols-3">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-6 right-6 top-11 hidden h-px bg-border sm:block"
+          />
+          {STEPS.map((step) => (
+            <li
+              key={step.n}
+              className="relative rounded-xl border border-border bg-surface p-6"
+            >
+              <span className="grid h-10 w-10 place-items-center rounded-full border border-border bg-background font-display text-sm font-semibold text-foreground">
+                {step.n}
+              </span>
+              <h3 className="mt-5 font-display text-lg font-semibold text-foreground">
+                {step.title}
+              </h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {step.description}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      {/* Featured intelligence */}
+      <Section className="border-t border-border bg-surface">
+        <div className="mb-10 max-w-2xl">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            Explore Decision Intelligence
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Three complementary lenses on every property decision.
+          </p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-3">
+          {INTELLIGENCE.map((item) => (
+            <div
+              key={item.title}
+              className="flex flex-col rounded-xl border border-border bg-background p-8"
+            >
+              <div className="grid h-10 w-10 place-items-center rounded-md bg-muted text-muted-foreground">
+                {item.icon}
+              </div>
+              <h3 className="mt-5 font-display text-xl font-semibold text-foreground">
+                {item.title}
+              </h3>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                {item.description}
+              </p>
+              <div className="mt-6">
+                <Button variant="ghost" size="sm" className="gap-1.5 px-0 hover:bg-transparent" asChild>
+                  <Link to={item.to}>
+                    {item.ctaLabel}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Social proof */}
+      <Section className="border-t border-border">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            Built for thoughtful buyers
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            Whether you're buying your first home, investing for the future, or
+            comparing multiple projects, NestHunt helps you make better
+            decisions with structured information instead of marketing claims.
+          </p>
+        </div>
+      </Section>
     </AppLayout>
   );
 }
 
 function DashboardPreview() {
   return (
-    <div
-      aria-hidden
-      className="relative hidden lg:block"
-    >
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-card">
+    <div aria-hidden className="relative">
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
         {/* Chrome */}
         <div className="flex items-center justify-between border-b border-border pb-3">
           <div className="flex items-center gap-2">
@@ -168,7 +268,7 @@ function DashboardPreview() {
             <span className="h-2 w-2 rounded-full bg-muted" />
           </div>
           <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            NestHunt · Live preview
+            NestHunt · Decision Intelligence
           </p>
         </div>
 
@@ -176,12 +276,12 @@ function DashboardPreview() {
         <div className="mt-5 flex items-end justify-between">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Decision Score · New Chandigarh
+              Decision Score
             </p>
             <p className="mt-2 font-display text-4xl font-semibold tracking-tight text-foreground">
-              8.9
+              82
               <span className="ml-1 text-base font-normal text-muted-foreground">
-                / 10
+                / 100
               </span>
             </p>
           </div>
@@ -195,24 +295,25 @@ function DashboardPreview() {
         <div className="mt-5 grid grid-cols-2 gap-3">
           <KpiTile
             icon={<Activity className="h-3.5 w-3.5" />}
-            label="Builder Reliability"
-            value="87%"
+            label="Builder Trust"
+            value="9.1"
+            hint="/ 10"
           />
           <KpiTile
             icon={<TrendingUp className="h-3.5 w-3.5" />}
-            label="Price Trend"
-            value="+11.4%"
-            hint="12-mo"
+            label="Infrastructure Growth"
+            value="High"
           />
           <KpiTile
-            icon={<Train className="h-3.5 w-3.5" />}
-            label="Infrastructure"
-            value="Metro Planned"
+            icon={<CheckCircle2 className="h-3.5 w-3.5" />}
+            label="Legal Risk"
+            value="Low"
           />
           <KpiTile
             icon={<ShieldAlert className="h-3.5 w-3.5" />}
-            label="Risk"
-            value="Low"
+            label="Expected Appreciation"
+            value="+18%"
+            hint="3-yr"
           />
         </div>
       </div>
@@ -241,10 +342,12 @@ function KpiTile({
       </div>
       <p className="mt-2 font-display text-lg font-semibold tracking-tight text-foreground">
         {value}
+        {hint && (
+          <span className="ml-1 text-xs font-normal text-muted-foreground">
+            {hint}
+          </span>
+        )}
       </p>
-      {hint && (
-        <p className="mt-0.5 text-[10px] text-muted-foreground">{hint}</p>
-      )}
     </div>
   );
 }
