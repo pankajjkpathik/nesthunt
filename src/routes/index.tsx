@@ -322,7 +322,9 @@ function FeaturedIntelligence() {
   );
 }
 
+function DashboardPreview() {
   return (
+
     <div aria-hidden className="relative">
       <div className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
         {/* Chrome */}
