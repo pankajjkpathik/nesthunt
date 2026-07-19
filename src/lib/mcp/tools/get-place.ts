@@ -1,8 +1,6 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
-import { newChandigarh } from "@/mocks";
-
-const places = { [newChandigarh.slug]: newChandigarh };
+import { getPlaceBySlug } from "@/lib/services/places";
 
 export default defineTool({
   name: "get_place",
@@ -13,8 +11,8 @@ export default defineTool({
     slug: z.string().describe("The place slug, e.g. 'new-chandigarh'."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: ({ slug }) => {
-    const place = places[slug];
+  handler: async ({ slug }) => {
+    const place = await getPlaceBySlug(slug);
     if (!place) {
       return {
         content: [{ type: "text", text: `No place found for slug '${slug}'.` }],
