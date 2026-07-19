@@ -165,48 +165,69 @@ export type Database = {
         Row: {
           created_at: string
           decision: Json
+          education: string[]
           executive_summary: string
           featured: boolean
+          growth_drivers: string[]
+          healthcare: string[]
+          hero: Json
           highlights: string[]
           id: string
+          lifestyle: string[]
           metrics: Json
           name: string
           opportunities: string[]
           region: string
           risks: string[]
+          seo: Json
           slug: string
+          status: string
           summary: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           decision?: Json
+          education?: string[]
           executive_summary?: string
           featured?: boolean
+          growth_drivers?: string[]
+          healthcare?: string[]
+          hero?: Json
           highlights?: string[]
           id?: string
+          lifestyle?: string[]
           metrics?: Json
           name: string
           opportunities?: string[]
           region: string
           risks?: string[]
+          seo?: Json
           slug: string
+          status?: string
           summary: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           decision?: Json
+          education?: string[]
           executive_summary?: string
           featured?: boolean
+          growth_drivers?: string[]
+          healthcare?: string[]
+          hero?: Json
           highlights?: string[]
           id?: string
+          lifestyle?: string[]
           metrics?: Json
           name?: string
           opportunities?: string[]
           region?: string
           risks?: string[]
+          seo?: Json
           slug?: string
+          status?: string
           summary?: string
           updated_at?: string
         }
