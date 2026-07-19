@@ -170,10 +170,10 @@ export function PlaceEditor({ id }: { id?: string }) {
       education: form.education.filter(Boolean),
       healthcare: form.healthcare.filter(Boolean),
       growth_drivers: form.growth_drivers.filter(Boolean),
-      hero: form.hero as unknown as Record<string, unknown>,
-      seo: form.seo as unknown as Record<string, unknown>,
-      metrics: form.metrics as unknown as Record<string, unknown>,
-      decision: form.decision as unknown as Record<string, unknown>,
+      hero: form.hero as unknown as import("@/integrations/supabase/types").Json,
+      seo: form.seo as unknown as import("@/integrations/supabase/types").Json,
+      metrics: form.metrics as unknown as import("@/integrations/supabase/types").Json,
+      decision: form.decision as unknown as import("@/integrations/supabase/types").Json,
     };
 
     try {
