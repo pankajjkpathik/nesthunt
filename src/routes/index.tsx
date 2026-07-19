@@ -17,6 +17,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { Section } from "@/components/common/Section";
 import { Button } from "@/components/ui/button";
+import { usePlaces, useBuilders, useProjects } from "@/hooks/useNestHunt";
+
 
 export const Route = createFileRoute("/")({
   component: HomePage,
