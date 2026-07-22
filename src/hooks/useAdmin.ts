@@ -15,32 +15,38 @@ import { supabase } from "@/integrations/supabase/client";
 export function useAdminSession() {
   const [loading, setLoading] = useState(true);
   const [signedIn, setSignedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
+    async function checkRole(uid: string | null) {
+      if (!uid) return false;
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", uid)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (error) {
+        console.error("Failed to load role:", error);
+        return false;
+      }
+      return !!data;
+    }
+
     async function initialise() {
-      try {
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
-
-        if (error) {
-          console.error("Failed to load session:", error);
-        }
-
-        if (mounted) {
-          setSignedIn(!!session);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error(err);
-
-        if (mounted) {
-          setSignedIn(false);
-          setLoading(false);
-        }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const uid = session?.user?.id ?? null;
+      const admin = await checkRole(uid);
+      if (mounted) {
+        setSignedIn(!!session);
+        setUserId(uid);
+        setIsAdmin(admin);
+        setLoading(false);
       }
     }
 
@@ -48,9 +54,13 @@ export function useAdminSession() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const uid = session?.user?.id ?? null;
+      const admin = await checkRole(uid);
       if (mounted) {
         setSignedIn(!!session);
+        setUserId(uid);
+        setIsAdmin(admin);
       }
     });
 
@@ -60,11 +70,9 @@ export function useAdminSession() {
     };
   }, []);
 
-  return {
-    loading,
-    signedIn,
-  };
+  return { loading, signedIn, isAdmin, userId };
 }
+
 
 export function useAdminPlaces() {
   return useQuery({
