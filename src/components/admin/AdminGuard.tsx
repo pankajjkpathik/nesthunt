@@ -1,26 +1,21 @@
-import { type ReactNode, useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { type ReactNode } from "react";
+import { Navigate } from "@tanstack/react-router";
 import { useAdminSession } from "@/hooks/useAdmin";
 
-/**
- * TEMPORARY guard. Uses a mock localStorage flag until Supabase auth
- * + user_roles are wired for the admin section.
- */
 export function AdminGuard({ children }: { children: ReactNode }) {
-  const signedIn = useAdminSession();
-  const navigate = useNavigate();
+  const { loading, signedIn } = useAdminSession();
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!signedIn) navigate({ to: "/admin/login" });
-  }, [signedIn, navigate]);
-
-  if (!signedIn) {
+  if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-sm text-muted-foreground">
-        Checking session…
+      <div className="flex min-h-[60vh] items-center justify-center">
+        Checking session...
       </div>
     );
   }
+
+  if (!signedIn) {
+    return <Navigate to="/admin/login" />;
+  }
+
   return <>{children}</>;
 }
