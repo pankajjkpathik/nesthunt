@@ -1,25 +1,45 @@
+import { supabase } from "@/integrations/supabase/client";
+
 /**
- * TEMPORARY mock admin session.
- * Replace with Supabase auth + user_roles check when authentication lands.
+ * Legacy compatibility layer.
+ *
+ * The old admin code imports functions from this module.
+ * These implementations simply delegate to Supabase Auth so
+ * existing imports continue to work while the application is
+ * migrated to the new authentication architecture.
  */
-const KEY = "nesthunt_admin_session_v1";
-const DEMO_PIN = "nesthunt-admin";
 
-export function isAdminSession(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.localStorage.getItem(KEY) === "1";
+export async function signInAdmin(
+  email: string,
+  password: string,
+) {
+  return supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 }
 
-export function signInAdmin(pin: string): boolean {
-  if (pin.trim() !== DEMO_PIN) return false;
-  window.localStorage.setItem(KEY, "1");
-  window.dispatchEvent(new Event("nesthunt-admin-change"));
-  return true;
+export async function signOutAdmin() {
+  const result = await supabase.auth.signOut();
+  return result;
 }
 
-export function signOutAdmin() {
-  window.localStorage.removeItem(KEY);
-  window.dispatchEvent(new Event("nesthunt-admin-change"));
+export async function isAdminSession() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  return !!session;
 }
 
-export const ADMIN_DEMO_PIN = DEMO_PIN;
+export async function getAdminSession() {
+  return supabase.auth.getSession();
+}
+
+export async function getCurrentAdminUser() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return user;
+}
