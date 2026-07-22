@@ -1,3 +1,19 @@
+import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import {
+  adminCreatePlace,
+  adminDeletePlace,
+  adminGetPlace,
+  adminListPlaces,
+  adminUpdatePlace,
+  type PlaceInsert,
+  type PlaceRow,
+  type PlaceUpdate,
+} from "@/lib/services/places-admin";
+
+import { supabase } from "@/integrations/supabase/client";
+
 export function useAdminSession() {
   const [loading, setLoading] = useState(true);
   const [signedIn, setSignedIn] = useState(false);
@@ -29,29 +45,37 @@ export function useAdminSession() {
         .maybeSingle();
 
       if (error) {
-        console.error(error);
+        console.error("Failed to load admin role:", error);
       }
 
       setSignedIn(true);
       setUserId(uid);
-      setIsAdmin(!!data);
+      setIsAdmin(Boolean(data));
+    } catch (err) {
+      console.error("Failed to initialize admin session:", err);
+
+      setSignedIn(false);
+      setIsAdmin(false);
+      setUserId(null);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadSession();
+    void loadSession();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(() => {
       queueMicrotask(() => {
-        loadSession();
+        void loadSession();
       });
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   return {
@@ -61,4 +85,77 @@ export function useAdminSession() {
     userId,
     refresh: loadSession,
   };
+}
+
+export function useAdminPlaces() {
+  return useQuery({
+    queryKey: ["admin", "places"],
+    queryFn: adminListPlaces,
+  });
+}
+
+export function useAdminPlace(id: string | undefined) {
+  return useQuery({
+    queryKey: ["admin", "places", id],
+    queryFn: () => adminGetPlace(id!),
+    enabled: !!id,
+  });
+}
+
+export function useCreatePlace() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: PlaceInsert) => adminCreatePlace(input),
+
+    onSuccess: (row: PlaceRow) => {
+      qc.invalidateQueries({
+        queryKey: ["admin", "places"],
+      });
+
+      qc.invalidateQueries({
+        queryKey: ["places"],
+      });
+
+      qc.setQueryData(["admin", "places", row.id], row);
+    },
+  });
+}
+
+export function useUpdatePlace() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: PlaceUpdate }) => adminUpdatePlace(id, patch),
+
+    onSuccess: (row: PlaceRow) => {
+      qc.invalidateQueries({
+        queryKey: ["admin", "places"],
+      });
+
+      qc.invalidateQueries({
+        queryKey: ["places"],
+      });
+
+      qc.setQueryData(["admin", "places", row.id], row);
+    },
+  });
+}
+
+export function useDeletePlace() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => adminDeletePlace(id),
+
+    onSuccess: () => {
+      qc.invalidateQueries({
+        queryKey: ["admin", "places"],
+      });
+
+      qc.invalidateQueries({
+        queryKey: ["places"],
+      });
+    },
+  });
 }
