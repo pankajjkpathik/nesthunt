@@ -17,7 +17,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectHeroHomesRouteImport } from './routes/project.hero-homes'
 import { Route as PlacesNewChandigarhRouteImport } from './routes/places.new-chandigarh'
 import { Route as BuilderOmaxeRouteImport } from './routes/builder.omaxe'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminPlacesIndexRouteImport } from './routes/admin.places.index'
@@ -66,9 +66,9 @@ const BuilderOmaxeRoute = BuilderOmaxeRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AdminRoute,
+  id: '/admin_/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
@@ -145,7 +145,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/admin/login': typeof AdminLoginRoute
+  '/admin_/login': typeof AdminLoginRoute
   '/builder/omaxe': typeof BuilderOmaxeRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
@@ -197,7 +197,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
-    | '/admin/login'
+    | '/admin_/login'
     | '/builder/omaxe'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
@@ -215,6 +215,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   BuilderOmaxeRoute: typeof BuilderOmaxeRoute
   PlacesNewChandigarhRoute: typeof PlacesNewChandigarhRoute
   ProjectHeroHomesRoute: typeof ProjectHeroHomesRoute
@@ -279,12 +280,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuilderOmaxeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/login'
+    '/admin_/login': {
+      id: '/admin_/login'
+      path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof AdminRoute
+      parentRoute: typeof rootRouteImport
     }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
@@ -332,7 +333,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
-  AdminLoginRoute: typeof AdminLoginRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminPlacesIdRoute: typeof AdminPlacesIdRoute
   AdminPlacesNewRoute: typeof AdminPlacesNewRoute
@@ -340,7 +340,6 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminLoginRoute: AdminLoginRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminPlacesIdRoute: AdminPlacesIdRoute,
   AdminPlacesNewRoute: AdminPlacesNewRoute,
@@ -357,6 +356,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  AdminLoginRoute: AdminLoginRoute,
   BuilderOmaxeRoute: BuilderOmaxeRoute,
   PlacesNewChandigarhRoute: PlacesNewChandigarhRoute,
   ProjectHeroHomesRoute: ProjectHeroHomesRoute,
