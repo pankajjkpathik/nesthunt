@@ -279,6 +279,7 @@ export function PlaceEditor({ id }: { id?: string }) {
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-muted/50">
           {[
             ["general", "General"],
+            ["location", "Location"],
             ["hero", "Hero"],
             ["decision", "Decision Score"],
             ["lifestyle", "Lifestyle"],
@@ -289,6 +290,7 @@ export function PlaceEditor({ id }: { id?: string }) {
             ["media", "Media"],
             ["seo", "SEO"],
           ].map(([v, l]) => (
+
             <TabsTrigger key={v} value={v}>
               {l}
             </TabsTrigger>
