@@ -117,10 +117,22 @@ export function PlaceEditor({ id }: { id?: string }) {
   useEffect(() => {
     if (!existing) return;
     const dec = (existing.decision ?? {}) as Partial<PlaceDecision>;
+    const ex = existing as PlaceRow & {
+      country?: string | null;
+      state?: string | null;
+      city?: string | null;
+      latitude?: number | null;
+      longitude?: number | null;
+    };
     setForm({
       slug: existing.slug,
       name: existing.name,
       region: existing.region,
+      country: ex.country ?? "India",
+      state: ex.state ?? "",
+      city: ex.city ?? "",
+      latitude: ex.latitude ?? null,
+      longitude: ex.longitude ?? null,
       summary: existing.summary ?? "",
       executive_summary: existing.executive_summary ?? "",
       status: (existing.status as PlaceStatus) ?? "draft",
@@ -144,6 +156,7 @@ export function PlaceEditor({ id }: { id?: string }) {
       },
     });
   }, [existing]);
+
 
   const patch = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
