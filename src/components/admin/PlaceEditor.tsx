@@ -34,8 +34,10 @@ import {
   type PlaceDecision,
   type PlaceHero,
   type PlaceMetrics,
+  type PlaceRow,
   type PlaceSeo,
   type PlaceStatus,
+
 } from "@/lib/services/places-admin";
 import { useEntityImages } from "@/hooks/useNestHunt";
 import {
@@ -50,6 +52,11 @@ interface FormState {
   slug: string;
   name: string;
   region: string;
+  country: string;
+  state: string;
+  city: string;
+  latitude: number | null;
+  longitude: number | null;
   summary: string;
   executive_summary: string;
   status: PlaceStatus;
@@ -71,6 +78,11 @@ const EMPTY: FormState = {
   slug: "",
   name: "",
   region: "",
+  country: "India",
+  state: "",
+  city: "",
+  latitude: null,
+  longitude: null,
   summary: "",
   executive_summary: "",
   status: "draft",
@@ -93,6 +105,7 @@ const EMPTY: FormState = {
   },
 };
 
+
 export function PlaceEditor({ id }: { id?: string }) {
   const navigate = useNavigate();
   const qc = useQueryClient();
@@ -106,10 +119,22 @@ export function PlaceEditor({ id }: { id?: string }) {
   useEffect(() => {
     if (!existing) return;
     const dec = (existing.decision ?? {}) as Partial<PlaceDecision>;
+    const ex = existing as PlaceRow & {
+      country?: string | null;
+      state?: string | null;
+      city?: string | null;
+      latitude?: number | null;
+      longitude?: number | null;
+    };
     setForm({
       slug: existing.slug,
       name: existing.name,
       region: existing.region,
+      country: ex.country ?? "India",
+      state: ex.state ?? "",
+      city: ex.city ?? "",
+      latitude: ex.latitude ?? null,
+      longitude: ex.longitude ?? null,
       summary: existing.summary ?? "",
       executive_summary: existing.executive_summary ?? "",
       status: (existing.status as PlaceStatus) ?? "draft",
@@ -133,6 +158,7 @@ export function PlaceEditor({ id }: { id?: string }) {
       },
     });
   }, [existing]);
+
 
   const patch = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -159,6 +185,11 @@ export function PlaceEditor({ id }: { id?: string }) {
       slug: slugify(form.slug),
       name: form.name.trim(),
       region: form.region.trim(),
+      country: form.country.trim() || "India",
+      state: form.state.trim(),
+      city: form.city.trim(),
+      latitude: form.latitude,
+      longitude: form.longitude,
       summary: form.summary,
       executive_summary: form.executive_summary,
       status: nextStatus,
@@ -175,6 +206,7 @@ export function PlaceEditor({ id }: { id?: string }) {
       metrics: form.metrics as unknown as import("@/integrations/supabase/types").Json,
       decision: form.decision as unknown as import("@/integrations/supabase/types").Json,
     };
+
 
     try {
       if (id) {
@@ -247,6 +279,7 @@ export function PlaceEditor({ id }: { id?: string }) {
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-muted/50">
           {[
             ["general", "General"],
+            ["location", "Location"],
             ["hero", "Hero"],
             ["decision", "Decision Score"],
             ["lifestyle", "Lifestyle"],
@@ -257,6 +290,7 @@ export function PlaceEditor({ id }: { id?: string }) {
             ["media", "Media"],
             ["seo", "SEO"],
           ].map(([v, l]) => (
+
             <TabsTrigger key={v} value={v}>
               {l}
             </TabsTrigger>
@@ -339,6 +373,31 @@ export function PlaceEditor({ id }: { id?: string }) {
           </Card>
         </TabsContent>
 
+        <TabsContent value="location" className="mt-6">
+          <Card>
+            <CardContent className="grid gap-5 p-6 md:grid-cols-2">
+              <TextField label="Country" value={form.country} onChange={(v) => patch("country", v)} />
+              <TextField label="State" value={form.state} onChange={(v) => patch("state", v)} />
+              <TextField label="City" value={form.city} onChange={(v) => patch("city", v)} />
+              <div />
+              <NumberField
+                label="Latitude"
+                value={form.latitude ?? 0}
+                step={0.000001}
+                onChange={(v) => patch("latitude", Number.isFinite(v) ? v : null)}
+                hint="Optional"
+              />
+              <NumberField
+                label="Longitude"
+                value={form.longitude ?? 0}
+                step={0.000001}
+                onChange={(v) => patch("longitude", Number.isFinite(v) ? v : null)}
+                hint="Optional"
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="hero" className="mt-6">
           <Card>
             <CardContent className="grid gap-5 p-6 md:grid-cols-2">
@@ -363,14 +422,30 @@ export function PlaceEditor({ id }: { id?: string }) {
                 onChange={(v) => patch("hero", { ...form.hero, tagline: v })}
               />
               <TextField
-                label="Hero image URL (optional)"
+                label="Hero image URL"
                 value={form.hero.heroImageUrl ?? ""}
                 onChange={(v) => patch("hero", { ...form.hero, heroImageUrl: v })}
                 hint="Or upload in the Media tab and paste the public URL."
               />
+              <TextField
+                label="Cover image URL"
+                value={form.hero.coverImageUrl ?? ""}
+                onChange={(v) => patch("hero", { ...form.hero, coverImageUrl: v })}
+                hint="Featured thumbnail used in listings and share previews."
+              />
+              {form.hero.coverImageUrl ? (
+                <div className="md:col-span-2">
+                  <img
+                    src={form.hero.coverImageUrl}
+                    alt="Cover preview"
+                    className="max-h-48 rounded-md border border-border object-cover"
+                  />
+                </div>
+              ) : null}
             </CardContent>
           </Card>
         </TabsContent>
+
 
         <TabsContent value="decision" className="mt-6">
           <Card>
@@ -539,18 +614,17 @@ export function PlaceEditor({ id }: { id?: string }) {
         <TabsContent value="seo" className="mt-6">
           <Card>
             <CardContent className="grid gap-5 p-6">
-              <TextField
-                label="SEO title"
+              <SeoTextField
+                label="Meta title"
                 value={form.seo.title ?? ""}
                 onChange={(v) => patch("seo", { ...form.seo, title: v })}
-                hint="Under 60 characters."
+                limit={60}
               />
-              <TextareaField
-                label="SEO description"
-                rows={3}
+              <SeoTextareaField
+                label="Meta description"
                 value={form.seo.description ?? ""}
                 onChange={(v) => patch("seo", { ...form.seo, description: v })}
-                hint="Under 160 characters."
+                limit={160}
               />
               <TextField
                 label="Keywords"
@@ -558,9 +632,39 @@ export function PlaceEditor({ id }: { id?: string }) {
                 onChange={(v) => patch("seo", { ...form.seo, keywords: v })}
                 hint="Comma-separated."
               />
+              <TextField
+                label="Canonical URL"
+                value={form.seo.canonicalUrl ?? ""}
+                onChange={(v) => patch("seo", { ...form.seo, canonicalUrl: v })}
+                placeholder="https://nesthunt.in/places/your-slug"
+              />
+              <div className="border-t border-border pt-4">
+                <h3 className="mb-4 text-sm font-medium text-foreground">Open Graph</h3>
+                <div className="grid gap-5">
+                  <SeoTextField
+                    label="OG title"
+                    value={form.seo.ogTitle ?? ""}
+                    onChange={(v) => patch("seo", { ...form.seo, ogTitle: v })}
+                    limit={70}
+                  />
+                  <SeoTextareaField
+                    label="OG description"
+                    value={form.seo.ogDescription ?? ""}
+                    onChange={(v) => patch("seo", { ...form.seo, ogDescription: v })}
+                    limit={200}
+                  />
+                  <TextField
+                    label="OG image URL"
+                    value={form.seo.ogImage ?? ""}
+                    onChange={(v) => patch("seo", { ...form.seo, ogImage: v })}
+                    hint="Defaults to the cover image if empty."
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
+
       </Tabs>
     </div>
   );
@@ -697,5 +801,58 @@ function MediaPanel({
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function SeoTextField({
+  label,
+  value,
+  onChange,
+  limit,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  limit: number;
+}) {
+  const over = value.length > limit;
+  return (
+    <Field
+      label={label}
+      hint={`${value.length}/${limit}${over ? " — over recommended limit" : ""}`}
+    >
+      <input
+        className={`h-10 w-full rounded-md border bg-background px-3 text-sm ${over ? "border-warning" : "border-input"}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </Field>
+  );
+}
+
+function SeoTextareaField({
+  label,
+  value,
+  onChange,
+  limit,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  limit: number;
+}) {
+  const over = value.length > limit;
+  return (
+    <Field
+      label={label}
+      hint={`${value.length}/${limit}${over ? " — over recommended limit" : ""}`}
+    >
+      <textarea
+        rows={3}
+        className={`w-full rounded-md border bg-background p-3 text-sm ${over ? "border-warning" : "border-input"}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </Field>
   );
 }

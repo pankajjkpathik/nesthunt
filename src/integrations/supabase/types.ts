@@ -163,6 +163,8 @@ export type Database = {
       }
       places: {
         Row: {
+          city: string
+          country: string
           created_at: string
           decision: Json
           education: string[]
@@ -173,7 +175,9 @@ export type Database = {
           hero: Json
           highlights: string[]
           id: string
+          latitude: number | null
           lifestyle: string[]
+          longitude: number | null
           metrics: Json
           name: string
           opportunities: string[]
@@ -181,11 +185,14 @@ export type Database = {
           risks: string[]
           seo: Json
           slug: string
+          state: string
           status: string
           summary: string
           updated_at: string
         }
         Insert: {
+          city?: string
+          country?: string
           created_at?: string
           decision?: Json
           education?: string[]
@@ -196,7 +203,9 @@ export type Database = {
           hero?: Json
           highlights?: string[]
           id?: string
+          latitude?: number | null
           lifestyle?: string[]
+          longitude?: number | null
           metrics?: Json
           name: string
           opportunities?: string[]
@@ -204,11 +213,14 @@ export type Database = {
           risks?: string[]
           seo?: Json
           slug: string
+          state?: string
           status?: string
           summary: string
           updated_at?: string
         }
         Update: {
+          city?: string
+          country?: string
           created_at?: string
           decision?: Json
           education?: string[]
@@ -219,7 +231,9 @@ export type Database = {
           hero?: Json
           highlights?: string[]
           id?: string
+          latitude?: number | null
           lifestyle?: string[]
+          longitude?: number | null
           metrics?: Json
           name?: string
           opportunities?: string[]
@@ -227,6 +241,7 @@ export type Database = {
           risks?: string[]
           seo?: Json
           slug?: string
+          state?: string
           status?: string
           summary?: string
           updated_at?: string

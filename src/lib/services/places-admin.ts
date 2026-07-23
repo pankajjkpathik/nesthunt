@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
-export type PlaceStatus = "draft" | "review" | "published";
+export type PlaceStatus = "draft" | "review" | "published" | "archived";
 
 export type PlaceRow = Database["public"]["Tables"]["places"]["Row"];
 export type PlaceInsert = Database["public"]["Tables"]["places"]["Insert"];
@@ -12,12 +12,17 @@ export interface PlaceHero {
   subheadline?: string;
   tagline?: string;
   heroImageUrl?: string;
+  coverImageUrl?: string;
 }
 
 export interface PlaceSeo {
   title?: string;
   description?: string;
   keywords?: string;
+  canonicalUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
 }
 
 export interface PlaceMetrics {
@@ -51,10 +56,9 @@ export const DEFAULT_CATEGORIES: CategoryScore[] = [
 export function computeDecisionScore(cats: CategoryScore[]): number {
   if (!cats.length) return 0;
   const avg = cats.reduce((s, c) => s + (Number(c.score) || 0), 0) / cats.length;
-  return Math.round(avg * 10) / 10; // one decimal, on /10 scale
+  return Math.round(avg * 10) / 10;
 }
 
-/** List all places (draft, review, published) for admin. */
 export async function adminListPlaces(): Promise<PlaceRow[]> {
   const { data, error } = await supabase
     .from("places")
@@ -90,6 +94,57 @@ export async function adminUpdatePlace(id: string, patch: PlaceUpdate): Promise<
 export async function adminDeletePlace(id: string): Promise<void> {
   const { error } = await supabase.from("places").delete().eq("id", id);
   if (error) throw error;
+}
+
+export async function adminBulkUpdateStatus(ids: string[], status: PlaceStatus): Promise<void> {
+  if (!ids.length) return;
+  const { error } = await supabase.from("places").update({ status }).in("id", ids);
+  if (error) throw error;
+}
+
+export async function adminBulkDelete(ids: string[]): Promise<void> {
+  if (!ids.length) return;
+  const { error } = await supabase.from("places").delete().in("id", ids);
+  if (error) throw error;
+}
+
+export async function adminSlugExists(slug: string, exceptId?: string): Promise<boolean> {
+  let q = supabase.from("places").select("id", { count: "exact", head: true }).eq("slug", slug);
+  if (exceptId) q = q.neq("id", exceptId);
+  const { count, error } = await q;
+  if (error) throw error;
+  return (count ?? 0) > 0;
+}
+
+async function ensureUniqueSlug(baseSlug: string): Promise<string> {
+  let candidate = baseSlug;
+  let n = 1;
+  while (await adminSlugExists(candidate)) {
+    n += 1;
+    candidate = `${baseSlug}-${n}`;
+  }
+  return candidate;
+}
+
+export async function adminDuplicatePlace(id: string): Promise<PlaceRow> {
+  const src = await adminGetPlace(id);
+  if (!src) throw new Error("Place not found");
+  const baseSlug = `${src.slug}-copy`;
+  const slug = await ensureUniqueSlug(baseSlug);
+  const {
+    id: _id,
+    created_at: _c,
+    updated_at: _u,
+    ...rest
+  } = src;
+  const insert: PlaceInsert = {
+    ...rest,
+    slug,
+    name: `${src.name} (Copy)`,
+    status: "draft",
+    featured: false,
+  };
+  return adminCreatePlace(insert);
 }
 
 export function slugify(input: string): string {
