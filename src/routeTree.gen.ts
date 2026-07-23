@@ -24,6 +24,7 @@ import { Route as AdminRelationshipsIndexRouteImport } from './routes/admin.rela
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminPlacesIndexRouteImport } from './routes/admin.places.index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin.media.index'
+import { Route as AdminInfrastructureIndexRouteImport } from './routes/admin.infrastructure.index'
 import { Route as AdminCategoriesIndexRouteImport } from './routes/admin.categories.index'
 import { Route as AdminBuildersIndexRouteImport } from './routes/admin.builders.index'
 import { Route as AdminAmenitiesIndexRouteImport } from './routes/admin.amenities.index'
@@ -116,6 +117,12 @@ const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
   path: '/media/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminInfrastructureIndexRoute =
+  AdminInfrastructureIndexRouteImport.update({
+    id: '/infrastructure/',
+    path: '/infrastructure/',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminCategoriesIndexRoute = AdminCategoriesIndexRouteImport.update({
   id: '/categories/',
   path: '/categories/',
@@ -214,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/admin/amenities/': typeof AdminAmenitiesIndexRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
+  '/admin/infrastructure/': typeof AdminInfrastructureIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
@@ -244,6 +252,7 @@ export interface FileRoutesByTo {
   '/admin/amenities': typeof AdminAmenitiesIndexRoute
   '/admin/builders': typeof AdminBuildersIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
+  '/admin/infrastructure': typeof AdminInfrastructureIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/places': typeof AdminPlacesIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
@@ -276,6 +285,7 @@ export interface FileRoutesById {
   '/admin/amenities/': typeof AdminAmenitiesIndexRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
+  '/admin/infrastructure/': typeof AdminInfrastructureIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/admin/amenities/'
     | '/admin/builders/'
     | '/admin/categories/'
+    | '/admin/infrastructure/'
     | '/admin/media/'
     | '/admin/places/'
     | '/admin/projects/'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/admin/amenities'
     | '/admin/builders'
     | '/admin/categories'
+    | '/admin/infrastructure'
     | '/admin/media'
     | '/admin/places'
     | '/admin/projects'
@@ -370,6 +382,7 @@ export interface FileRouteTypes {
     | '/admin/amenities/'
     | '/admin/builders/'
     | '/admin/categories/'
+    | '/admin/infrastructure/'
     | '/admin/media/'
     | '/admin/places/'
     | '/admin/projects/'
@@ -497,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMediaIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/infrastructure/': {
+      id: '/admin/infrastructure/'
+      path: '/infrastructure'
+      fullPath: '/admin/infrastructure/'
+      preLoaderRoute: typeof AdminInfrastructureIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/categories/': {
       id: '/admin/categories/'
       path: '/categories'
@@ -613,6 +633,7 @@ interface AdminRouteChildren {
   AdminAmenitiesIndexRoute: typeof AdminAmenitiesIndexRoute
   AdminBuildersIndexRoute: typeof AdminBuildersIndexRoute
   AdminCategoriesIndexRoute: typeof AdminCategoriesIndexRoute
+  AdminInfrastructureIndexRoute: typeof AdminInfrastructureIndexRoute
   AdminMediaIndexRoute: typeof AdminMediaIndexRoute
   AdminPlacesIndexRoute: typeof AdminPlacesIndexRoute
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
@@ -634,6 +655,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAmenitiesIndexRoute: AdminAmenitiesIndexRoute,
   AdminBuildersIndexRoute: AdminBuildersIndexRoute,
   AdminCategoriesIndexRoute: AdminCategoriesIndexRoute,
+  AdminInfrastructureIndexRoute: AdminInfrastructureIndexRoute,
   AdminMediaIndexRoute: AdminMediaIndexRoute,
   AdminPlacesIndexRoute: AdminPlacesIndexRoute,
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
