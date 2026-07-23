@@ -47,7 +47,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Content",
     items: [
       { to: "/admin/blog", label: "Blog", icon: FileText, disabled: true },
-      { to: "/admin/media", label: "Media Library", icon: ImageIcon, disabled: true },
+      { to: "/admin/media", label: "Media Library", icon: ImageIcon },
       { to: "/admin/reviews", label: "Reviews", icon: Star, disabled: true },
     ],
   },

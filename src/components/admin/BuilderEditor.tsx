@@ -27,6 +27,7 @@ import {
   TextField,
   TextareaField,
 } from "@/components/admin/form/Fields";
+import { MediaField } from "@/components/admin/media/MediaField";
 
 import {
   useAdminBuilder,
@@ -480,9 +481,9 @@ export function BuilderEditor({ id }: Props) {
         <TabsContent value="media" className="mt-4">
           <Card>
             <CardContent className="grid gap-4 p-6 md:grid-cols-2">
-              <TextField label="Logo URL" value={form.hero.logoUrl ?? ""} onChange={(v) => patchHero("logoUrl", v)} />
-              <TextField label="Hero image URL" value={form.hero.heroImageUrl ?? ""} onChange={(v) => patchHero("heroImageUrl", v)} />
-              <TextField label="Cover image URL" value={form.hero.coverImageUrl ?? ""} onChange={(v) => patchHero("coverImageUrl", v)} />
+              <MediaField label="Logo" value={form.hero.logoUrl ?? ""} onChange={(v) => patchHero("logoUrl", v)} folder="builders" />
+              <MediaField label="Hero image" value={form.hero.heroImageUrl ?? ""} onChange={(v) => patchHero("heroImageUrl", v)} folder="builders" />
+              <MediaField label="Cover image" value={form.hero.coverImageUrl ?? ""} onChange={(v) => patchHero("coverImageUrl", v)} folder="builders" />
               <TextField label="Hero tagline" value={form.hero.tagline ?? ""} onChange={(v) => patchHero("tagline", v)} />
               <div className="md:col-span-2">
                 <TextField label="Headline" value={form.hero.headline ?? ""} onChange={(v) => patchHero("headline", v)} />
@@ -496,13 +497,13 @@ export function BuilderEditor({ id }: Props) {
                   <img src={form.hero.heroImageUrl} alt="" className="max-h-64 w-full rounded-lg border border-border object-cover" />
                 </div>
               ) : null}
-              <div className="md:col-span-2 rounded-lg border border-dashed border-border bg-muted/20 p-4 text-center text-xs text-muted-foreground">
-                <Upload className="mx-auto mb-2 h-4 w-4" />
-                Gallery uploads coming soon. Paste image URLs above for now.
+              <div className="md:col-span-2 text-center text-xs text-muted-foreground">
+                All images come from the <a href="/admin/media" className="text-accent underline">Media Library</a>.
               </div>
             </CardContent>
           </Card>
         </TabsContent>
+
 
         {/* AWARDS */}
         <TabsContent value="awards" className="mt-4 space-y-4">
