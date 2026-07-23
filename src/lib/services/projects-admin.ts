@@ -14,6 +14,9 @@ export type ConstructionStatus =
 export interface UnitType {
   id?: string;
   type: string;
+  area?: string;
+  superArea?: string;
+  carpetArea?: string;
   sizeRange?: string;
   priceRange?: string;
   availability?: string;
@@ -22,12 +25,23 @@ export interface UnitType {
   order?: number;
 }
 
+export const NEARBY_CATEGORIES = [
+  "Education",
+  "Healthcare",
+  "Shopping",
+  "Business Districts",
+  "Transport",
+  "Entertainment",
+] as const;
+export type NearbyCategory = (typeof NEARBY_CATEGORIES)[number];
+
 export interface NearbyEntry {
   id?: string;
   category: string;
   name: string;
   distance?: string;
   description?: string;
+  order?: number;
 }
 
 export interface ProjectRera {
@@ -41,10 +55,16 @@ export interface ProjectRera {
 export interface ProjectInvestment {
   rentalYield?: string;
   appreciation?: string;
+  capitalGrowth?: string;
   demandIndex?: string;
   liquidityScore?: string;
+  investmentGrade?: string;
   rating?: string;
+  /** Additional pricing fields stored alongside investment to avoid schema churn. */
+  averagePrice?: number;
+  plc?: string;
 }
+
 
 export interface GalleryImage {
   url: string;
