@@ -74,10 +74,10 @@ export function AmenityEditor({ id }: { id?: string }) {
     setForm({
       name: existing.name,
       slug: existing.slug,
-      category: (existing.category as AmenityCategory) ?? "",
+      category: (existing.category as AmenityCategory) ?? "lifestyle",
       description: existing.description ?? "",
       icon: existing.icon ?? "",
-      illustration_url: existing.illustration_url ?? "",
+      illustration_id: existing.illustration_id ?? "",
       featured: !!existing.featured,
       status: existing.status as ContentStatus,
       sort_order: existing.sort_order,
@@ -96,10 +96,10 @@ export function AmenityEditor({ id }: { id?: string }) {
     const payload = {
       name: form.name.trim(),
       slug: form.slug.trim() || slugify(form.name),
-      category: form.category || null,
+      category: form.category,
       description: form.description || null,
       icon: form.icon || null,
-      illustration_url: form.illustration_url || null,
+      illustration_id: form.illustration_id || null,
       featured: form.featured,
       status: form.status,
       sort_order: form.sort_order,
@@ -137,8 +137,8 @@ export function AmenityEditor({ id }: { id?: string }) {
         />
         <Field label="Category">
           <Select
-            value={form.category || "none"}
-            onValueChange={(v) => set("category", v === "none" ? "" : (v as AmenityCategory))}
+            value={form.category}
+            onValueChange={(v) => set("category", v as AmenityCategory)}
           >
             <SelectTrigger>
               <SelectValue />
