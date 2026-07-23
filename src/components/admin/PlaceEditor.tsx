@@ -50,6 +50,11 @@ interface FormState {
   slug: string;
   name: string;
   region: string;
+  country: string;
+  state: string;
+  city: string;
+  latitude: number | null;
+  longitude: number | null;
   summary: string;
   executive_summary: string;
   status: PlaceStatus;
@@ -71,6 +76,11 @@ const EMPTY: FormState = {
   slug: "",
   name: "",
   region: "",
+  country: "India",
+  state: "",
+  city: "",
+  latitude: null,
+  longitude: null,
   summary: "",
   executive_summary: "",
   status: "draft",
@@ -92,6 +102,7 @@ const EMPTY: FormState = {
     categoryRatings: DEFAULT_CATEGORIES,
   },
 };
+
 
 export function PlaceEditor({ id }: { id?: string }) {
   const navigate = useNavigate();
