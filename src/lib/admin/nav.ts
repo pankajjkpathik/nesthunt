@@ -12,6 +12,7 @@ import {
   Activity,
   Settings,
   Search,
+  Network,
   type LucideIcon,
 } from "lucide-react";
 
@@ -52,8 +53,9 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "Management",
+    label: "Operations",
     items: [
+      { to: "/admin/relationships", label: "Relationships", icon: Network },
       { to: "/admin/users", label: "Users", icon: Users, disabled: true },
       { to: "/admin/activity", label: "Activity Logs", icon: Activity, disabled: true },
     ],
