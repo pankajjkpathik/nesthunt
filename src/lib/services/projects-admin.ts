@@ -14,6 +14,9 @@ export type ConstructionStatus =
 export interface UnitType {
   id?: string;
   type: string;
+  area?: string;
+  superArea?: string;
+  carpetArea?: string;
   sizeRange?: string;
   priceRange?: string;
   availability?: string;
@@ -22,12 +25,23 @@ export interface UnitType {
   order?: number;
 }
 
+export const NEARBY_CATEGORIES = [
+  "Education",
+  "Healthcare",
+  "Shopping",
+  "Business Districts",
+  "Transport",
+  "Entertainment",
+] as const;
+export type NearbyCategory = (typeof NEARBY_CATEGORIES)[number];
+
 export interface NearbyEntry {
   id?: string;
   category: string;
   name: string;
   distance?: string;
   description?: string;
+  order?: number;
 }
 
 export interface ProjectRera {
@@ -41,10 +55,16 @@ export interface ProjectRera {
 export interface ProjectInvestment {
   rentalYield?: string;
   appreciation?: string;
+  capitalGrowth?: string;
   demandIndex?: string;
   liquidityScore?: string;
+  investmentGrade?: string;
   rating?: string;
+  /** Additional pricing fields stored alongside investment to avoid schema churn. */
+  averagePrice?: number;
+  plc?: string;
 }
+
 
 export interface GalleryImage {
   url: string;
@@ -132,22 +152,46 @@ const TABLE = "projects" as const;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
 
-export const AMENITY_PRESETS: string[] = [
-  "Clubhouse",
-  "Swimming Pool",
-  "Gym",
-  "Park",
-  "Children's Play Area",
-  "Security",
-  "EV Charging",
-  "Power Backup",
-  "Rainwater Harvesting",
-  "Landscaped Gardens",
-  "Jogging Track",
-  "Indoor Games",
-  "Amphitheatre",
-  "Concierge",
+export const AMENITY_CATEGORIES: { label: string; items: string[] }[] = [
+  {
+    label: "Lifestyle",
+    items: ["Clubhouse", "Concierge", "Amphitheatre", "Cafe", "Party Lawn", "Business Lounge"],
+  },
+  {
+    label: "Sports",
+    items: [
+      "Swimming Pool",
+      "Gym",
+      "Tennis Court",
+      "Badminton Court",
+      "Basketball Court",
+      "Yoga Deck",
+      "Jogging Track",
+      "Indoor Games",
+    ],
+  },
+  {
+    label: "Security",
+    items: ["24×7 Security", "CCTV Surveillance", "Video Door Phone", "Access Control", "Fire Safety"],
+  },
+  {
+    label: "Green Spaces",
+    items: ["Landscaped Gardens", "Central Park", "Kids Play Area", "Meditation Zone", "Butterfly Park"],
+  },
+  {
+    label: "Convenience",
+    items: ["Retail Plaza", "Creche", "Pharmacy", "ATM", "Guest Parking", "EV Charging"],
+  },
+  {
+    label: "Utilities",
+    items: ["Power Backup", "Rainwater Harvesting", "Sewage Treatment", "Water Softener", "Solar Water Heating"],
+  },
 ];
+
+export const AMENITY_PRESETS: string[] = AMENITY_CATEGORIES.flatMap((c) =>
+  c.items.map((i) => `${c.label}:${i}`),
+);
+
 
 export const PROPERTY_TYPES: string[] = [
   "Apartment",
