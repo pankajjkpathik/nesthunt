@@ -5,6 +5,7 @@ import { ArrowLeft, Save, Send, Globe, Loader2, Upload, Trash2 } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,
@@ -288,6 +289,7 @@ export function PlaceEditor({ id }: { id?: string }) {
             ["growth", "Growth Drivers"],
             ["risks", "Risks"],
             ["media", "Media"],
+            ["relationships", "Relationships"],
             ["seo", "SEO"],
           ].map(([v, l]) => (
 
@@ -610,6 +612,19 @@ export function PlaceEditor({ id }: { id?: string }) {
         <TabsContent value="media" className="mt-6">
           <MediaPanel placeId={id} onQueryInvalidate={() => qc.invalidateQueries({ queryKey: ["entity_images"] })} />
         </TabsContent>
+
+        <TabsContent value="relationships" className="mt-6">
+          {id ? (
+            <RelationshipsTab entity={{ type: "place", id }} />
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-sm text-muted-foreground">
+                Save this place first to manage relationships.
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
 
         <TabsContent value="seo" className="mt-6">
           <Card>

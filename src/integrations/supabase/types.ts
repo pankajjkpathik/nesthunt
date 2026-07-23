@@ -239,6 +239,45 @@ export type Database = {
         }
         Relationships: []
       }
+      entity_relationships: {
+        Row: {
+          created_at: string
+          from_id: string
+          from_type: string
+          id: string
+          kind: string
+          meta: Json
+          sort_order: number
+          to_id: string
+          to_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          from_id: string
+          from_type: string
+          id?: string
+          kind: string
+          meta?: Json
+          sort_order?: number
+          to_id: string
+          to_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          from_id?: string
+          from_type?: string
+          id?: string
+          kind?: string
+          meta?: Json
+          sort_order?: number
+          to_id?: string
+          to_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       entity_scores: {
         Row: {
           created_at: string
@@ -680,12 +719,63 @@ export type Database = {
     }
     Functions: {
       bootstrap_admin: { Args: never; Returns: boolean }
+      check_relationship_valid: {
+        Args: {
+          _from_id: string
+          _from_type: string
+          _kind: string
+          _to_id: string
+          _to_type: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      rel_builders_without_projects: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          slug: string
+        }[]
+      }
+      rel_orphaned_projects: {
+        Args: never
+        Returns: {
+          id: string
+          missing: string
+          name: string
+          slug: string
+        }[]
+      }
+      rel_places_without_builders: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          slug: string
+        }[]
+      }
+      rel_places_without_projects: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          slug: string
+        }[]
+      }
+      rel_unlinked_media: {
+        Args: never
+        Returns: {
+          file_name: string
+          folder: string
+          id: string
+        }[]
       }
     }
     Enums: {

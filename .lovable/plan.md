@@ -1,104 +1,104 @@
+# BUILD-014 — Relationship Engine & Knowledge Graph
 
-# BUILD-013 — Enterprise Media Library
+Extend NHOS with a centralized relationship layer that every module consumes. Zero UI redesign — reuse existing shell, tabs, cards, and design tokens.
 
-Extends NHOS with a centralized Digital Asset Management module. Reuses the existing `entity-media` Supabase Storage bucket, admin shell, design system, React Query architecture, and service/repository pattern. No public UI changes.
+## 1. Data model (single migration)
 
-## Scope of this build
-
-In scope:
-- Central `media_assets` table (single source of truth) + `media_usages` table (many-to-many entity linkage) + logical folders (string field, virtual — no physical moves in Storage).
-- Service layer + typed React Query hooks; no component talks to Storage directly.
-- `/admin/media` Media Library page: upload (drag/drop + picker + queue + progress + retry/cancel), grid/list toggle, search, filters, details panel, bulk actions.
-- Reusable `<MediaPicker>` component (modal) — select existing or upload new; returns asset(s).
-- Wire Place / Builder / Project editors' image (hero + gallery) fields to `MediaPicker`; back them by `media_usages` rows (keeping the existing `entity_images` table populated for read-side compatibility during transition, mirroring on link/unlink).
-- Replace-asset flow (upload new file → replace `storage_path` on same `media_assets.id` → all references update automatically).
-- Usage counter + deletion guard (warn if in use).
-- Metadata edit: alt, title, caption, description, credit, photographer, license, copyright, tags[].
-
-Explicitly NOT in scope (per brief): AI generation/enhancement, image editing, video processing, CDN migration, version history, thumbnail server-side generation (architecture-ready only), external storage, virtualized grid infra beyond lazy-loading + pagination.
-
-## Data model
+Introduce a generic edge table plus specific typed joins where uniqueness matters. This lets rare/new relationship types be added without schema churn while keeping strong constraints on the important ones.
 
 ```text
-media_assets
-  id uuid pk
-  storage_path text unique
-  file_name text
-  mime_type text
-  file_size bigint
-  width int null, height int null
-  folder text default 'uncategorized'   -- virtual folder
-  alt text, title text, caption text, description text
-  credit text, photographer text, license text, copyright text
-  tags text[] default '{}'
-  featured bool default false
-  archived bool default false
-  uploaded_by uuid null (auth.users)
-  created_at, updated_at
+entity_relationships (generic edges)
+  id, from_type, from_id, to_type, to_id, kind, sort_order, meta jsonb, created_at
+  UNIQUE (from_type, from_id, to_type, to_id, kind)
+  CHECK (from_type/to_type in known enum)
+  Indexes on (from_type,from_id,kind) and (to_type,to_id,kind)
 
-media_usages
-  id uuid pk
-  media_id uuid fk media_assets on delete cascade
-  entity_type text check in ('place','builder','project','blog','review','document','seo')
-  entity_id uuid
-  field text                              -- 'hero' | 'gallery' | 'logo' | 'brochure' | ...
-  sort_order int default 0
-  created_at
-  unique(media_id, entity_type, entity_id, field, sort_order)
-
-view: media_assets_with_usage (adds usage_count)
+place_amenities         (place_id, amenity)          -- taxonomy tags
+project_amenities       (project_id, amenity, category)
+project_unit_types      (project_id, label, size_sqft, price)
+place_nearby_infra      (place_id, label, category, distance_km)
+construction_updates    (project_id, dated_on, note, media_asset_id)
 ```
 
-RLS: public SELECT on `media_assets` (public bucket URLs already public); admin-only INSERT/UPDATE/DELETE via `has_role(auth.uid(),'admin')`. `media_usages` same policies. GRANTs for authenticated + service_role; anon SELECT on assets.
+Reuse existing tables where present: `builders.place_id`/`builder_places`, `projects.builder_id`/`place_id`, `media_usages`, `entity_documents`, `entity_scores`, `entity_images`. The generic edge table absorbs everything else (Places↔Categories, Blog↔Media, Builder↔Awards references, etc.).
 
-## Service & hooks
+RLS: `SELECT` for anon+authenticated; write only for admins (via `has_role`). GRANTs alongside.
 
-- `src/lib/services/media.ts` — types + read-side helpers (`listAssets`, `getAsset`, `getPublicUrl`, `resolveUsage`).
-- `src/lib/services/media-admin.ts` — upload/replace/delete/updateMetadata/link/unlink/bulk ops. All Storage calls live here.
-- `src/hooks/useMedia.ts` — `useMediaAssets(filters)`, `useAsset(id)`, `useUploadMedia()`, `useReplaceMedia()`, `useDeleteMedia()`, `useUpdateMediaMetadata()`, `useLinkMedia()`, `useUnlinkMedia()`, `useBulkMedia*`.
+## 2. Service layer (`src/lib/services/relationships.ts`)
 
-## UI
+Single façade for every module. All existing admin services delegate here.
 
-- `src/routes/admin.media.index.tsx` — Library page:
-  - Header + Upload dropzone (queue with per-file progress, cancel, retry).
-  - Folder sidebar (virtual list: Places, Builders, Projects, Blog, Documents, SEO, Temporary, Archive, + custom).
-  - Filter bar: type, folder, entity, uploaded date, unused, large files (>2MB), featured, recent.
-  - Search (filename / tag / alt / description) — debounced.
-  - Grid/List toggle. Cards show thumb, name, type, size, dims, usage count, status. Lazy-load thumbs.
-  - Details drawer: preview, all metadata (editable), linked entities list, public URL copy, download, replace, delete (blocked if usage_count > 0 unless confirmed).
-  - Bulk selection + toolbar: delete, move folder, tag, archive, download.
-- `src/routes/admin.media.$id.tsx` — deep link to asset detail (opens drawer state).
-- `src/components/admin/media/MediaPicker.tsx` — modal reused by editors; supports `multiple`, `accept`, current selection; embeds library grid + upload.
-- `src/components/admin/media/*` — DropZone, UploadQueue, AssetCard, AssetGrid, AssetList, AssetDetails, FiltersBar, FolderSidebar.
+- `attachEntity({from, to, kind})`
+- `detachEntity({from, to, kind})`
+- `syncRelationships({from, kind, targets})` — replaces the set
+- `getRelatedEntities({from, kind?, toType?})` → hydrated summaries (name/slug/thumb)
+- `getEntityGraph(from, depth=1)` → typed tree
+- `getUsage(entity)` → counts per module + sample links
+- `moveRelationship`, `replaceRelationship`
+- `validateAttach(...)` — enforces:
+  - project → exactly one builder / one place
+  - no self-links, no duplicates
+  - kind allowed for the (fromType,toType) pair
 
-## Editor integration
+`src/lib/services/entityGraph.ts` — pure builders that shape service output into `GraphNode[]`.
+`src/lib/services/usage.ts` — orphan/broken-reference queries used by the health dashboard.
 
-- `PlaceEditor` Hero + Media tabs → replace inline upload UI with `<MediaPicker>` (hero: single; gallery: multi). Selections stored via `media_usages` (`entity_type='place'`, `field='hero'|'gallery'`). Keep populating `entity_images` in parallel so public routes keep rendering unchanged.
-- `BuilderEditor` Media + Logo → `MediaPicker` (logo single; gallery multi). Fold Awards/Certifications document uploads into picker with `accept=application/pdf`.
-- `ProjectEditor` Gallery + Brochure/Floor Plan tabs → `MediaPicker`. Brochures/plans use `field='brochure'|'floorplan'`.
-- Add a lightweight `usePickedMedia(entityType, entityId, field)` helper hook for editors.
+Central types in `src/types/relationships.ts` (`EntityType`, `EntityRef`, discriminated `RelationshipKind`, `EntitySummary`, `GraphNode`, `UsageReport`).
 
-## Nav
+## 3. React Query hooks (`src/hooks/useRelationships.ts`)
 
-Enable Media Library in `src/lib/admin/nav.ts` (`disabled: false`), pointing to `/admin/media`.
+`useRelatedEntities`, `useEntityGraph`, `useEntityUsage`, `useAttachEntity`, `useDetachEntity`, `useSyncRelationships`, plus thin wrappers `useRelatedProjects/Builders/Places`. Optimistic updates on attach/detach; cache keys `["relationships", fromType, fromId, kind]`.
 
-## Files touched
+## 4. Reusable UI
 
-New:
-- migration: `media_assets`, `media_usages`, view, RLS + GRANTs.
-- `src/lib/services/media-admin.ts` (rewrite — supersedes current small file), `src/lib/services/media.ts` (extend).
-- `src/hooks/useMedia.ts`.
-- `src/components/admin/media/{MediaPicker,DropZone,UploadQueue,AssetGrid,AssetList,AssetCard,AssetDetails,FiltersBar,FolderSidebar}.tsx`.
-- `src/routes/admin.media.index.tsx`, `src/routes/admin.media.$id.tsx`.
+- `EntityPicker` (`src/components/admin/relationships/EntityPicker.tsx`)
+  - Command-palette style dialog built on shadcn `Command`
+  - Props: `types: EntityType[]`, `multiple`, `excludeIds`, `onSelect`
+  - Instant search (debounced), grouped by type, keyboard nav, lazy pages of 25
+- `RelationshipPanel` — list + inline attach/detach for one `(entity, kind)`
+- `RelationshipsTab` — bundles the panels an entity supports (Place: Builders / Projects / Categories / Amenities / Nearby / Media / Documents; Builder: Places / Projects / Awards / Leadership / Media / Documents; Project: Builder / Place / Amenities / Unit types / Media / Documents / Updates; Media: linked entities via `media_usages`)
+- `EntityGraphView` — collapsible tree using existing card tokens; groups by kind
+- `DependencyDialog` — shown before delete; lists dependents with counts and drill-down
+- `UsagePanel` — reusable "Used in …" card for any entity
 
-Edited:
-- `src/components/admin/PlaceEditor.tsx`, `BuilderEditor.tsx`, `ProjectEditor.tsx` — swap upload controls for `MediaPicker`.
-- `src/lib/admin/nav.ts` — enable Media Library.
+## 5. Editor integration
 
-## Notes / trade-offs
+Add a **Relationships** tab to `PlaceEditor`, `BuilderEditor`, `ProjectEditor` rendering `RelationshipsTab`. Add a **Usage** tab. Replace the existing bespoke builder↔place attach UI with `RelationshipPanel`. In `AssetDetails` (Media Library), replace the current usage list with the shared `UsagePanel`.
 
-- Folders are a `folder` text column — purely virtual; files stay at `media/<uuid>/<filename>` in Storage regardless of folder changes. Meets brief.
-- Replace-asset overwrites the file at the same `storage_path` with `upsert: true` so all consumers get the new bytes without ref changes; updates `file_size`, `mime_type`, `width`, `height`, bumps `updated_at`.
-- Image dimensions probed client-side on upload (via `createImageBitmap`) — no server processing.
-- Existing `entity_images` stays as a compat read layer this build; a follow-up build can migrate public reads to `media_usages` and drop it.
-- Virtualization is deferred; pagination (48/page) + lazy `<img loading="lazy">` covers thousands of assets comfortably. Adding `react-virtuoso` later is a drop-in.
+Wire delete buttons in the three listing pages through `DependencyDialog` — bulk deletes reuse the same guard.
+
+## 6. Relationship search
+
+Extend list pages with new filters powered by the engine:
+- Places: "without projects", "without builders"
+- Builders: "without projects", "without logo"
+- Projects: "orphaned (no builder or place)", "missing SEO"
+- Media: "unused"
+
+Implemented as query params → `useRelationships` filters; no new pages.
+
+## 7. Relationship health dashboard
+
+New route `src/routes/admin.relationships.index.tsx`:
+- KPI row: total relationships, orphaned projects, unlinked media, builders w/o projects, places w/o builders, missing SEO, broken refs
+- Section per issue with resolve links
+- Nav entry added under Operations in `src/lib/admin/nav.ts`
+
+## 8. Validation & dependency awareness
+
+- `validateAttach` runs client-side (fast feedback) and server-side (RLS + a `check_relationship()` SQL function invoked from the service).
+- Delete flows always call `getUsage` first; `DependencyDialog` renders results and requires confirmation when count > 0.
+
+## 9. Constraints
+
+- No UI redesign; every new surface uses existing tokens/components.
+- No direct table writes from components — everything through `relationships.ts`.
+- No AI, no live graph viz, no public exposure of the graph.
+
+## Technical notes
+
+- `entity_relationships` uses `text` for `from_type`/`to_type` guarded by a CHECK constraint listing allowed values; keeps future entities cheap.
+- Hydration of related summaries is done in the service via per-type batched selects (`in ('id1','id2',...)`) then merged, avoiding N+1.
+- `getEntityGraph` is depth-limited (default 1, max 2) to keep queries bounded.
+- Cache invalidation: attach/detach invalidates `["relationships", fromType, fromId]` and `["relationships", toType, toId]`, plus the affected list keys (`["admin","projects"]`, etc.).
+- All new tables ship with GRANTs (`SELECT` to anon+authenticated where reads are public; writes gated by admin policies).

@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 
@@ -468,39 +469,51 @@ export function ProjectEditor({ id }: Props) {
         </TabsContent>
 
         <TabsContent value="relations">
-          <Card>
-            <CardContent className="grid gap-4 p-6 md:grid-cols-2">
-              <Field label="Builder" hint="The developer building this project.">
-                <Select
-                  value={form.builder_id ?? "__none"}
-                  onValueChange={(v) => set("builder_id", v === "__none" ? null : v)}
-                >
-                  <SelectTrigger><SelectValue placeholder="Select builder" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__none">— None —</SelectItem>
-                    {builders.map((b) => (
-                      <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field label="Place" hint="The location this project belongs to.">
-                <Select
-                  value={form.place_id ?? "__none"}
-                  onValueChange={(v) => set("place_id", v === "__none" ? null : v)}
-                >
-                  <SelectTrigger><SelectValue placeholder="Select place" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__none">— None —</SelectItem>
-                    {places.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            </CardContent>
-          </Card>
+          <div className="space-y-4">
+            <Card>
+              <CardContent className="grid gap-4 p-6 md:grid-cols-2">
+                <Field label="Builder" hint="The developer building this project.">
+                  <Select
+                    value={form.builder_id ?? "__none"}
+                    onValueChange={(v) => set("builder_id", v === "__none" ? null : v)}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select builder" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__none">— None —</SelectItem>
+                      {builders.map((b) => (
+                        <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+                <Field label="Place" hint="The location this project belongs to.">
+                  <Select
+                    value={form.place_id ?? "__none"}
+                    onValueChange={(v) => set("place_id", v === "__none" ? null : v)}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select place" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__none">— None —</SelectItem>
+                      {places.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </CardContent>
+            </Card>
+            {id ? (
+              <RelationshipsTab entity={{ type: "project", id }} />
+            ) : (
+              <Card>
+                <CardContent className="p-6 text-sm text-muted-foreground">
+                  Save this project first to manage extended relationships.
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
+
 
         <TabsContent value="pricing">
           <Card>

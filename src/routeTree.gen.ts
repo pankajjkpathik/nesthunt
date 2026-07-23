@@ -20,6 +20,7 @@ import { Route as BuilderOmaxeRouteImport } from './routes/builder.omaxe'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as AdminRelationshipsIndexRouteImport } from './routes/admin.relationships.index'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminPlacesIndexRouteImport } from './routes/admin.places.index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin.media.index'
@@ -89,6 +90,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminRelationshipsIndexRoute = AdminRelationshipsIndexRouteImport.update({
+  id: '/relationships/',
+  path: '/relationships/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProjectsIndexRoute = AdminProjectsIndexRouteImport.update({
   id: '/projects/',
   path: '/projects/',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/admin/relationships/': typeof AdminRelationshipsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/places': typeof AdminPlacesIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
+  '/admin/relationships': typeof AdminRelationshipsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/admin/relationships/': typeof AdminRelationshipsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -243,6 +252,7 @@ export interface FileRouteTypes {
     | '/admin/media/'
     | '/admin/places/'
     | '/admin/projects/'
+    | '/admin/relationships/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -266,6 +276,7 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/places'
     | '/admin/projects'
+    | '/admin/relationships'
   id:
     | '__root__'
     | '/'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/admin/media/'
     | '/admin/places/'
     | '/admin/projects/'
+    | '/admin/relationships/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -385,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/relationships/': {
+      id: '/admin/relationships/'
+      path: '/relationships'
+      fullPath: '/admin/relationships/'
+      preLoaderRoute: typeof AdminRelationshipsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/projects/': {
       id: '/admin/projects/'
       path: '/projects'
@@ -477,6 +496,7 @@ interface AdminRouteChildren {
   AdminMediaIndexRoute: typeof AdminMediaIndexRoute
   AdminPlacesIndexRoute: typeof AdminPlacesIndexRoute
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
+  AdminRelationshipsIndexRoute: typeof AdminRelationshipsIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -491,6 +511,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMediaIndexRoute: AdminMediaIndexRoute,
   AdminPlacesIndexRoute: AdminPlacesIndexRoute,
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
+  AdminRelationshipsIndexRoute: AdminRelationshipsIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

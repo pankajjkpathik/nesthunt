@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 
@@ -336,6 +337,7 @@ export function BuilderEditor({ id }: Props) {
           <TabsTrigger value="media">Media</TabsTrigger>
           <TabsTrigger value="awards">Awards</TabsTrigger>
           <TabsTrigger value="trust">Trust Score</TabsTrigger>
+          <TabsTrigger value="relationships">Relationships</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
         </TabsList>
 
@@ -596,6 +598,18 @@ export function BuilderEditor({ id }: Props) {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="relationships" className="mt-4">
+          {id ? (
+            <RelationshipsTab entity={{ type: "builder", id }} />
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-sm text-muted-foreground">
+                Save this builder first to manage relationships.
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
     </div>
