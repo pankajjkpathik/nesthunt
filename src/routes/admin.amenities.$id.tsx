@@ -36,10 +36,10 @@ export const Route = createFileRoute("/admin/amenities/$id")({
 interface Form {
   name: string;
   slug: string;
-  category: AmenityCategory | "";
+  category: AmenityCategory;
   description: string;
   icon: string;
-  illustration_url: string;
+  illustration_id: string;
   featured: boolean;
   status: ContentStatus;
   sort_order: number;
@@ -50,10 +50,10 @@ interface Form {
 const EMPTY: Form = {
   name: "",
   slug: "",
-  category: "",
+  category: "lifestyle",
   description: "",
   icon: "",
-  illustration_url: "",
+  illustration_id: "",
   featured: false,
   status: "draft",
   sort_order: 0,
