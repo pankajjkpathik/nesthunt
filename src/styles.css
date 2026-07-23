@@ -111,3 +111,15 @@
     border-radius: 4px;
   }
 }
+
+/* Hide the Lovable badge without affecting layout */
+#lovable-badge,
+a[href*="lovable.dev"][href*="badge"],
+a[href*="lovable.dev/?utm"],
+[data-lovable-badge] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
