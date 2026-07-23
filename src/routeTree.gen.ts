@@ -22,6 +22,8 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminPlacesIndexRouteImport } from './routes/admin.places.index'
 import { Route as AdminBuildersIndexRouteImport } from './routes/admin.builders.index'
+import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
+import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
 import { Route as AdminPlacesNewRouteImport } from './routes/admin.places.new'
 import { Route as AdminPlacesIdRouteImport } from './routes/admin.places.$id'
 import { Route as AdminBuildersNewRouteImport } from './routes/admin.builders.new'
@@ -95,6 +97,16 @@ const AdminBuildersIndexRoute = AdminBuildersIndexRouteImport.update({
   path: '/builders/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
+  id: '/projects/new',
+  path: '/projects/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
+  id: '/projects/$id',
+  path: '/projects/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPlacesNewRoute = AdminPlacesNewRouteImport.update({
   id: '/places/new',
   path: '/places/new',
@@ -139,6 +151,8 @@ export interface FileRoutesByFullPath {
   '/admin/builders/new': typeof AdminBuildersNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
 }
@@ -158,6 +172,8 @@ export interface FileRoutesByTo {
   '/admin/builders/new': typeof AdminBuildersNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders': typeof AdminBuildersIndexRoute
   '/admin/places': typeof AdminPlacesIndexRoute
 }
@@ -179,6 +195,8 @@ export interface FileRoutesById {
   '/admin/builders/new': typeof AdminBuildersNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
 }
@@ -201,6 +219,8 @@ export interface FileRouteTypes {
     | '/admin/builders/new'
     | '/admin/places/$id'
     | '/admin/places/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
     | '/admin/builders/'
     | '/admin/places/'
   fileRoutesByTo: FileRoutesByTo
@@ -220,6 +240,8 @@ export interface FileRouteTypes {
     | '/admin/builders/new'
     | '/admin/places/$id'
     | '/admin/places/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
     | '/admin/builders'
     | '/admin/places'
   id:
@@ -240,6 +262,8 @@ export interface FileRouteTypes {
     | '/admin/builders/new'
     | '/admin/places/$id'
     | '/admin/places/new'
+    | '/admin/projects/$id'
+    | '/admin/projects/new'
     | '/admin/builders/'
     | '/admin/places/'
   fileRoutesById: FileRoutesById
@@ -351,6 +375,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBuildersIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/projects/new': {
+      id: '/admin/projects/new'
+      path: '/projects/new'
+      fullPath: '/admin/projects/new'
+      preLoaderRoute: typeof AdminProjectsNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/projects/$id': {
+      id: '/admin/projects/$id'
+      path: '/projects/$id'
+      fullPath: '/admin/projects/$id'
+      preLoaderRoute: typeof AdminProjectsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/places/new': {
       id: '/admin/places/new'
       path: '/places/new'
@@ -395,6 +433,8 @@ interface AdminRouteChildren {
   AdminBuildersNewRoute: typeof AdminBuildersNewRoute
   AdminPlacesIdRoute: typeof AdminPlacesIdRoute
   AdminPlacesNewRoute: typeof AdminPlacesNewRoute
+  AdminProjectsIdRoute: typeof AdminProjectsIdRoute
+  AdminProjectsNewRoute: typeof AdminProjectsNewRoute
   AdminBuildersIndexRoute: typeof AdminBuildersIndexRoute
   AdminPlacesIndexRoute: typeof AdminPlacesIndexRoute
 }
@@ -405,6 +445,8 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBuildersNewRoute: AdminBuildersNewRoute,
   AdminPlacesIdRoute: AdminPlacesIdRoute,
   AdminPlacesNewRoute: AdminPlacesNewRoute,
+  AdminProjectsIdRoute: AdminProjectsIdRoute,
+  AdminProjectsNewRoute: AdminProjectsNewRoute,
   AdminBuildersIndexRoute: AdminBuildersIndexRoute,
   AdminPlacesIndexRoute: AdminPlacesIndexRoute,
 }
