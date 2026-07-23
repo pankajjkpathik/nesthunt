@@ -614,18 +614,17 @@ export function PlaceEditor({ id }: { id?: string }) {
         <TabsContent value="seo" className="mt-6">
           <Card>
             <CardContent className="grid gap-5 p-6">
-              <TextField
-                label="SEO title"
+              <SeoTextField
+                label="Meta title"
                 value={form.seo.title ?? ""}
                 onChange={(v) => patch("seo", { ...form.seo, title: v })}
-                hint="Under 60 characters."
+                limit={60}
               />
-              <TextareaField
-                label="SEO description"
-                rows={3}
+              <SeoTextareaField
+                label="Meta description"
                 value={form.seo.description ?? ""}
                 onChange={(v) => patch("seo", { ...form.seo, description: v })}
-                hint="Under 160 characters."
+                limit={160}
               />
               <TextField
                 label="Keywords"
@@ -633,9 +632,39 @@ export function PlaceEditor({ id }: { id?: string }) {
                 onChange={(v) => patch("seo", { ...form.seo, keywords: v })}
                 hint="Comma-separated."
               />
+              <TextField
+                label="Canonical URL"
+                value={form.seo.canonicalUrl ?? ""}
+                onChange={(v) => patch("seo", { ...form.seo, canonicalUrl: v })}
+                placeholder="https://nesthunt.in/places/your-slug"
+              />
+              <div className="border-t border-border pt-4">
+                <h3 className="mb-4 text-sm font-medium text-foreground">Open Graph</h3>
+                <div className="grid gap-5">
+                  <SeoTextField
+                    label="OG title"
+                    value={form.seo.ogTitle ?? ""}
+                    onChange={(v) => patch("seo", { ...form.seo, ogTitle: v })}
+                    limit={70}
+                  />
+                  <SeoTextareaField
+                    label="OG description"
+                    value={form.seo.ogDescription ?? ""}
+                    onChange={(v) => patch("seo", { ...form.seo, ogDescription: v })}
+                    limit={200}
+                  />
+                  <TextField
+                    label="OG image URL"
+                    value={form.seo.ogImage ?? ""}
+                    onChange={(v) => patch("seo", { ...form.seo, ogImage: v })}
+                    hint="Defaults to the cover image if empty."
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
+
       </Tabs>
     </div>
   );
