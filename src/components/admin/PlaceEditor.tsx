@@ -5,6 +5,7 @@ import { ArrowLeft, Save, Send, Globe, Loader2, Upload, Trash2 } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,

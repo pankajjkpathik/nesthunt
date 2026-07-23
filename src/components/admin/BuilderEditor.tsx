@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 
@@ -336,6 +337,7 @@ export function BuilderEditor({ id }: Props) {
           <TabsTrigger value="media">Media</TabsTrigger>
           <TabsTrigger value="awards">Awards</TabsTrigger>
           <TabsTrigger value="trust">Trust Score</TabsTrigger>
+          <TabsTrigger value="relationships">Relationships</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
         </TabsList>
 
