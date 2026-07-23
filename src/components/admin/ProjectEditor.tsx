@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, ExternalLink, Loader2, Plus, Save, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowUp,
+  ExternalLink,
+  Loader2,
+  Plus,
+  Save,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -36,8 +45,10 @@ import {
 import { useAdminPlaces } from "@/hooks/useAdmin";
 import { useAdminBuilders } from "@/hooks/useAdminBuilders";
 import {
-  AMENITY_PRESETS,
+  adminProjectSlugExists,
+  AMENITY_CATEGORIES,
   CONSTRUCTION_STATUSES,
+  NEARBY_CATEGORIES,
   PROPERTY_TYPES,
   isValidReraNumber,
   slugify,
@@ -65,56 +76,36 @@ interface FormState {
   publish_status: ProjectPublishStatus;
   verified: boolean;
   featured: boolean;
-
-  // General
   tagline: string;
   short_description: string;
   summary: string;
   executive_summary: string;
   property_type: string;
-
-  // Relationships
   builder_id: string | null;
   place_id: string | null;
-
-  // Pricing
   starting_price: number | null;
   max_price: number | null;
   price_per_sqft: number | null;
   booking_amount: number | null;
   maintenance_charges: string;
-
-  // Construction
   construction_status: ConstructionStatus | null;
   completion_percentage: number | null;
   launch_date: string;
   completion_date: string;
   possession_date: string;
-
-  // Structured
   unit_types: UnitType[];
   amenities: string[];
   nearby: NearbyEntry[];
-
-  // RERA
   rera_number: string;
   rera: ProjectRera;
-
-  // Investment
   investment: ProjectInvestment;
-
-  // Media / Hero
   hero: ProjectHero;
-
-  // Content lists
   suitable_for: string[];
   less_suitable_for: string[];
   strengths: string[];
   risks: string[];
   legal: string[];
   progress: string[];
-
-  // SEO
   seo: ProjectSeo;
 }
 
@@ -225,9 +216,9 @@ function formToPayload(f: FormState) {
     launch_date: f.launch_date || null,
     completion_date: f.completion_date || null,
     possession_date: f.possession_date || null,
-    unit_types: f.unit_types,
+    unit_types: f.unit_types.map((u, i) => ({ ...u, order: u.order ?? i })),
     amenities: f.amenities,
-    nearby: f.nearby,
+    nearby: f.nearby.map((n, i) => ({ ...n, order: n.order ?? i })),
     rera_number: f.rera_number || null,
     rera: f.rera,
     investment: f.investment,
@@ -265,6 +256,7 @@ export function ProjectEditor({ id }: Props) {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [tab, setTab] = useState("general");
   const [slugDirty, setSlugDirty] = useState(false);
+  const [slugTaken, setSlugTaken] = useState(false);
 
   useEffect(() => {
     if (row) {
@@ -279,16 +271,33 @@ export function ProjectEditor({ id }: Props) {
     }
   }, [form.name, isNew, slugDirty]);
 
+  // Debounced slug uniqueness check
+  useEffect(() => {
+    if (!form.slug) { setSlugTaken(false); return; }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      try {
+        const exists = await adminProjectSlugExists(form.slug, id);
+        if (!cancelled) setSlugTaken(exists);
+      } catch { /* ignore */ }
+    }, 350);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [form.slug, id]);
+
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
   const reraOk = isValidReraNumber(form.rera_number);
+  const priceRangeOk =
+    !(form.starting_price && form.max_price) ||
+    Number(form.starting_price) <= Number(form.max_price);
 
-  const canSave = form.name.trim() && form.slug.trim() && reraOk;
+  const canSave =
+    !!form.name.trim() && !!form.slug.trim() && reraOk && priceRangeOk && !slugTaken;
 
   async function save(nextPublish?: ProjectPublishStatus) {
     if (!canSave) {
-      toast.error("Name, slug and valid RERA number are required");
+      toast.error("Fix validation errors before saving");
       return;
     }
     const payload = formToPayload({
@@ -335,11 +344,14 @@ export function ProjectEditor({ id }: Props) {
             <h1 className="text-2xl font-semibold text-foreground">
               {isNew ? "New Project" : form.name || "Untitled Project"}
             </h1>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span>/{form.slug || "…"}</span>
               <Badge variant="outline" className="capitalize">{form.publish_status}</Badge>
               {form.verified ? <Badge className="bg-success/10 text-success">Verified</Badge> : null}
               {form.featured ? <Badge className="bg-accent/10 text-accent">Featured</Badge> : null}
+              {slugTaken ? <Badge variant="destructive">Slug taken</Badge> : null}
+              {!reraOk ? <Badge variant="destructive">Invalid RERA</Badge> : null}
+              {!priceRangeOk ? <Badge variant="destructive">Invalid price range</Badge> : null}
             </div>
           </div>
         </div>
@@ -354,13 +366,13 @@ export function ProjectEditor({ id }: Props) {
               <ExternalLink className="h-3.5 w-3.5" /> Preview
             </a>
           ) : null}
-          <Button variant="outline" size="sm" onClick={() => save("draft")} disabled={saving}>
+          <Button variant="outline" size="sm" onClick={() => save("draft")} disabled={saving || !canSave}>
             <Save className="mr-1.5 h-3.5 w-3.5" /> Save draft
           </Button>
-          <Button variant="outline" size="sm" onClick={() => save("review")} disabled={saving}>
+          <Button variant="outline" size="sm" onClick={() => save("review")} disabled={saving || !canSave}>
             Submit for review
           </Button>
-          <Button size="sm" onClick={() => save("published")} disabled={saving}>
+          <Button size="sm" onClick={() => save("published")} disabled={saving || !canSave}>
             {saving ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}
             Publish
           </Button>
@@ -386,12 +398,17 @@ export function ProjectEditor({ id }: Props) {
           <Card>
             <CardContent className="grid gap-4 p-6 md:grid-cols-2">
               <TextField label="Project Name" value={form.name} onChange={(v) => set("name", v)} />
-              <TextField
+              <Field
                 label="Slug"
-                value={form.slug}
-                onChange={(v) => { setSlugDirty(true); set("slug", slugify(v)); }}
-                hint="URL slug, e.g. hero-homes"
-              />
+                hint={slugTaken ? "This slug is already used by another project." : "URL slug, e.g. hero-homes"}
+              >
+                <Input
+                  value={form.slug}
+                  onChange={(e) => { setSlugDirty(true); set("slug", slugify(e.target.value)); }}
+                  aria-invalid={slugTaken}
+                  className={slugTaken ? "border-destructive" : ""}
+                />
+              </Field>
               <TextField label="Tagline" value={form.tagline} onChange={(v) => set("tagline", v)} />
               <Field label="Property Type">
                 <Select
@@ -489,14 +506,19 @@ export function ProjectEditor({ id }: Props) {
           <Card>
             <CardContent className="grid gap-4 p-6 md:grid-cols-2">
               <NumberField
-                label="Starting price (₹)"
+                label="Minimum price (₹)"
                 value={form.starting_price ?? 0}
                 onChange={(v) => set("starting_price", v || null)}
               />
               <NumberField
-                label="Max price (₹)"
+                label="Maximum price (₹)"
                 value={form.max_price ?? 0}
                 onChange={(v) => set("max_price", v || null)}
+              />
+              <NumberField
+                label="Average price (₹)"
+                value={form.investment.averagePrice ?? 0}
+                onChange={(v) => set("investment", { ...form.investment, averagePrice: v || undefined })}
               />
               <NumberField
                 label="Price per sq. ft. (₹)"
@@ -509,11 +531,25 @@ export function ProjectEditor({ id }: Props) {
                 onChange={(v) => set("booking_amount", v || null)}
               />
               <TextField
+                label="PLC (Preferential Location Charges)"
+                value={form.investment.plc ?? ""}
+                onChange={(v) => set("investment", { ...form.investment, plc: v })}
+                hint="e.g. ₹200 / sq.ft. for park-facing"
+              />
+              <TextField
                 label="Maintenance charges"
                 value={form.maintenance_charges}
                 onChange={(v) => set("maintenance_charges", v)}
                 hint="e.g. ₹3.5 / sq.ft. / month"
               />
+              {!priceRangeOk ? (
+                <p className="md:col-span-2 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+                  Minimum price cannot exceed maximum price.
+                </p>
+              ) : null}
+              <p className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
+                Price History timeline will appear here in a future build.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -521,44 +557,53 @@ export function ProjectEditor({ id }: Props) {
         <TabsContent value="units">
           <Card>
             <CardContent className="space-y-4 p-6">
-              <UnitTypesEditor
-                items={form.unit_types}
-                onChange={(v) => set("unit_types", v)}
-              />
+              <UnitTypesEditor items={form.unit_types} onChange={(v) => set("unit_types", v)} />
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="amenities">
           <Card>
-            <CardContent className="space-y-4 p-6">
+            <CardContent className="space-y-6 p-6">
               <Label className="text-sm font-medium">Amenities</Label>
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-                {AMENITY_PRESETS.map((a) => {
-                  const checked = form.amenities.includes(a);
-                  return (
-                    <label key={a} className="flex items-center gap-2 rounded-md border border-border p-2 text-sm">
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={(v) => {
-                          const next = new Set(form.amenities);
-                          if (v) next.add(a); else next.delete(a);
-                          set("amenities", Array.from(next));
-                        }}
-                      />
-                      {a}
-                    </label>
-                  );
-                })}
-              </div>
+              {AMENITY_CATEGORIES.map((cat) => (
+                <div key={cat.label} className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {cat.label}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+                    {cat.items.map((item) => {
+                      const key = `${cat.label}:${item}`;
+                      const checked = form.amenities.includes(key);
+                      return (
+                        <label
+                          key={key}
+                          className="flex items-center gap-2 rounded-md border border-border p-2 text-sm"
+                        >
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(v) => {
+                              const next = new Set(form.amenities);
+                              if (v) next.add(key); else next.delete(key);
+                              set("amenities", Array.from(next));
+                            }}
+                          />
+                          {item}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
               <StringListField
                 label="Custom amenities"
-                items={form.amenities.filter((a) => !AMENITY_PRESETS.includes(a))}
+                items={form.amenities.filter((a) => !a.includes(":"))}
                 onChange={(custom) => {
-                  const presets = form.amenities.filter((a) => AMENITY_PRESETS.includes(a));
+                  const presets = form.amenities.filter((a) => a.includes(":"));
                   set("amenities", [...presets, ...custom]);
                 }}
                 placeholder="Add a custom amenity"
+                hint="Stored without a category."
               />
             </CardContent>
           </Card>
@@ -601,6 +646,9 @@ export function ProjectEditor({ id }: Props) {
                   onChange={(v) => set("hero", { ...form.hero, floorPlans: v })}
                 />
               </div>
+              <p className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
+                Video tour uploads are on the roadmap.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -628,6 +676,11 @@ export function ProjectEditor({ id }: Props) {
                 min={0}
                 max={100}
               />
+              <div className="md:col-span-2">
+                <Field label="Progress">
+                  <ProgressBar value={form.completion_percentage ?? 0} />
+                </Field>
+              </div>
               <TextField
                 label="Launch date"
                 type="date"
@@ -697,6 +750,9 @@ export function ProjectEditor({ id }: Props) {
                   placeholder="e.g. Land title verified by Amicus & Co."
                 />
               </div>
+              <p className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
+                Support for multiple RERA registrations is on the roadmap.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -725,6 +781,11 @@ export function ProjectEditor({ id }: Props) {
                 hint="e.g. 12% CAGR"
               />
               <TextField
+                label="Capital growth (5Y)"
+                value={form.investment.capitalGrowth ?? ""}
+                onChange={(v) => set("investment", { ...form.investment, capitalGrowth: v })}
+              />
+              <TextField
                 label="Demand index"
                 value={form.investment.demandIndex ?? ""}
                 onChange={(v) => set("investment", { ...form.investment, demandIndex: v })}
@@ -734,6 +795,21 @@ export function ProjectEditor({ id }: Props) {
                 value={form.investment.liquidityScore ?? ""}
                 onChange={(v) => set("investment", { ...form.investment, liquidityScore: v })}
               />
+              <Field label="Investment grade" hint="A / B / C or custom label">
+                <Select
+                  value={form.investment.investmentGrade ?? ""}
+                  onValueChange={(v) => set("investment", { ...form.investment, investmentGrade: v })}
+                >
+                  <SelectTrigger><SelectValue placeholder="Select grade" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="A+">A+</SelectItem>
+                    <SelectItem value="A">A</SelectItem>
+                    <SelectItem value="B+">B+</SelectItem>
+                    <SelectItem value="B">B</SelectItem>
+                    <SelectItem value="C">C</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
               <TextField
                 label="Overall rating"
                 value={form.investment.rating ?? ""}
@@ -808,6 +884,15 @@ export function ProjectEditor({ id }: Props) {
                   onChange={(v) => set("seo", { ...form.seo, ogDescription: v })}
                 />
               </div>
+              <div className="md:col-span-2">
+                <TextareaField
+                  label="Structured data (JSON-LD)"
+                  value={form.seo.structuredData ?? ""}
+                  onChange={(v) => set("seo", { ...form.seo, structuredData: v })}
+                  rows={5}
+                  hint="Placeholder — validated at publish time in a future build."
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -820,6 +905,45 @@ export function ProjectEditor({ id }: Props) {
 // Sub-editors
 // -----------------------------
 
+function ProgressBar({ value }: { value: number }) {
+  const pct = Math.max(0, Math.min(100, value));
+  return (
+    <div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full rounded-full bg-accent transition-[width]"
+          style={{ width: `${pct}%` }}
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={pct}
+        />
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">{pct}% complete</p>
+    </div>
+  );
+}
+
+function useReorder<T>(items: T[], onChange: (v: T[]) => void) {
+  return useMemo(
+    () => ({
+      moveUp: (i: number) => {
+        if (i <= 0) return;
+        const next = [...items];
+        [next[i - 1], next[i]] = [next[i], next[i - 1]];
+        onChange(next);
+      },
+      moveDown: (i: number) => {
+        if (i >= items.length - 1) return;
+        const next = [...items];
+        [next[i + 1], next[i]] = [next[i], next[i + 1]];
+        onChange(next);
+      },
+    }),
+    [items, onChange],
+  );
+}
+
 function UnitTypesEditor({
   items,
   onChange,
@@ -827,16 +951,25 @@ function UnitTypesEditor({
   items: UnitType[];
   onChange: (v: UnitType[]) => void;
 }) {
+  const { moveUp, moveDown } = useReorder(items, onChange);
   const update = (i: number, patch: Partial<UnitType>) =>
     onChange(items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
   const remove = (i: number) => onChange(items.filter((_, idx) => idx !== i));
   const add = () =>
-    onChange([...items, { type: "", sizeRange: "", priceRange: "", availability: "" }]);
+    onChange([
+      ...items,
+      { type: "", area: "", superArea: "", carpetArea: "", priceRange: "", availability: "" },
+    ]);
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">Unit types</Label>
+        <div>
+          <Label className="text-sm font-medium">Unit configuration</Label>
+          <p className="text-xs text-muted-foreground">
+            Reorder units with the up / down controls.
+          </p>
+        </div>
         <Button type="button" variant="outline" size="sm" onClick={add}>
           <Plus className="mr-2 h-4 w-4" /> Add unit
         </Button>
@@ -849,12 +982,50 @@ function UnitTypesEditor({
       {items.map((u, i) => (
         <Card key={i}>
           <CardContent className="grid gap-3 p-4 md:grid-cols-2">
+            <div className="md:col-span-2 flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                #{i + 1}
+              </span>
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => moveUp(i)}
+                  disabled={i === 0}
+                  aria-label="Move up"
+                >
+                  <ArrowUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => moveDown(i)}
+                  disabled={i === items.length - 1}
+                  aria-label="Move down"
+                >
+                  <ArrowDown className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => remove(i)} aria-label="Remove">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            </div>
             <TextField label="Type" value={u.type} onChange={(v) => update(i, { type: v })} />
             <TextField
-              label="Size range"
-              value={u.sizeRange ?? ""}
-              onChange={(v) => update(i, { sizeRange: v })}
-              hint="e.g. 1200–1450 sq.ft."
+              label="Area"
+              value={u.area ?? ""}
+              onChange={(v) => update(i, { area: v })}
+              hint="e.g. 1200 sq.ft."
+            />
+            <TextField
+              label="Super area"
+              value={u.superArea ?? ""}
+              onChange={(v) => update(i, { superArea: v })}
+            />
+            <TextField
+              label="Carpet area"
+              value={u.carpetArea ?? ""}
+              onChange={(v) => update(i, { carpetArea: v })}
             />
             <TextField
               label="Price range"
@@ -877,11 +1048,6 @@ function UnitTypesEditor({
               value={u.floorPlanUrl ?? ""}
               onChange={(v) => update(i, { floorPlanUrl: v })}
             />
-            <div className="md:col-span-2 flex justify-end">
-              <Button variant="ghost" size="sm" onClick={() => remove(i)}>
-                <Trash2 className="mr-2 h-4 w-4" /> Remove unit
-              </Button>
-            </div>
           </CardContent>
         </Card>
       ))}
@@ -896,15 +1062,20 @@ function NearbyEditor({
   items: NearbyEntry[];
   onChange: (v: NearbyEntry[]) => void;
 }) {
+  const { moveUp, moveDown } = useReorder(items, onChange);
   const update = (i: number, patch: Partial<NearbyEntry>) =>
     onChange(items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
   const remove = (i: number) => onChange(items.filter((_, idx) => idx !== i));
-  const add = () => onChange([...items, { category: "", name: "", distance: "", description: "" }]);
+  const add = () =>
+    onChange([...items, { category: "Education", name: "", distance: "", description: "" }]);
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">Nearby infrastructure</Label>
+        <div>
+          <Label className="text-sm font-medium">Nearby infrastructure</Label>
+          <p className="text-xs text-muted-foreground">Grouped by category, order preserved.</p>
+        </div>
         <Button type="button" variant="outline" size="sm" onClick={add}>
           <Plus className="mr-2 h-4 w-4" /> Add entry
         </Button>
@@ -917,12 +1088,44 @@ function NearbyEditor({
       {items.map((n, i) => (
         <Card key={i}>
           <CardContent className="grid gap-3 p-4 md:grid-cols-4">
-            <TextField
-              label="Category"
-              value={n.category}
-              onChange={(v) => update(i, { category: v })}
-              hint="School, Hospital, Metro…"
-            />
+            <div className="md:col-span-4 flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                #{i + 1}
+              </span>
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => moveUp(i)}
+                  disabled={i === 0}
+                  aria-label="Move up"
+                >
+                  <ArrowUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => moveDown(i)}
+                  disabled={i === items.length - 1}
+                  aria-label="Move down"
+                >
+                  <ArrowDown className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => remove(i)} aria-label="Remove">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            </div>
+            <Field label="Category">
+              <Select value={n.category} onValueChange={(v) => update(i, { category: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {NEARBY_CATEGORIES.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
             <TextField label="Name" value={n.name} onChange={(v) => update(i, { name: v })} />
             <TextField
               label="Distance"
@@ -930,11 +1133,7 @@ function NearbyEditor({
               onChange={(v) => update(i, { distance: v })}
               hint="e.g. 2.4 km"
             />
-            <div className="flex items-end justify-end">
-              <Button variant="ghost" size="sm" onClick={() => remove(i)}>
-                <Trash2 className="mr-2 h-4 w-4" /> Remove
-              </Button>
-            </div>
+            <div />
             <div className="md:col-span-4">
               <TextareaField
                 label="Description"
