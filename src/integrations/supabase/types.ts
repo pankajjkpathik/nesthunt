@@ -361,61 +361,133 @@ export type Database = {
       }
       projects: {
         Row: {
+          amenities: Json
+          booking_amount: number | null
           builder_id: string | null
+          completion_date: string | null
+          completion_percentage: number | null
+          construction_status: string | null
           created_at: string
+          executive_summary: string | null
           featured: boolean
+          hero: Json
           id: string
+          investment: Json
+          launch_date: string | null
           legal: string[]
           less_suitable_for: string[]
+          maintenance_charges: string | null
+          max_price: number | null
           metrics: Json
           name: string
+          nearby: Json
           place_id: string | null
+          possession_date: string | null
+          price_per_sqft: number | null
           progress: string[]
+          property_type: string | null
+          publish_status: string
+          rera: Json
+          rera_number: string | null
           risks: string[]
+          seo: Json
+          short_description: string | null
           slug: string
+          starting_price: number | null
           status: string
           strengths: string[]
           suitable_for: string[]
           summary: string
+          tagline: string | null
+          unit_types: Json
           updated_at: string
+          verified: boolean
         }
         Insert: {
+          amenities?: Json
+          booking_amount?: number | null
           builder_id?: string | null
+          completion_date?: string | null
+          completion_percentage?: number | null
+          construction_status?: string | null
           created_at?: string
+          executive_summary?: string | null
           featured?: boolean
+          hero?: Json
           id?: string
+          investment?: Json
+          launch_date?: string | null
           legal?: string[]
           less_suitable_for?: string[]
+          maintenance_charges?: string | null
+          max_price?: number | null
           metrics?: Json
           name: string
+          nearby?: Json
           place_id?: string | null
+          possession_date?: string | null
+          price_per_sqft?: number | null
           progress?: string[]
+          property_type?: string | null
+          publish_status?: string
+          rera?: Json
+          rera_number?: string | null
           risks?: string[]
+          seo?: Json
+          short_description?: string | null
           slug: string
-          status: string
-          strengths?: string[]
-          suitable_for?: string[]
-          summary: string
-          updated_at?: string
-        }
-        Update: {
-          builder_id?: string | null
-          created_at?: string
-          featured?: boolean
-          id?: string
-          legal?: string[]
-          less_suitable_for?: string[]
-          metrics?: Json
-          name?: string
-          place_id?: string | null
-          progress?: string[]
-          risks?: string[]
-          slug?: string
+          starting_price?: number | null
           status?: string
           strengths?: string[]
           suitable_for?: string[]
           summary?: string
+          tagline?: string | null
+          unit_types?: Json
           updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          amenities?: Json
+          booking_amount?: number | null
+          builder_id?: string | null
+          completion_date?: string | null
+          completion_percentage?: number | null
+          construction_status?: string | null
+          created_at?: string
+          executive_summary?: string | null
+          featured?: boolean
+          hero?: Json
+          id?: string
+          investment?: Json
+          launch_date?: string | null
+          legal?: string[]
+          less_suitable_for?: string[]
+          maintenance_charges?: string | null
+          max_price?: number | null
+          metrics?: Json
+          name?: string
+          nearby?: Json
+          place_id?: string | null
+          possession_date?: string | null
+          price_per_sqft?: number | null
+          progress?: string[]
+          property_type?: string | null
+          publish_status?: string
+          rera?: Json
+          rera_number?: string | null
+          risks?: string[]
+          seo?: Json
+          short_description?: string | null
+          slug?: string
+          starting_price?: number | null
+          status?: string
+          strengths?: string[]
+          suitable_for?: string[]
+          summary?: string
+          tagline?: string | null
+          unit_types?: Json
+          updated_at?: string
+          verified?: boolean
         }
         Relationships: [
           {
