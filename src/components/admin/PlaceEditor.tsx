@@ -185,6 +185,11 @@ export function PlaceEditor({ id }: { id?: string }) {
       slug: slugify(form.slug),
       name: form.name.trim(),
       region: form.region.trim(),
+      country: form.country.trim() || "India",
+      state: form.state.trim(),
+      city: form.city.trim(),
+      latitude: form.latitude,
+      longitude: form.longitude,
       summary: form.summary,
       executive_summary: form.executive_summary,
       status: nextStatus,
@@ -201,6 +206,7 @@ export function PlaceEditor({ id }: { id?: string }) {
       metrics: form.metrics as unknown as import("@/integrations/supabase/types").Json,
       decision: form.decision as unknown as import("@/integrations/supabase/types").Json,
     };
+
 
     try {
       if (id) {
