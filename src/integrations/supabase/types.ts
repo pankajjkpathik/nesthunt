@@ -1095,6 +1095,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_entity_published: {
+        Args: { _entity_id: string; _entity_type: string }
+        Returns: boolean
+      }
       rel_builders_without_projects: {
         Args: never
         Returns: {
