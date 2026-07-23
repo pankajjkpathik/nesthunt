@@ -85,7 +85,10 @@ export function CategoryEditor({ id }: { id?: string }) {
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((p) => ({ ...p, [k]: v }));
 
   async function save() {
-    if (!form.name.trim()) return toast.error("Name is required");
+    if (!form.name.trim()) {
+      toast.error("Name is required");
+      return;
+    }
     const payload = {
       name: form.name.trim(),
       slug: form.slug.trim() || slugify(form.name),
