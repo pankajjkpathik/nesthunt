@@ -373,6 +373,31 @@ export function PlaceEditor({ id }: { id?: string }) {
           </Card>
         </TabsContent>
 
+        <TabsContent value="location" className="mt-6">
+          <Card>
+            <CardContent className="grid gap-5 p-6 md:grid-cols-2">
+              <TextField label="Country" value={form.country} onChange={(v) => patch("country", v)} />
+              <TextField label="State" value={form.state} onChange={(v) => patch("state", v)} />
+              <TextField label="City" value={form.city} onChange={(v) => patch("city", v)} />
+              <div />
+              <NumberField
+                label="Latitude"
+                value={form.latitude ?? 0}
+                step={0.000001}
+                onChange={(v) => patch("latitude", Number.isFinite(v) ? v : null)}
+                hint="Optional"
+              />
+              <NumberField
+                label="Longitude"
+                value={form.longitude ?? 0}
+                step={0.000001}
+                onChange={(v) => patch("longitude", Number.isFinite(v) ? v : null)}
+                hint="Optional"
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="hero" className="mt-6">
           <Card>
             <CardContent className="grid gap-5 p-6 md:grid-cols-2">
@@ -397,14 +422,30 @@ export function PlaceEditor({ id }: { id?: string }) {
                 onChange={(v) => patch("hero", { ...form.hero, tagline: v })}
               />
               <TextField
-                label="Hero image URL (optional)"
+                label="Hero image URL"
                 value={form.hero.heroImageUrl ?? ""}
                 onChange={(v) => patch("hero", { ...form.hero, heroImageUrl: v })}
                 hint="Or upload in the Media tab and paste the public URL."
               />
+              <TextField
+                label="Cover image URL"
+                value={form.hero.coverImageUrl ?? ""}
+                onChange={(v) => patch("hero", { ...form.hero, coverImageUrl: v })}
+                hint="Featured thumbnail used in listings and share previews."
+              />
+              {form.hero.coverImageUrl ? (
+                <div className="md:col-span-2">
+                  <img
+                    src={form.hero.coverImageUrl}
+                    alt="Cover preview"
+                    className="max-h-48 rounded-md border border-border object-cover"
+                  />
+                </div>
+              ) : null}
             </CardContent>
           </Card>
         </TabsContent>
+
 
         <TabsContent value="decision" className="mt-6">
           <Card>
