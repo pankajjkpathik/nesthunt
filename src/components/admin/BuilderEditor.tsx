@@ -27,6 +27,7 @@ import {
   TextField,
   TextareaField,
 } from "@/components/admin/form/Fields";
+import { MediaField } from "@/components/admin/media/MediaField";
 
 import {
   useAdminBuilder,

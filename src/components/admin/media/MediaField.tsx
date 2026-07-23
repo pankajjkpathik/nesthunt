@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, X } from "lucide-react";
 import { MediaPicker } from "./MediaPicker";
+import { getPublicUrl } from "@/lib/services/media";
 import type { Folder } from "@/lib/services/media-admin";
 
 interface Props {
@@ -55,7 +56,7 @@ export function MediaField({ label, value, onChange, folder, accept }: Props) {
         folder={folder}
         accept={accept}
         onSelect={(assets) => {
-          if (assets[0]) onChange(assets[0].publicUrl);
+          if (assets[0]) onChange(getPublicUrl(assets[0].storagePath));
         }}
       />
     </div>
@@ -104,7 +105,7 @@ export function MediaGalleryField({ label, values, onChange, folder }: MultiProp
         onClose={() => setOpen(false)}
         multiple
         folder={folder}
-        onSelect={(assets) => onChange([...values, ...assets.map((a) => a.publicUrl)])}
+        onSelect={(assets) => onChange([...values, ...assets.map((a) => getPublicUrl(a.storagePath))])}
       />
     </div>
   );
