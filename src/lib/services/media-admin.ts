@@ -98,7 +98,7 @@ export async function uploadAsset(input: UploadInput): Promise<MediaAsset> {
     await supabase.storage.from(BUCKET).remove([storagePath]);
     throw error;
   }
-  return mapAsset({ ...(data as unknown as Record<string, unknown>), usage_count: 0 } as never);
+  return mapAsset(Object.assign({ usage_count: 0 }, data) as Parameters<typeof mapAsset>[0]);
 }
 
 export async function replaceAsset(id: string, file: File): Promise<MediaAsset> {
@@ -129,7 +129,7 @@ export async function replaceAsset(id: string, file: File): Promise<MediaAsset> 
     .select("*")
     .single();
   if (error) throw error;
-  return mapAsset({ ...(data as unknown as Record<string, unknown>), usage_count: 0 } as never);
+  return mapAsset(Object.assign({ usage_count: 0 }, data) as Parameters<typeof mapAsset>[0]);
 }
 
 export interface MetadataPatch {
@@ -155,7 +155,7 @@ export async function updateAssetMetadata(id: string, patch: MetadataPatch): Pro
     .select("*")
     .single();
   if (error) throw error;
-  return mapAsset({ ...(data as unknown as Record<string, unknown>), usage_count: 0 } as never);
+  return mapAsset(Object.assign({ usage_count: 0 }, data) as Parameters<typeof mapAsset>[0]);
 }
 
 export async function deleteAsset(id: string, force = false): Promise<void> {
