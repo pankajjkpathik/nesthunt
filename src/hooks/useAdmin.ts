@@ -2,15 +2,20 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  adminBulkDelete,
+  adminBulkUpdateStatus,
   adminCreatePlace,
   adminDeletePlace,
+  adminDuplicatePlace,
   adminGetPlace,
   adminListPlaces,
   adminUpdatePlace,
   type PlaceInsert,
   type PlaceRow,
+  type PlaceStatus,
   type PlaceUpdate,
 } from "@/lib/services/places-admin";
+
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -149,13 +154,42 @@ export function useDeletePlace() {
     mutationFn: (id: string) => adminDeletePlace(id),
 
     onSuccess: () => {
-      qc.invalidateQueries({
-        queryKey: ["admin", "places"],
-      });
-
-      qc.invalidateQueries({
-        queryKey: ["places"],
-      });
+      qc.invalidateQueries({ queryKey: ["admin", "places"] });
+      qc.invalidateQueries({ queryKey: ["places"] });
     },
   });
 }
+
+export function useDuplicatePlace() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => adminDuplicatePlace(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "places"] });
+    },
+  });
+}
+
+export function useBulkUpdatePlaceStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ ids, status }: { ids: string[]; status: PlaceStatus }) =>
+      adminBulkUpdateStatus(ids, status),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "places"] });
+      qc.invalidateQueries({ queryKey: ["places"] });
+    },
+  });
+}
+
+export function useBulkDeletePlaces() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (ids: string[]) => adminBulkDelete(ids),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "places"] });
+      qc.invalidateQueries({ queryKey: ["places"] });
+    },
+  });
+}
+
