@@ -21,8 +21,11 @@ import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminPlacesIndexRouteImport } from './routes/admin.places.index'
+import { Route as AdminBuildersIndexRouteImport } from './routes/admin.builders.index'
 import { Route as AdminPlacesNewRouteImport } from './routes/admin.places.new'
 import { Route as AdminPlacesIdRouteImport } from './routes/admin.places.$id'
+import { Route as AdminBuildersNewRouteImport } from './routes/admin.builders.new'
+import { Route as AdminBuildersIdRouteImport } from './routes/admin.builders.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const McpRoute = McpRouteImport.update({
@@ -87,6 +90,11 @@ const AdminPlacesIndexRoute = AdminPlacesIndexRouteImport.update({
   path: '/places/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBuildersIndexRoute = AdminBuildersIndexRouteImport.update({
+  id: '/builders/',
+  path: '/builders/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPlacesNewRoute = AdminPlacesNewRouteImport.update({
   id: '/places/new',
   path: '/places/new',
@@ -95,6 +103,16 @@ const AdminPlacesNewRoute = AdminPlacesNewRouteImport.update({
 const AdminPlacesIdRoute = AdminPlacesIdRouteImport.update({
   id: '/places/$id',
   path: '/places/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBuildersNewRoute = AdminBuildersNewRouteImport.update({
+  id: '/builders/new',
+  path: '/builders/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBuildersIdRoute = AdminBuildersIdRouteImport.update({
+  id: '/builders/$id',
+  path: '/builders/$id',
   getParentRoute: () => AdminRoute,
 } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
@@ -117,8 +135,11 @@ export interface FileRoutesByFullPath {
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/builders/$id': typeof AdminBuildersIdRoute
+  '/admin/builders/new': typeof AdminBuildersNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
+  '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -133,8 +154,11 @@ export interface FileRoutesByTo {
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin': typeof AdminIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/builders/$id': typeof AdminBuildersIdRoute
+  '/admin/builders/new': typeof AdminBuildersNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
+  '/admin/builders': typeof AdminBuildersIndexRoute
   '/admin/places': typeof AdminPlacesIndexRoute
 }
 export interface FileRoutesById {
@@ -151,8 +175,11 @@ export interface FileRoutesById {
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/builders/$id': typeof AdminBuildersIdRoute
+  '/admin/builders/new': typeof AdminBuildersNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
+  '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
 }
 export interface FileRouteTypes {
@@ -170,8 +197,11 @@ export interface FileRouteTypes {
     | '/project/hero-homes'
     | '/admin/'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/builders/$id'
+    | '/admin/builders/new'
     | '/admin/places/$id'
     | '/admin/places/new'
+    | '/admin/builders/'
     | '/admin/places/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -186,8 +216,11 @@ export interface FileRouteTypes {
     | '/project/hero-homes'
     | '/admin'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/builders/$id'
+    | '/admin/builders/new'
     | '/admin/places/$id'
     | '/admin/places/new'
+    | '/admin/builders'
     | '/admin/places'
   id:
     | '__root__'
@@ -203,8 +236,11 @@ export interface FileRouteTypes {
     | '/project/hero-homes'
     | '/admin/'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/builders/$id'
+    | '/admin/builders/new'
     | '/admin/places/$id'
     | '/admin/places/new'
+    | '/admin/builders/'
     | '/admin/places/'
   fileRoutesById: FileRoutesById
 }
@@ -308,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlacesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/builders/': {
+      id: '/admin/builders/'
+      path: '/builders'
+      fullPath: '/admin/builders/'
+      preLoaderRoute: typeof AdminBuildersIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/places/new': {
       id: '/admin/places/new'
       path: '/places/new'
@@ -322,6 +365,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlacesIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/builders/new': {
+      id: '/admin/builders/new'
+      path: '/builders/new'
+      fullPath: '/admin/builders/new'
+      preLoaderRoute: typeof AdminBuildersNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/builders/$id': {
+      id: '/admin/builders/$id'
+      path: '/builders/$id'
+      fullPath: '/admin/builders/$id'
+      preLoaderRoute: typeof AdminBuildersIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -334,15 +391,21 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminBuildersIdRoute: typeof AdminBuildersIdRoute
+  AdminBuildersNewRoute: typeof AdminBuildersNewRoute
   AdminPlacesIdRoute: typeof AdminPlacesIdRoute
   AdminPlacesNewRoute: typeof AdminPlacesNewRoute
+  AdminBuildersIndexRoute: typeof AdminBuildersIndexRoute
   AdminPlacesIndexRoute: typeof AdminPlacesIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminBuildersIdRoute: AdminBuildersIdRoute,
+  AdminBuildersNewRoute: AdminBuildersNewRoute,
   AdminPlacesIdRoute: AdminPlacesIdRoute,
   AdminPlacesNewRoute: AdminPlacesNewRoute,
+  AdminBuildersIndexRoute: AdminBuildersIndexRoute,
   AdminPlacesIndexRoute: AdminPlacesIndexRoute,
 }
 

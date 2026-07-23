@@ -14,53 +14,164 @@ export type Database = {
   }
   public: {
     Tables: {
+      builder_places: {
+        Row: {
+          builder_id: string
+          created_at: string
+          place_id: string
+        }
+        Insert: {
+          builder_id: string
+          created_at?: string
+          place_id: string
+        }
+        Update: {
+          builder_id?: string
+          created_at?: string
+          place_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_places_builder_id_fkey"
+            columns: ["builder_id"]
+            isOneToOne: false
+            referencedRelation: "builders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builder_places_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "places"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       builders: {
         Row: {
+          awards: Json
+          builder_type: string
+          certifications: Json
+          city: string
+          company_registration: string
+          country: string
           created_at: string
           decision: Json
+          description: string
+          email: string
+          employee_count: string
           featured: boolean
+          gst: string
+          head_office: string
           headquarters: string
+          hero: Json
           id: string
+          leadership: Json
           metrics: Json
           name: string
+          organization_type: string
+          pan: string
+          phone: string
+          rera: Json
+          seo: Json
           slug: string
+          state: string
+          status: string
           strengths: string[]
           summary: string
+          tagline: string
           timeline: Json
+          trust_breakdown: Json
+          trust_score: number | null
           updated_at: string
+          verified: boolean
           watch_outs: string[]
+          website: string
+          year_established: number | null
           years_active: number
         }
         Insert: {
+          awards?: Json
+          builder_type?: string
+          certifications?: Json
+          city?: string
+          company_registration?: string
+          country?: string
           created_at?: string
           decision?: Json
+          description?: string
+          email?: string
+          employee_count?: string
           featured?: boolean
+          gst?: string
+          head_office?: string
           headquarters: string
+          hero?: Json
           id?: string
+          leadership?: Json
           metrics?: Json
           name: string
+          organization_type?: string
+          pan?: string
+          phone?: string
+          rera?: Json
+          seo?: Json
           slug: string
+          state?: string
+          status?: string
           strengths?: string[]
           summary: string
+          tagline?: string
           timeline?: Json
+          trust_breakdown?: Json
+          trust_score?: number | null
           updated_at?: string
+          verified?: boolean
           watch_outs?: string[]
+          website?: string
+          year_established?: number | null
           years_active?: number
         }
         Update: {
+          awards?: Json
+          builder_type?: string
+          certifications?: Json
+          city?: string
+          company_registration?: string
+          country?: string
           created_at?: string
           decision?: Json
+          description?: string
+          email?: string
+          employee_count?: string
           featured?: boolean
+          gst?: string
+          head_office?: string
           headquarters?: string
+          hero?: Json
           id?: string
+          leadership?: Json
           metrics?: Json
           name?: string
+          organization_type?: string
+          pan?: string
+          phone?: string
+          rera?: Json
+          seo?: Json
           slug?: string
+          state?: string
+          status?: string
           strengths?: string[]
           summary?: string
+          tagline?: string
           timeline?: Json
+          trust_breakdown?: Json
+          trust_score?: number | null
           updated_at?: string
+          verified?: boolean
           watch_outs?: string[]
+          website?: string
+          year_established?: number | null
           years_active?: number
         }
         Relationships: []
