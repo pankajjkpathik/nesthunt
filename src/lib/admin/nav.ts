@@ -37,7 +37,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Property",
     items: [
       { to: "/admin/places", label: "Places", icon: MapPin },
-      { to: "/admin/builders", label: "Builders", icon: Building2, disabled: true },
+      { to: "/admin/builders", label: "Builders", icon: Building2 },
       { to: "/admin/projects", label: "Projects", icon: Boxes, disabled: true },
       { to: "/admin/categories", label: "Categories", icon: Tags, disabled: true },
       { to: "/admin/amenities", label: "Amenities", icon: Sparkles, disabled: true },
