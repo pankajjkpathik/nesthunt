@@ -272,6 +272,126 @@ export type Database = {
         }
         Relationships: []
       }
+      media_assets: {
+        Row: {
+          alt: string
+          archived: boolean
+          caption: string
+          copyright: string
+          created_at: string
+          credit: string
+          description: string
+          featured: boolean
+          file_name: string
+          file_size: number
+          folder: string
+          height: number | null
+          id: string
+          license: string
+          mime_type: string
+          photographer: string
+          storage_path: string
+          tags: string[]
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+          width: number | null
+        }
+        Insert: {
+          alt?: string
+          archived?: boolean
+          caption?: string
+          copyright?: string
+          created_at?: string
+          credit?: string
+          description?: string
+          featured?: boolean
+          file_name: string
+          file_size?: number
+          folder?: string
+          height?: number | null
+          id?: string
+          license?: string
+          mime_type: string
+          photographer?: string
+          storage_path: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          width?: number | null
+        }
+        Update: {
+          alt?: string
+          archived?: boolean
+          caption?: string
+          copyright?: string
+          created_at?: string
+          credit?: string
+          description?: string
+          featured?: boolean
+          file_name?: string
+          file_size?: number
+          folder?: string
+          height?: number | null
+          id?: string
+          license?: string
+          mime_type?: string
+          photographer?: string
+          storage_path?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          width?: number | null
+        }
+        Relationships: []
+      }
+      media_usages: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entity_type: string
+          field: string
+          id: string
+          media_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          field?: string
+          id?: string
+          media_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          field?: string
+          id?: string
+          media_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_usages_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_usages_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       places: {
         Row: {
           city: string
@@ -529,7 +649,34 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      media_assets_with_usage: {
+        Row: {
+          alt: string | null
+          archived: boolean | null
+          caption: string | null
+          copyright: string | null
+          created_at: string | null
+          credit: string | null
+          description: string | null
+          featured: boolean | null
+          file_name: string | null
+          file_size: number | null
+          folder: string | null
+          height: number | null
+          id: string | null
+          license: string | null
+          mime_type: string | null
+          photographer: string | null
+          storage_path: string | null
+          tags: string[] | null
+          title: string | null
+          updated_at: string | null
+          uploaded_by: string | null
+          usage_count: number | null
+          width: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       bootstrap_admin: { Args: never; Returns: boolean }

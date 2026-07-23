@@ -1,0 +1,1 @@
+ALTER VIEW public.media_assets_with_usage SET (security_invoker = on);
