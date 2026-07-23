@@ -34,8 +34,10 @@ import {
   type PlaceDecision,
   type PlaceHero,
   type PlaceMetrics,
+  type PlaceRow,
   type PlaceSeo,
   type PlaceStatus,
+
 } from "@/lib/services/places-admin";
 import { useEntityImages } from "@/hooks/useNestHunt";
 import {
