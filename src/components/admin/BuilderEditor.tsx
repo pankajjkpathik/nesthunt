@@ -599,6 +599,18 @@ export function BuilderEditor({ id }: Props) {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="relationships" className="mt-4">
+          {id ? (
+            <RelationshipsTab entity={{ type: "builder", id }} />
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-sm text-muted-foreground">
+                Save this builder first to manage relationships.
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
       </Tabs>
     </div>
   );
