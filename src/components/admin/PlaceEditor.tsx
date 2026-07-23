@@ -803,3 +803,56 @@ function MediaPanel({
     </Card>
   );
 }
+
+function SeoTextField({
+  label,
+  value,
+  onChange,
+  limit,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  limit: number;
+}) {
+  const over = value.length > limit;
+  return (
+    <Field
+      label={label}
+      hint={`${value.length}/${limit}${over ? " — over recommended limit" : ""}`}
+    >
+      <input
+        className={`h-10 w-full rounded-md border bg-background px-3 text-sm ${over ? "border-warning" : "border-input"}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </Field>
+  );
+}
+
+function SeoTextareaField({
+  label,
+  value,
+  onChange,
+  limit,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  limit: number;
+}) {
+  const over = value.length > limit;
+  return (
+    <Field
+      label={label}
+      hint={`${value.length}/${limit}${over ? " — over recommended limit" : ""}`}
+    >
+      <textarea
+        rows={3}
+        className={`w-full rounded-md border bg-background p-3 text-sm ${over ? "border-warning" : "border-input"}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </Field>
+  );
+}
