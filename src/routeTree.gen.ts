@@ -24,11 +24,14 @@ import { Route as AdminRelationshipsIndexRouteImport } from './routes/admin.rela
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminPlacesIndexRouteImport } from './routes/admin.places.index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin.media.index'
+import { Route as AdminCategoriesIndexRouteImport } from './routes/admin.categories.index'
 import { Route as AdminBuildersIndexRouteImport } from './routes/admin.builders.index'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
 import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
 import { Route as AdminPlacesNewRouteImport } from './routes/admin.places.new'
 import { Route as AdminPlacesIdRouteImport } from './routes/admin.places.$id'
+import { Route as AdminCategoriesNewRouteImport } from './routes/admin.categories.new'
+import { Route as AdminCategoriesIdRouteImport } from './routes/admin.categories.$id'
 import { Route as AdminBuildersNewRouteImport } from './routes/admin.builders.new'
 import { Route as AdminBuildersIdRouteImport } from './routes/admin.builders.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -110,6 +113,11 @@ const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
   path: '/media/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCategoriesIndexRoute = AdminCategoriesIndexRouteImport.update({
+  id: '/categories/',
+  path: '/categories/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBuildersIndexRoute = AdminBuildersIndexRouteImport.update({
   id: '/builders/',
   path: '/builders/',
@@ -133,6 +141,16 @@ const AdminPlacesNewRoute = AdminPlacesNewRouteImport.update({
 const AdminPlacesIdRoute = AdminPlacesIdRouteImport.update({
   id: '/places/$id',
   path: '/places/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesNewRoute = AdminCategoriesNewRouteImport.update({
+  id: '/categories/new',
+  path: '/categories/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesIdRoute = AdminCategoriesIdRouteImport.update({
+  id: '/categories/$id',
+  path: '/categories/$id',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBuildersNewRoute = AdminBuildersNewRouteImport.update({
@@ -167,11 +185,14 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/builders/$id': typeof AdminBuildersIdRoute
   '/admin/builders/new': typeof AdminBuildersNewRoute
+  '/admin/categories/$id': typeof AdminCategoriesIdRoute
+  '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
+  '/admin/categories/': typeof AdminCategoriesIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
@@ -191,11 +212,14 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/builders/$id': typeof AdminBuildersIdRoute
   '/admin/builders/new': typeof AdminBuildersNewRoute
+  '/admin/categories/$id': typeof AdminCategoriesIdRoute
+  '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders': typeof AdminBuildersIndexRoute
+  '/admin/categories': typeof AdminCategoriesIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/places': typeof AdminPlacesIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
@@ -217,11 +241,14 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/builders/$id': typeof AdminBuildersIdRoute
   '/admin/builders/new': typeof AdminBuildersNewRoute
+  '/admin/categories/$id': typeof AdminCategoriesIdRoute
+  '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
+  '/admin/categories/': typeof AdminCategoriesIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
@@ -244,11 +271,14 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/builders/$id'
     | '/admin/builders/new'
+    | '/admin/categories/$id'
+    | '/admin/categories/new'
     | '/admin/places/$id'
     | '/admin/places/new'
     | '/admin/projects/$id'
     | '/admin/projects/new'
     | '/admin/builders/'
+    | '/admin/categories/'
     | '/admin/media/'
     | '/admin/places/'
     | '/admin/projects/'
@@ -268,11 +298,14 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/builders/$id'
     | '/admin/builders/new'
+    | '/admin/categories/$id'
+    | '/admin/categories/new'
     | '/admin/places/$id'
     | '/admin/places/new'
     | '/admin/projects/$id'
     | '/admin/projects/new'
     | '/admin/builders'
+    | '/admin/categories'
     | '/admin/media'
     | '/admin/places'
     | '/admin/projects'
@@ -293,11 +326,14 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/builders/$id'
     | '/admin/builders/new'
+    | '/admin/categories/$id'
+    | '/admin/categories/new'
     | '/admin/places/$id'
     | '/admin/places/new'
     | '/admin/projects/$id'
     | '/admin/projects/new'
     | '/admin/builders/'
+    | '/admin/categories/'
     | '/admin/media/'
     | '/admin/places/'
     | '/admin/projects/'
@@ -425,6 +461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMediaIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/categories/': {
+      id: '/admin/categories/'
+      path: '/categories'
+      fullPath: '/admin/categories/'
+      preLoaderRoute: typeof AdminCategoriesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/builders/': {
       id: '/admin/builders/'
       path: '/builders'
@@ -460,6 +503,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlacesIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/categories/new': {
+      id: '/admin/categories/new'
+      path: '/categories/new'
+      fullPath: '/admin/categories/new'
+      preLoaderRoute: typeof AdminCategoriesNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories/$id': {
+      id: '/admin/categories/$id'
+      path: '/categories/$id'
+      fullPath: '/admin/categories/$id'
+      preLoaderRoute: typeof AdminCategoriesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/builders/new': {
       id: '/admin/builders/new'
       path: '/builders/new'
@@ -488,11 +545,14 @@ interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBuildersIdRoute: typeof AdminBuildersIdRoute
   AdminBuildersNewRoute: typeof AdminBuildersNewRoute
+  AdminCategoriesIdRoute: typeof AdminCategoriesIdRoute
+  AdminCategoriesNewRoute: typeof AdminCategoriesNewRoute
   AdminPlacesIdRoute: typeof AdminPlacesIdRoute
   AdminPlacesNewRoute: typeof AdminPlacesNewRoute
   AdminProjectsIdRoute: typeof AdminProjectsIdRoute
   AdminProjectsNewRoute: typeof AdminProjectsNewRoute
   AdminBuildersIndexRoute: typeof AdminBuildersIndexRoute
+  AdminCategoriesIndexRoute: typeof AdminCategoriesIndexRoute
   AdminMediaIndexRoute: typeof AdminMediaIndexRoute
   AdminPlacesIndexRoute: typeof AdminPlacesIndexRoute
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
@@ -503,11 +563,14 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminBuildersIdRoute: AdminBuildersIdRoute,
   AdminBuildersNewRoute: AdminBuildersNewRoute,
+  AdminCategoriesIdRoute: AdminCategoriesIdRoute,
+  AdminCategoriesNewRoute: AdminCategoriesNewRoute,
   AdminPlacesIdRoute: AdminPlacesIdRoute,
   AdminPlacesNewRoute: AdminPlacesNewRoute,
   AdminProjectsIdRoute: AdminProjectsIdRoute,
   AdminProjectsNewRoute: AdminProjectsNewRoute,
   AdminBuildersIndexRoute: AdminBuildersIndexRoute,
+  AdminCategoriesIndexRoute: AdminCategoriesIndexRoute,
   AdminMediaIndexRoute: AdminMediaIndexRoute,
   AdminPlacesIndexRoute: AdminPlacesIndexRoute,
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
