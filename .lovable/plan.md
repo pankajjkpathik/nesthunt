@@ -1,104 +1,94 @@
-# BUILD-014 — Relationship Engine & Knowledge Graph
+# BUILD-015 — Structured Content Engine
 
-Extend NHOS with a centralized relationship layer that every module consumes. Zero UI redesign — reuse existing shell, tabs, cards, and design tokens.
+Extend NHOS with four reusable content modules (Categories, Amenities, Nearby Infrastructure, Unit Types), fully integrated with the existing Relationship Engine, Media Library, Admin CMS, and design system. No UI redesign, no direct Supabase calls from components.
 
-## 1. Data model (single migration)
+## 1. Database (single migration)
 
-Introduce a generic edge table plus specific typed joins where uniqueness matters. This lets rare/new relationship types be added without schema churn while keeping strong constraints on the important ones.
+Four new content tables plus supporting tables. All follow the NHOS pattern: CREATE → GRANT (authenticated + service_role, anon SELECT for published) → RLS → policies → updated_at trigger.
 
-```text
-entity_relationships (generic edges)
-  id, from_type, from_id, to_type, to_id, kind, sort_order, meta jsonb, created_at
-  UNIQUE (from_type, from_id, to_type, to_id, kind)
-  CHECK (from_type/to_type in known enum)
-  Indexes on (from_type,from_id,kind) and (to_type,to_id,kind)
+- `public.categories` — id, name, slug (unique), parent_id (self-FK, nullable), description, icon (text/lucide name), featured_image_id (media), status ('draft'|'published'), seo (jsonb), sort_order, created_at, updated_at.
+- `public.amenities` — id, name, slug (unique), category (text enum-like: lifestyle/sports/security/health/convenience/green/utilities/children/senior/business), description, icon, illustration_id (media), featured (bool), status, seo, sort_order, timestamps.
+- `public.infrastructure_items` — id, name, slug, category (text: hospital/school/university/metro/…), description, latitude, longitude, address, city, state, website, phone, hours, image_id (media), status, timestamps.
+- `public.unit_types` — id, name, slug, category (residential/commercial), bedrooms, bathrooms, balconies, super_area_min, super_area_max, carpet_area_min, carpet_area_max, facing, floor_plan_id (media), description, timestamps.
+- `public.infrastructure_links` — join for infra ↔ (place|project) with `entity_type`, `entity_id`, `distance_km`, `notes`, unique(infrastructure_id, entity_type, entity_id). Kept as a dedicated table so distance is first-class (Relationship Engine edges don't carry typed distance).
 
-place_amenities         (place_id, amenity)          -- taxonomy tags
-project_amenities       (project_id, amenity, category)
-project_unit_types      (project_id, label, size_sqft, price)
-place_nearby_infra      (place_id, label, category, distance_km)
-construction_updates    (project_id, dated_on, note, media_asset_id)
-```
+Extend `EntityType` in `entity_relationships` semantics by using existing generic edges for category/amenity/unit_type attachments (kinds: `categories`, `amenities`, `unit_types`). Add `check_relationship_valid` cases where useful; otherwise rely on catalog.
 
-Reuse existing tables where present: `builders.place_id`/`builder_places`, `projects.builder_id`/`place_id`, `media_usages`, `entity_documents`, `entity_scores`, `entity_images`. The generic edge table absorbs everything else (Places↔Categories, Blog↔Media, Builder↔Awards references, etc.).
+Anon SELECT is limited to `status = 'published'`. Admin writes gated by `has_role(auth.uid(),'admin')`.
 
-RLS: `SELECT` for anon+authenticated; write only for admins (via `has_role`). GRANTs alongside.
+## 2. Services (`src/lib/services/`)
 
-## 2. Service layer (`src/lib/services/relationships.ts`)
+- `categories.ts` — list/get/create/update/delete/duplicate, tree helpers (`getTree`, `getAncestors`), usage counts via relationships.
+- `amenities.ts` — CRUD, bulk publish/draft/delete, featured toggle, merge duplicates.
+- `infrastructure.ts` — CRUD + link/unlink/updateDistance against places & projects (`infrastructure_links`).
+- `unitTypes.ts` — CRUD, attach/detach to projects (via relationships, kind `unit_types`, meta = { price_from, price_to } for per-project overrides).
+- `structuredHealth.ts` — aggregates unused/duplicates/missing-icons/missing-seo across the four modules.
 
-Single façade for every module. All existing admin services delegate here.
+All hit Supabase; components never do.
 
-- `attachEntity({from, to, kind})`
-- `detachEntity({from, to, kind})`
-- `syncRelationships({from, kind, targets})` — replaces the set
-- `getRelatedEntities({from, kind?, toType?})` → hydrated summaries (name/slug/thumb)
-- `getEntityGraph(from, depth=1)` → typed tree
-- `getUsage(entity)` → counts per module + sample links
-- `moveRelationship`, `replaceRelationship`
-- `validateAttach(...)` — enforces:
-  - project → exactly one builder / one place
-  - no self-links, no duplicates
-  - kind allowed for the (fromType,toType) pair
+## 3. React Query hooks (`src/hooks/`)
 
-`src/lib/services/entityGraph.ts` — pure builders that shape service output into `GraphNode[]`.
-`src/lib/services/usage.ts` — orphan/broken-reference queries used by the health dashboard.
+- `useCategories.ts` — `useCategories`, `useCategoryTree`, `useCategory`, mutations (create/update/delete/duplicate/bulk).
+- `useAmenities.ts` — parallel API.
+- `useInfrastructure.ts` — list/detail + link mutations with distance.
+- `useUnitTypes.ts` — list/detail + project-attach mutations.
+- `useStructuredHealth.ts` — dashboard aggregate.
 
-Central types in `src/types/relationships.ts` (`EntityType`, `EntityRef`, discriminated `RelationshipKind`, `EntitySummary`, `GraphNode`, `UsageReport`).
+Consistent query keys, invalidation on writes, optimistic updates for toggles.
 
-## 3. React Query hooks (`src/hooks/useRelationships.ts`)
+## 4. Admin routes (file-based, dot convention)
 
-`useRelatedEntities`, `useEntityGraph`, `useEntityUsage`, `useAttachEntity`, `useDetachEntity`, `useSyncRelationships`, plus thin wrappers `useRelatedProjects/Builders/Places`. Optimistic updates on attach/detach; cache keys `["relationships", fromType, fromId, kind]`.
+Under `src/routes/`:
 
-## 4. Reusable UI
+- `admin.categories.index.tsx`, `admin.categories.new.tsx`, `admin.categories.$id.tsx`
+- `admin.amenities.index.tsx`, `admin.amenities.new.tsx`, `admin.amenities.$id.tsx`
+- `admin.infrastructure.index.tsx`, `admin.infrastructure.new.tsx`, `admin.infrastructure.$id.tsx`
+- `admin.unit-types.index.tsx`, `admin.unit-types.new.tsx`, `admin.unit-types.$id.tsx`
+- `admin.content-health.index.tsx`
 
-- `EntityPicker` (`src/components/admin/relationships/EntityPicker.tsx`)
-  - Command-palette style dialog built on shadcn `Command`
-  - Props: `types: EntityType[]`, `multiple`, `excludeIds`, `onSelect`
-  - Instant search (debounced), grouped by type, keyboard nav, lazy pages of 25
-- `RelationshipPanel` — list + inline attach/detach for one `(entity, kind)`
-- `RelationshipsTab` — bundles the panels an entity supports (Place: Builders / Projects / Categories / Amenities / Nearby / Media / Documents; Builder: Places / Projects / Awards / Leadership / Media / Documents; Project: Builder / Place / Amenities / Unit types / Media / Documents / Updates; Media: linked entities via `media_usages`)
-- `EntityGraphView` — collapsible tree using existing card tokens; groups by kind
-- `DependencyDialog` — shown before delete; lists dependents with counts and drill-down
-- `UsagePanel` — reusable "Used in …" card for any entity
+Each listing reuses the existing enterprise listing pattern (search, filters, pagination, sort, bulk actions, dependency-aware delete via `DependencyDialog`).
 
-## 5. Editor integration
+Each editor reuses `Fields`, `MediaField`, `RelationshipsTab`, `UsagePanel` from existing admin components.
 
-Add a **Relationships** tab to `PlaceEditor`, `BuilderEditor`, `ProjectEditor` rendering `RelationshipsTab`. Add a **Usage** tab. Replace the existing bespoke builder↔place attach UI with `RelationshipPanel`. In `AssetDetails` (Media Library), replace the current usage list with the shared `UsagePanel`.
+## 5. Reusable UI
 
-Wire delete buttons in the three listing pages through `DependencyDialog` — bulk deletes reuse the same guard.
+- `src/components/admin/content/ContentPicker.tsx` — one dialog that picks Categories | Amenities | Infrastructure | Unit Types (mode prop). Search, category filter, multi-select, grouped results. Replaces bespoke pickers going forward.
+- `src/components/admin/content/CategoryTree.tsx` — nested tree with drag-free reparenting via select.
+- `src/components/admin/content/InfrastructureLinkRow.tsx` — distance-km editable row for place/project editors.
+- `src/components/admin/content/UnitTypeAttachRow.tsx` — attach + per-project price override for project editor.
 
-## 6. Relationship search
+## 6. Editor integrations (minimal, additive)
 
-Extend list pages with new filters powered by the engine:
-- Places: "without projects", "without builders"
-- Builders: "without projects", "without logo"
-- Projects: "orphaned (no builder or place)", "missing SEO"
-- Media: "unused"
+- `PlaceEditor` — add "Categories", "Amenities", "Nearby Infrastructure" panels (Infrastructure uses `InfrastructureLinkRow` with distance).
+- `BuilderEditor` — add "Categories".
+- `ProjectEditor` — add "Categories", "Amenities", "Unit Types" (with per-project pricing override), "Nearby Infrastructure".
 
-Implemented as query params → `useRelationships` filters; no new pages.
+Panels reuse `RelationshipPanel` where the relationship is a simple typed edge; use the new distance/price rows only where extra metadata matters.
 
-## 7. Relationship health dashboard
+## 7. Navigation
 
-New route `src/routes/admin.relationships.index.tsx`:
-- KPI row: total relationships, orphaned projects, unlinked media, builders w/o projects, places w/o builders, missing SEO, broken refs
-- Section per issue with resolve links
-- Nav entry added under Operations in `src/lib/admin/nav.ts`
+Update `src/lib/admin/nav.ts`: new "Content Library" group containing Categories, Amenities, Infrastructure, Unit Types; add "Content Health" under Operations.
 
-## 8. Validation & dependency awareness
+## 8. Types (`src/types/content.ts`)
 
-- `validateAttach` runs client-side (fast feedback) and server-side (RLS + a `check_relationship()` SQL function invoked from the service).
-- Delete flows always call `getUsage` first; `DependencyDialog` renders results and requires confirmation when count > 0.
+Central interfaces for `Category`, `Amenity`, `InfrastructureItem`, `UnitType`, `InfrastructureLink`, `AmenityCategory`, filter/sort/query params. No `any`.
 
-## 9. Constraints
+## 9. Health dashboard
 
-- No UI redesign; every new surface uses existing tokens/components.
-- No direct table writes from components — everything through `relationships.ts`.
-- No AI, no live graph viz, no public exposure of the graph.
+`admin.content-health.index.tsx` shows unused entries, missing icons, missing SEO, potential duplicates (name+slug fuzzy match within a module), broken relationships. Quick-action buttons route to the relevant editor.
 
-## Technical notes
+## 10. Out of scope (explicit)
 
-- `entity_relationships` uses `text` for `from_type`/`to_type` guarded by a CHECK constraint listing allowed values; keeps future entities cheap.
-- Hydration of related summaries is done in the service via per-type batched selects (`in ('id1','id2',...)`) then merged, avoiding N+1.
-- `getEntityGraph` is depth-limited (default 1, max 2) to keep queries bounded.
-- Cache invalidation: attach/detach invalidates `["relationships", fromType, fromId]` and `["relationships", toType, toId]`, plus the affected list keys (`["admin","projects"]`, etc.).
-- All new tables ship with GRANTs (`SELECT` to anon+authenticated where reads are public; writes gated by admin policies).
+No AI, no maps, no distance APIs, no import wizards, no external data providers. Bulk import/export scaffolding only — buttons disabled with "coming soon".
+
+## Technical section
+
+- Migration order: types → tables → grants → RLS → policies → triggers → RPCs (`content_unused_*`, `content_duplicates`).
+- Distance stored in km as `numeric(6,2)` on `infrastructure_links`.
+- Category tree loaded via one flat query, assembled client-side (memoized).
+- Query keys: `['categories', filters]`, `['category', id]`, similarly for the other three; `['content-health']`.
+- All new tables: `updated_at` maintained by shared `set_updated_at` trigger.
+- Anon policies: `USING (status = 'published')` for the four content tables; infrastructure_links inherits visibility from the linked entity (anon SELECT allowed since coordinates/distance are public content).
+- Delete flow reuses existing `DependencyDialog` with usage payload from `getUsage`-equivalent per module (relationships table + infrastructure_links).
+
+Ready to implement on approval.
