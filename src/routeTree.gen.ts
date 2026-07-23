@@ -22,6 +22,7 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminPlacesIndexRouteImport } from './routes/admin.places.index'
+import { Route as AdminMediaIndexRouteImport } from './routes/admin.media.index'
 import { Route as AdminBuildersIndexRouteImport } from './routes/admin.builders.index'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
 import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
@@ -98,6 +99,11 @@ const AdminPlacesIndexRoute = AdminPlacesIndexRouteImport.update({
   path: '/places/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
+  id: '/media/',
+  path: '/media/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBuildersIndexRoute = AdminBuildersIndexRouteImport.update({
   id: '/builders/',
   path: '/builders/',
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
+  '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
 }
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders': typeof AdminBuildersIndexRoute
+  '/admin/media': typeof AdminMediaIndexRoute
   '/admin/places': typeof AdminPlacesIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
 }
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
+  '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/places/': typeof AdminPlacesIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
 }
@@ -231,6 +240,7 @@ export interface FileRouteTypes {
     | '/admin/projects/$id'
     | '/admin/projects/new'
     | '/admin/builders/'
+    | '/admin/media/'
     | '/admin/places/'
     | '/admin/projects/'
   fileRoutesByTo: FileRoutesByTo
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/admin/projects/$id'
     | '/admin/projects/new'
     | '/admin/builders'
+    | '/admin/media'
     | '/admin/places'
     | '/admin/projects'
   id:
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/admin/projects/$id'
     | '/admin/projects/new'
     | '/admin/builders/'
+    | '/admin/media/'
     | '/admin/places/'
     | '/admin/projects/'
   fileRoutesById: FileRoutesById
@@ -387,6 +399,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlacesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/media/': {
+      id: '/admin/media/'
+      path: '/media'
+      fullPath: '/admin/media/'
+      preLoaderRoute: typeof AdminMediaIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/builders/': {
       id: '/admin/builders/'
       path: '/builders'
@@ -455,6 +474,7 @@ interface AdminRouteChildren {
   AdminProjectsIdRoute: typeof AdminProjectsIdRoute
   AdminProjectsNewRoute: typeof AdminProjectsNewRoute
   AdminBuildersIndexRoute: typeof AdminBuildersIndexRoute
+  AdminMediaIndexRoute: typeof AdminMediaIndexRoute
   AdminPlacesIndexRoute: typeof AdminPlacesIndexRoute
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
 }
@@ -468,6 +488,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProjectsIdRoute: AdminProjectsIdRoute,
   AdminProjectsNewRoute: AdminProjectsNewRoute,
   AdminBuildersIndexRoute: AdminBuildersIndexRoute,
+  AdminMediaIndexRoute: AdminMediaIndexRoute,
   AdminPlacesIndexRoute: AdminPlacesIndexRoute,
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
 }
