@@ -88,7 +88,7 @@ function DonutPlaceholder({ published, draft, review }: { published: number; dra
   const pctR = Math.round((review / total) * 100);
   const pctD = 100 - pctP - pctR;
   const style = {
-    background: `conic-gradient(hsl(var(--success)) 0 ${pctP}%, hsl(var(--warning)) ${pctP}% ${pctP + pctR}%, hsl(var(--muted-foreground)) ${pctP + pctR}% 100%)`,
+    background: `conic-gradient(var(--success) 0 ${pctP}%, var(--warning) ${pctP}% ${pctP + pctR}%, var(--muted-foreground) ${pctP + pctR}% 100%)`,
   };
   return (
     <div className="flex h-full items-center gap-6">
