@@ -238,7 +238,7 @@ export async function attachEntity(input: {
         to_id: input.to.id,
         kind: input.kind,
         sort_order: input.sortOrder ?? 0,
-        meta: input.meta ?? {},
+        meta: (input.meta ?? {}) as never,
       },
       { onConflict: "from_type,from_id,to_type,to_id,kind" },
     )
