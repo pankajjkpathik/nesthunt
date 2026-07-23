@@ -256,12 +256,12 @@ export function BuilderEditor({ id }: Props) {
 
     try {
       if (isNew) {
-        const row = await createMut.mutateAsync(payload);
+        const row = await createMut.mutateAsync(payload as never);
         toast.success("Builder created");
         setDirty(false);
         navigate({ to: "/admin/builders/$id", params: { id: row.id } });
       } else {
-        await updateMut.mutateAsync({ id: id!, patch: payload });
+        await updateMut.mutateAsync({ id: id!, patch: payload as never });
         toast.success("Builder saved");
         setDirty(false);
       }
