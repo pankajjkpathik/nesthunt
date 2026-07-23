@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      amenities: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          featured: boolean
+          icon: string | null
+          id: string
+          illustration_id: string | null
+          name: string
+          seo: Json
+          slug: string
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          featured?: boolean
+          icon?: string | null
+          id?: string
+          illustration_id?: string | null
+          name: string
+          seo?: Json
+          slug: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          featured?: boolean
+          icon?: string | null
+          id?: string
+          illustration_id?: string | null
+          name?: string
+          seo?: Json
+          slug?: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amenities_illustration_id_fkey"
+            columns: ["illustration_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amenities_illustration_id_fkey"
+            columns: ["illustration_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       builder_places: {
         Row: {
           builder_id: string
@@ -176,6 +239,73 @@ export type Database = {
         }
         Relationships: []
       }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          featured_image_id: string | null
+          icon: string | null
+          id: string
+          name: string
+          parent_id: string | null
+          seo: Json
+          slug: string
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          featured_image_id?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          parent_id?: string | null
+          seo?: Json
+          slug: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          featured_image_id?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          parent_id?: string | null
+          seo?: Json
+          slug?: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_featured_image_id_fkey"
+            columns: ["featured_image_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categories_featured_image_id_fkey"
+            columns: ["featured_image_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       entity_documents: {
         Row: {
           created_at: string
@@ -310,6 +440,125 @@ export type Database = {
           sort_order?: number
         }
         Relationships: []
+      }
+      infrastructure_items: {
+        Row: {
+          address: string | null
+          category: string
+          city: string | null
+          created_at: string
+          description: string | null
+          hours: string | null
+          id: string
+          image_id: string | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          phone: string | null
+          slug: string
+          state: string | null
+          status: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          category?: string
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          hours?: string | null
+          id?: string
+          image_id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          phone?: string | null
+          slug: string
+          state?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: string
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          hours?: string | null
+          id?: string
+          image_id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          phone?: string | null
+          slug?: string
+          state?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "infrastructure_items_image_id_fkey"
+            columns: ["image_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "infrastructure_items_image_id_fkey"
+            columns: ["image_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      infrastructure_links: {
+        Row: {
+          created_at: string
+          distance_km: number | null
+          entity_id: string
+          entity_type: string
+          id: string
+          infrastructure_id: string
+          notes: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          distance_km?: number | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          infrastructure_id: string
+          notes?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          distance_km?: number | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          infrastructure_id?: string
+          notes?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "infrastructure_links_infrastructure_id_fkey"
+            columns: ["infrastructure_id"]
+            isOneToOne: false
+            referencedRelation: "infrastructure_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       media_assets: {
         Row: {
@@ -665,6 +914,84 @@ export type Database = {
           },
         ]
       }
+      unit_types: {
+        Row: {
+          balconies: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          carpet_area_max: number | null
+          carpet_area_min: number | null
+          category: string
+          created_at: string
+          description: string | null
+          facing: string | null
+          floor_plan_id: string | null
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+          status: string
+          super_area_max: number | null
+          super_area_min: number | null
+          updated_at: string
+        }
+        Insert: {
+          balconies?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          carpet_area_max?: number | null
+          carpet_area_min?: number | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          facing?: string | null
+          floor_plan_id?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+          status?: string
+          super_area_max?: number | null
+          super_area_min?: number | null
+          updated_at?: string
+        }
+        Update: {
+          balconies?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          carpet_area_max?: number | null
+          carpet_area_min?: number | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          facing?: string | null
+          floor_plan_id?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+          status?: string
+          super_area_max?: number | null
+          super_area_min?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_types_floor_plan_id_fkey"
+            columns: ["floor_plan_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unit_types_floor_plan_id_fkey"
+            columns: ["floor_plan_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -728,6 +1055,38 @@ export type Database = {
           _to_type: string
         }
         Returns: boolean
+      }
+      content_unused_amenities: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          slug: string
+        }[]
+      }
+      content_unused_categories: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          slug: string
+        }[]
+      }
+      content_unused_infrastructure: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          slug: string
+        }[]
+      }
+      content_unused_unit_types: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          slug: string
+        }[]
       }
       has_role: {
         Args: {
