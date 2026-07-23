@@ -144,7 +144,6 @@ export function AmenityEditor({ id }: { id?: string }) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">— Uncategorized</SelectItem>
               {AMENITY_CATEGORIES.map((c) => (
                 <SelectItem key={c} value={c} className="capitalize">
                   {c}
@@ -189,11 +188,6 @@ export function AmenityEditor({ id }: { id?: string }) {
         onChange={(v) => set("description", v)}
       />
 
-      <MediaField
-        label="Illustration"
-        value={form.illustration_url}
-        onChange={(v) => set("illustration_url", v)}
-      />
 
       <div className="grid gap-4 md:grid-cols-2">
         <TextField
