@@ -419,7 +419,14 @@ export function PlaceEditor({ id }: { id?: string }) {
                 onChange={(v) => patch("slug", slugify(v))}
                 hint="URL identifier, e.g. new-chandigarh"
               />
+              <TextField
+                label="Official name"
+                value={form.official_name}
+                onChange={(v) => patch("official_name", v)}
+                hint="Full registered / gazette name if different from display name."
+              />
               <TextField label="Region" value={form.region} onChange={(v) => patch("region", v)} />
+
               <Field label="Featured">
                 <div className="flex h-10 items-center gap-2">
                   <input
