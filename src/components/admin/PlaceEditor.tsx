@@ -380,7 +380,8 @@ export function PlaceEditor({ id }: { id?: string }) {
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-muted/50">
           {[
-            ["general", "General"],
+            ["general", "Basic Info"],
+            ["market", "Market Intelligence"],
             ["location", "Location"],
             ["hero", "Hero"],
             ["decision", "Decision Score"],
@@ -388,11 +389,16 @@ export function PlaceEditor({ id }: { id?: string }) {
             ["education", "Education"],
             ["healthcare", "Healthcare"],
             ["growth", "Growth Drivers"],
-            ["risks", "Risks"],
+            ["risks", "Risks (Narrative)"],
+            ["risks-structured", "Risk Register"],
+            ["evidence", "Evidence"],
+            ["promises", "Promise Ledger"],
+            ["narrative", "Narrative"],
             ["media", "Media"],
             ["relationships", "Relationships"],
             ["seo", "SEO"],
           ].map(([v, l]) => (
+
 
             <TabsTrigger key={v} value={v}>
               {l}
