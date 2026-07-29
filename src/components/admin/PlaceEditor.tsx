@@ -434,14 +434,6 @@ export function PlaceEditor({ id }: { id?: string }) {
                   hint="1–2 sentences shown in list previews."
                 />
               </div>
-              <div className="md:col-span-2">
-                <TextareaField
-                  label="Executive summary"
-                  rows={6}
-                  value={form.executive_summary}
-                  onChange={(v) => patch("executive_summary", v)}
-                />
-              </div>
               <div className="md:col-span-2 grid gap-4 sm:grid-cols-4">
                 <TextField
                   label="Population"
@@ -464,14 +456,14 @@ export function PlaceEditor({ id }: { id?: string }) {
                   onChange={(v) => patch("metrics", { ...form.metrics, verifiedBuilders: v })}
                 />
               </div>
-              <div className="md:col-span-2">
-                <StringListField
-                  label="Highlights"
-                  items={form.highlights}
-                  onChange={(v) => patch("highlights", v)}
-                  placeholder="Short highlight statement"
-                />
+              <div className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 p-3 text-xs text-muted-foreground">
+                Executive summary, strengths, weaknesses and recommendation now live in the{" "}
+                <button type="button" className="text-accent underline" onClick={() => setTab("narrative")}>
+                  Narrative
+                </button>{" "}
+                tab.
               </div>
+
             </CardContent>
           </Card>
         </TabsContent>
