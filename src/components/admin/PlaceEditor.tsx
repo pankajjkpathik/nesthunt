@@ -6,6 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
+import { EvidenceTab } from "@/components/admin/places/EvidenceTab";
+import { RisksTab as StructuredRisksTab } from "@/components/admin/places/RisksTab";
+import { PromiseLedgerTab } from "@/components/admin/places/PromiseLedgerTab";
+import {
+  MarketIntelligenceTab,
+  type MarketIntelligenceValues,
+} from "@/components/admin/places/MarketIntelligenceTab";
+import { NarrativeTab, type NarrativeValues } from "@/components/admin/places/NarrativeTab";
+import { checkPublishReadiness } from "@/lib/services/place-validation";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,
@@ -49,9 +58,11 @@ import {
 } from "@/lib/services/media-admin";
 import { useQueryClient } from "@tanstack/react-query";
 
+
 interface FormState {
   slug: string;
   name: string;
+  official_name: string;
   region: string;
   country: string;
   state: string;
@@ -59,11 +70,8 @@ interface FormState {
   latitude: number | null;
   longitude: number | null;
   summary: string;
-  executive_summary: string;
   status: PlaceStatus;
   featured: boolean;
-  highlights: string[];
-  opportunities: string[];
   risks: string[];
   lifestyle: string[];
   education: string[];
@@ -73,11 +81,39 @@ interface FormState {
   seo: PlaceSeo;
   metrics: PlaceMetrics;
   decision: PlaceDecision;
+  market: MarketIntelligenceValues;
+  narrative: NarrativeValues;
 }
+
+const EMPTY_MARKET: MarketIntelligenceValues = {
+  market_segment: null,
+  investment_category: null,
+  development_stage: null,
+  average_price: null,
+  price_min: null,
+  price_max: null,
+  rental_yield: null,
+  absorption_rate: null,
+  vacancy_rate: null,
+  connectivity_summary: null,
+  employment_summary: null,
+  investment_outlook: null,
+  growth_outlook: null,
+  livability_outlook: null,
+};
+
+const EMPTY_NARRATIVE: NarrativeValues = {
+  executive_summary: "",
+  highlights: [],
+  weaknesses: [],
+  opportunities: [],
+  recommendation: null,
+};
 
 const EMPTY: FormState = {
   slug: "",
   name: "",
+  official_name: "",
   region: "",
   country: "India",
   state: "",
@@ -85,11 +121,8 @@ const EMPTY: FormState = {
   latitude: null,
   longitude: null,
   summary: "",
-  executive_summary: "",
   status: "draft",
   featured: false,
-  highlights: [],
-  opportunities: [],
   risks: [],
   lifestyle: [],
   education: [],
@@ -104,7 +137,10 @@ const EMPTY: FormState = {
     verdict: "",
     categoryRatings: DEFAULT_CATEGORIES,
   },
+  market: EMPTY_MARKET,
+  narrative: EMPTY_NARRATIVE,
 };
+
 
 
 export function PlaceEditor({ id }: { id?: string }) {
@@ -121,15 +157,33 @@ export function PlaceEditor({ id }: { id?: string }) {
     if (!existing) return;
     const dec = (existing.decision ?? {}) as Partial<PlaceDecision>;
     const ex = existing as PlaceRow & {
+      official_name?: string | null;
       country?: string | null;
       state?: string | null;
       city?: string | null;
       latitude?: number | null;
       longitude?: number | null;
+      market_segment?: string | null;
+      investment_category?: string | null;
+      development_stage?: string | null;
+      average_price?: number | null;
+      price_min?: number | null;
+      price_max?: number | null;
+      rental_yield?: number | null;
+      absorption_rate?: number | null;
+      vacancy_rate?: number | null;
+      connectivity_summary?: string | null;
+      employment_summary?: string | null;
+      investment_outlook?: string | null;
+      growth_outlook?: string | null;
+      livability_outlook?: string | null;
+      weaknesses?: string[] | null;
+      recommendation?: string | null;
     };
     setForm({
       slug: existing.slug,
       name: existing.name,
+      official_name: ex.official_name ?? "",
       region: existing.region,
       country: ex.country ?? "India",
       state: ex.state ?? "",
@@ -137,11 +191,8 @@ export function PlaceEditor({ id }: { id?: string }) {
       latitude: ex.latitude ?? null,
       longitude: ex.longitude ?? null,
       summary: existing.summary ?? "",
-      executive_summary: existing.executive_summary ?? "",
       status: (existing.status as PlaceStatus) ?? "draft",
       featured: existing.featured,
-      highlights: existing.highlights ?? [],
-      opportunities: existing.opportunities ?? [],
       risks: existing.risks ?? [],
       lifestyle: existing.lifestyle ?? [],
       education: existing.education ?? [],
@@ -157,12 +208,40 @@ export function PlaceEditor({ id }: { id?: string }) {
         categoryRatings:
           dec.categoryRatings && dec.categoryRatings.length ? dec.categoryRatings : DEFAULT_CATEGORIES,
       },
+      market: {
+        market_segment: ex.market_segment ?? null,
+        investment_category: ex.investment_category ?? null,
+        development_stage: ex.development_stage ?? null,
+        average_price: ex.average_price ?? null,
+        price_min: ex.price_min ?? null,
+        price_max: ex.price_max ?? null,
+        rental_yield: ex.rental_yield ?? null,
+        absorption_rate: ex.absorption_rate ?? null,
+        vacancy_rate: ex.vacancy_rate ?? null,
+        connectivity_summary: ex.connectivity_summary ?? null,
+        employment_summary: ex.employment_summary ?? null,
+        investment_outlook: ex.investment_outlook ?? null,
+        growth_outlook: ex.growth_outlook ?? null,
+        livability_outlook: ex.livability_outlook ?? null,
+      },
+      narrative: {
+        executive_summary: existing.executive_summary ?? "",
+        highlights: existing.highlights ?? [],
+        weaknesses: ex.weaknesses ?? [],
+        opportunities: existing.opportunities ?? [],
+        recommendation: ex.recommendation ?? null,
+      },
     });
   }, [existing]);
 
 
   const patch = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  const patchMarket = (p: Partial<MarketIntelligenceValues>) =>
+    setForm((f) => ({ ...f, market: { ...f.market, ...p } }));
+  const patchNarrative = (p: Partial<NarrativeValues>) =>
+    setForm((f) => ({ ...f, narrative: { ...f.narrative, ...p } }));
 
   const computedScore = useMemo(
     () => computeDecisionScore(form.decision.categoryRatings),
@@ -182,9 +261,27 @@ export function PlaceEditor({ id }: { id?: string }) {
       setTab("general");
       return;
     }
+
+    // Publish gate — validate before status flip
+    if (nextStatus === "published" && id && existing) {
+      const check = await checkPublishReadiness({
+        ...(existing as PlaceRow),
+        highlights: form.narrative.highlights,
+        risks: form.risks,
+        executive_summary: form.narrative.executive_summary,
+      } as PlaceRow);
+      if (!check.ok) {
+        toast.error(`Cannot publish: ${check.failures[0]}`, {
+          description: check.failures.slice(1, 4).join(" · "),
+        });
+        return;
+      }
+    }
+
     const payload = {
       slug: slugify(form.slug),
       name: form.name.trim(),
+      official_name: form.official_name.trim() || null,
       region: form.region.trim(),
       country: form.country.trim() || "India",
       state: form.state.trim(),
@@ -192,11 +289,13 @@ export function PlaceEditor({ id }: { id?: string }) {
       latitude: form.latitude,
       longitude: form.longitude,
       summary: form.summary,
-      executive_summary: form.executive_summary,
+      executive_summary: form.narrative.executive_summary,
       status: nextStatus,
       featured: form.featured,
-      highlights: form.highlights.filter(Boolean),
-      opportunities: form.opportunities.filter(Boolean),
+      highlights: form.narrative.highlights.filter(Boolean),
+      weaknesses: form.narrative.weaknesses.filter(Boolean),
+      opportunities: form.narrative.opportunities.filter(Boolean),
+      recommendation: form.narrative.recommendation,
       risks: form.risks.filter(Boolean),
       lifestyle: form.lifestyle.filter(Boolean),
       education: form.education.filter(Boolean),
@@ -206,6 +305,7 @@ export function PlaceEditor({ id }: { id?: string }) {
       seo: form.seo as unknown as import("@/integrations/supabase/types").Json,
       metrics: form.metrics as unknown as import("@/integrations/supabase/types").Json,
       decision: form.decision as unknown as import("@/integrations/supabase/types").Json,
+      ...form.market,
     };
 
 
@@ -222,6 +322,7 @@ export function PlaceEditor({ id }: { id?: string }) {
       toast.error((e as Error).message);
     }
   }
+
 
   if (id && isLoading) {
     return (
@@ -279,7 +380,8 @@ export function PlaceEditor({ id }: { id?: string }) {
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-muted/50">
           {[
-            ["general", "General"],
+            ["general", "Basic Info"],
+            ["market", "Market Intelligence"],
             ["location", "Location"],
             ["hero", "Hero"],
             ["decision", "Decision Score"],
@@ -287,11 +389,16 @@ export function PlaceEditor({ id }: { id?: string }) {
             ["education", "Education"],
             ["healthcare", "Healthcare"],
             ["growth", "Growth Drivers"],
-            ["risks", "Risks"],
+            ["risks", "Risks (Narrative)"],
+            ["risks-structured", "Risk Register"],
+            ["evidence", "Evidence"],
+            ["promises", "Promise Ledger"],
+            ["narrative", "Narrative"],
             ["media", "Media"],
             ["relationships", "Relationships"],
             ["seo", "SEO"],
           ].map(([v, l]) => (
+
 
             <TabsTrigger key={v} value={v}>
               {l}
@@ -312,7 +419,14 @@ export function PlaceEditor({ id }: { id?: string }) {
                 onChange={(v) => patch("slug", slugify(v))}
                 hint="URL identifier, e.g. new-chandigarh"
               />
+              <TextField
+                label="Official name"
+                value={form.official_name}
+                onChange={(v) => patch("official_name", v)}
+                hint="Full registered / gazette name if different from display name."
+              />
               <TextField label="Region" value={form.region} onChange={(v) => patch("region", v)} />
+
               <Field label="Featured">
                 <div className="flex h-10 items-center gap-2">
                   <input
@@ -331,14 +445,6 @@ export function PlaceEditor({ id }: { id?: string }) {
                   value={form.summary}
                   onChange={(v) => patch("summary", v)}
                   hint="1–2 sentences shown in list previews."
-                />
-              </div>
-              <div className="md:col-span-2">
-                <TextareaField
-                  label="Executive summary"
-                  rows={6}
-                  value={form.executive_summary}
-                  onChange={(v) => patch("executive_summary", v)}
                 />
               </div>
               <div className="md:col-span-2 grid gap-4 sm:grid-cols-4">
@@ -363,14 +469,14 @@ export function PlaceEditor({ id }: { id?: string }) {
                   onChange={(v) => patch("metrics", { ...form.metrics, verifiedBuilders: v })}
                 />
               </div>
-              <div className="md:col-span-2">
-                <StringListField
-                  label="Highlights"
-                  items={form.highlights}
-                  onChange={(v) => patch("highlights", v)}
-                  placeholder="Short highlight statement"
-                />
+              <div className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 p-3 text-xs text-muted-foreground">
+                Executive summary, strengths, weaknesses and recommendation now live in the{" "}
+                <button type="button" className="text-accent underline" onClick={() => setTab("narrative")}>
+                  Narrative
+                </button>{" "}
+                tab.
               </div>
+
             </CardContent>
           </Card>
         </TabsContent>
@@ -593,14 +699,8 @@ export function PlaceEditor({ id }: { id?: string }) {
             items={form.growth_drivers}
             onChange={(v) => patch("growth_drivers", v)}
           />
-          <div className="mt-6">
-            <SectionListCard
-              title="Opportunities"
-              items={form.opportunities}
-              onChange={(v) => patch("opportunities", v)}
-            />
-          </div>
         </TabsContent>
+
         <TabsContent value="risks" className="mt-6">
           <SectionListCard
             title="Risks & Considerations"
@@ -608,6 +708,28 @@ export function PlaceEditor({ id }: { id?: string }) {
             onChange={(v) => patch("risks", v)}
           />
         </TabsContent>
+
+        <TabsContent value="market" className="mt-6">
+          <MarketIntelligenceTab value={form.market} onChange={patchMarket} />
+        </TabsContent>
+
+        <TabsContent value="risks-structured" className="mt-6">
+          <StructuredRisksTab placeId={id} />
+        </TabsContent>
+
+        <TabsContent value="evidence" className="mt-6">
+          <EvidenceTab placeId={id} />
+        </TabsContent>
+
+        <TabsContent value="promises" className="mt-6">
+          <PromiseLedgerTab placeId={id} />
+        </TabsContent>
+
+        <TabsContent value="narrative" className="mt-6">
+          <NarrativeTab value={form.narrative} onChange={patchNarrative} />
+        </TabsContent>
+
+
 
         <TabsContent value="media" className="mt-6">
           <MediaPanel placeId={id} onQueryInvalidate={() => qc.invalidateQueries({ queryKey: ["entity_images"] })} />

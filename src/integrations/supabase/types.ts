@@ -680,27 +680,269 @@ export type Database = {
           },
         ]
       }
+      place_evidence: {
+        Row: {
+          category: string
+          confidence_level: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          evidence_type: string
+          id: string
+          place_id: string
+          publication_date: string | null
+          review_date: string | null
+          sort_order: number
+          source_name: string | null
+          source_url: string | null
+          title: string
+          updated_at: string
+          uploaded_document_media_id: string | null
+          verification_status: string
+          verified_by: string | null
+        }
+        Insert: {
+          category?: string
+          confidence_level?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          evidence_type?: string
+          id?: string
+          place_id: string
+          publication_date?: string | null
+          review_date?: string | null
+          sort_order?: number
+          source_name?: string | null
+          source_url?: string | null
+          title: string
+          updated_at?: string
+          uploaded_document_media_id?: string | null
+          verification_status?: string
+          verified_by?: string | null
+        }
+        Update: {
+          category?: string
+          confidence_level?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          evidence_type?: string
+          id?: string
+          place_id?: string
+          publication_date?: string | null
+          review_date?: string | null
+          sort_order?: number
+          source_name?: string | null
+          source_url?: string | null
+          title?: string
+          updated_at?: string
+          uploaded_document_media_id?: string | null
+          verification_status?: string
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "place_evidence_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "places"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "place_evidence_uploaded_document_media_id_fkey"
+            columns: ["uploaded_document_media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "place_evidence_uploaded_document_media_id_fkey"
+            columns: ["uploaded_document_media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      place_promises: {
+        Row: {
+          announced_by: string | null
+          announcement_date: string | null
+          created_at: string
+          created_by: string | null
+          current_status: string
+          evidence: string | null
+          expected_completion: string | null
+          id: string
+          last_verified: string | null
+          place_id: string
+          promise: string
+          remarks: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          announced_by?: string | null
+          announcement_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_status?: string
+          evidence?: string | null
+          expected_completion?: string | null
+          id?: string
+          last_verified?: string | null
+          place_id: string
+          promise: string
+          remarks?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          announced_by?: string | null
+          announcement_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_status?: string
+          evidence?: string | null
+          expected_completion?: string | null
+          id?: string
+          last_verified?: string | null
+          place_id?: string
+          promise?: string
+          remarks?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "place_promises_evidence_fkey"
+            columns: ["evidence"]
+            isOneToOne: false
+            referencedRelation: "place_evidence"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "place_promises_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "places"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      place_risks: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          evidence_reference: string | null
+          id: string
+          mitigation: string | null
+          place_id: string
+          probability: string
+          review_cycle: string
+          severity: string
+          sort_order: number
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          evidence_reference?: string | null
+          id?: string
+          mitigation?: string | null
+          place_id: string
+          probability?: string
+          review_cycle?: string
+          severity?: string
+          sort_order?: number
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          evidence_reference?: string | null
+          id?: string
+          mitigation?: string | null
+          place_id?: string
+          probability?: string
+          review_cycle?: string
+          severity?: string
+          sort_order?: number
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "place_risks_evidence_reference_fkey"
+            columns: ["evidence_reference"]
+            isOneToOne: false
+            referencedRelation: "place_evidence"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "place_risks_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "places"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       places: {
         Row: {
+          absorption_rate: number | null
+          alternate_names: string[]
+          average_price: number | null
           city: string
+          connectivity_summary: string | null
           country: string
           created_at: string
           decision: Json
+          development_stage: string | null
           education: string[]
+          education_summary: string | null
+          employment_summary: string | null
           executive_summary: string
           featured: boolean
           growth_drivers: string[]
+          growth_outlook: string | null
           healthcare: string[]
+          healthcare_summary: string | null
           hero: Json
           highlights: string[]
           id: string
+          investment_category: string | null
+          investment_outlook: string | null
           latitude: number | null
           lifestyle: string[]
+          lifestyle_tags: string[]
+          livability_outlook: string | null
+          locality_type: string | null
           longitude: number | null
+          market_segment: string | null
           metrics: Json
           name: string
+          official_name: string | null
           opportunities: string[]
+          pin_codes: string[]
+          polygon: Json | null
+          price_max: number | null
+          price_min: number | null
+          recommendation: string | null
           region: string
+          rental_yield: number | null
           risks: string[]
           seo: Json
           slug: string
@@ -708,27 +950,51 @@ export type Database = {
           status: string
           summary: string
           updated_at: string
+          vacancy_rate: number | null
+          weaknesses: string[]
         }
         Insert: {
+          absorption_rate?: number | null
+          alternate_names?: string[]
+          average_price?: number | null
           city?: string
+          connectivity_summary?: string | null
           country?: string
           created_at?: string
           decision?: Json
+          development_stage?: string | null
           education?: string[]
+          education_summary?: string | null
+          employment_summary?: string | null
           executive_summary?: string
           featured?: boolean
           growth_drivers?: string[]
+          growth_outlook?: string | null
           healthcare?: string[]
+          healthcare_summary?: string | null
           hero?: Json
           highlights?: string[]
           id?: string
+          investment_category?: string | null
+          investment_outlook?: string | null
           latitude?: number | null
           lifestyle?: string[]
+          lifestyle_tags?: string[]
+          livability_outlook?: string | null
+          locality_type?: string | null
           longitude?: number | null
+          market_segment?: string | null
           metrics?: Json
           name: string
+          official_name?: string | null
           opportunities?: string[]
+          pin_codes?: string[]
+          polygon?: Json | null
+          price_max?: number | null
+          price_min?: number | null
+          recommendation?: string | null
           region: string
+          rental_yield?: number | null
           risks?: string[]
           seo?: Json
           slug: string
@@ -736,27 +1002,51 @@ export type Database = {
           status?: string
           summary: string
           updated_at?: string
+          vacancy_rate?: number | null
+          weaknesses?: string[]
         }
         Update: {
+          absorption_rate?: number | null
+          alternate_names?: string[]
+          average_price?: number | null
           city?: string
+          connectivity_summary?: string | null
           country?: string
           created_at?: string
           decision?: Json
+          development_stage?: string | null
           education?: string[]
+          education_summary?: string | null
+          employment_summary?: string | null
           executive_summary?: string
           featured?: boolean
           growth_drivers?: string[]
+          growth_outlook?: string | null
           healthcare?: string[]
+          healthcare_summary?: string | null
           hero?: Json
           highlights?: string[]
           id?: string
+          investment_category?: string | null
+          investment_outlook?: string | null
           latitude?: number | null
           lifestyle?: string[]
+          lifestyle_tags?: string[]
+          livability_outlook?: string | null
+          locality_type?: string | null
           longitude?: number | null
+          market_segment?: string | null
           metrics?: Json
           name?: string
+          official_name?: string | null
           opportunities?: string[]
+          pin_codes?: string[]
+          polygon?: Json | null
+          price_max?: number | null
+          price_min?: number | null
+          recommendation?: string | null
           region?: string
+          rental_yield?: number | null
           risks?: string[]
           seo?: Json
           slug?: string
@@ -764,6 +1054,8 @@ export type Database = {
           status?: string
           summary?: string
           updated_at?: string
+          vacancy_rate?: number | null
+          weaknesses?: string[]
         }
         Relationships: []
       }
@@ -1140,6 +1432,8 @@ export type Database = {
           id: string
         }[]
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
