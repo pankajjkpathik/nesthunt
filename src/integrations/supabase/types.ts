@@ -77,6 +77,39 @@ export type Database = {
           },
         ]
       }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          id: string
+          new_data: Json | null
+          old_data: Json | null
+          row_id: string | null
+          table_name: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          row_id?: string | null
+          table_name: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          row_id?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       builder_places: {
         Row: {
           builder_id: string
@@ -306,6 +339,364 @@ export type Database = {
           },
         ]
       }
+      decision_dimensions: {
+        Row: {
+          code: string
+          color: string | null
+          created_at: string
+          description: string | null
+          display_order: number
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+          weight_default: number
+        }
+        Insert: {
+          code: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+          weight_default?: number
+        }
+        Update: {
+          code?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+          weight_default?: number
+        }
+        Relationships: []
+      }
+      decision_entities: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      decision_evidence: {
+        Row: {
+          confidence: string
+          created_at: string
+          decision_factor_id: string
+          id: string
+          media_asset_id: string | null
+          published_date: string | null
+          remarks: string | null
+          source_title: string
+          source_type: string
+          source_url: string | null
+          updated_at: string
+          verification_status: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          confidence?: string
+          created_at?: string
+          decision_factor_id: string
+          id?: string
+          media_asset_id?: string | null
+          published_date?: string | null
+          remarks?: string | null
+          source_title: string
+          source_type: string
+          source_url?: string | null
+          updated_at?: string
+          verification_status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          confidence?: string
+          created_at?: string
+          decision_factor_id?: string
+          id?: string
+          media_asset_id?: string | null
+          published_date?: string | null
+          remarks?: string | null
+          source_title?: string
+          source_type?: string
+          source_url?: string | null
+          updated_at?: string
+          verification_status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_evidence_decision_factor_id_fkey"
+            columns: ["decision_factor_id"]
+            isOneToOne: false
+            referencedRelation: "decision_factors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_evidence_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_evidence_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decision_factors: {
+        Row: {
+          created_at: string
+          decision_score_id: string
+          description: string | null
+          display_order: number
+          evidence_count: number
+          factor_type: string
+          id: string
+          impact: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          decision_score_id: string
+          description?: string | null
+          display_order?: number
+          evidence_count?: number
+          factor_type: string
+          id?: string
+          impact: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          decision_score_id?: string
+          description?: string | null
+          display_order?: number
+          evidence_count?: number
+          factor_type?: string
+          id?: string
+          impact?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_factors_decision_score_id_fkey"
+            columns: ["decision_score_id"]
+            isOneToOne: false
+            referencedRelation: "decision_scores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decision_insights: {
+        Row: {
+          category: string
+          created_at: string
+          decision_entity_id: string
+          details: string | null
+          display_order: number
+          id: string
+          is_featured: boolean
+          priority: number
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          decision_entity_id: string
+          details?: string | null
+          display_order?: number
+          id?: string
+          is_featured?: boolean
+          priority?: number
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          decision_entity_id?: string
+          details?: string | null
+          display_order?: number
+          id?: string
+          is_featured?: boolean
+          priority?: number
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_insights_decision_entity_id_fkey"
+            columns: ["decision_entity_id"]
+            isOneToOne: false
+            referencedRelation: "decision_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decision_recommendations: {
+        Row: {
+          confidence: string
+          cons: Json
+          created_at: string
+          decision_entity_id: string
+          id: string
+          last_reviewed: string | null
+          persona: string
+          pros: Json
+          recommendation: string
+          summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          confidence?: string
+          cons?: Json
+          created_at?: string
+          decision_entity_id: string
+          id?: string
+          last_reviewed?: string | null
+          persona: string
+          pros?: Json
+          recommendation: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          confidence?: string
+          cons?: Json
+          created_at?: string
+          decision_entity_id?: string
+          id?: string
+          last_reviewed?: string | null
+          persona?: string
+          pros?: Json
+          recommendation?: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_recommendations_decision_entity_id_fkey"
+            columns: ["decision_entity_id"]
+            isOneToOne: false
+            referencedRelation: "decision_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decision_scores: {
+        Row: {
+          calculated_at: string
+          calculated_by: string | null
+          calculation_version: string
+          confidence: string
+          created_at: string
+          decision_entity_id: string
+          dimension_id: string
+          id: string
+          max_score: number
+          reason_summary: string | null
+          score: number
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          calculated_at?: string
+          calculated_by?: string | null
+          calculation_version?: string
+          confidence?: string
+          created_at?: string
+          decision_entity_id: string
+          dimension_id: string
+          id?: string
+          max_score?: number
+          reason_summary?: string | null
+          score: number
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          calculated_at?: string
+          calculated_by?: string | null
+          calculation_version?: string
+          confidence?: string
+          created_at?: string
+          decision_entity_id?: string
+          dimension_id?: string
+          id?: string
+          max_score?: number
+          reason_summary?: string | null
+          score?: number
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_scores_decision_entity_id_fkey"
+            columns: ["decision_entity_id"]
+            isOneToOne: false
+            referencedRelation: "decision_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_scores_dimension_id_fkey"
+            columns: ["dimension_id"]
+            isOneToOne: false
+            referencedRelation: "decision_dimensions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       entity_documents: {
         Row: {
           created_at: string
@@ -404,6 +795,51 @@ export type Database = {
           sort_order?: number
           to_id?: string
           to_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      entity_risks: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          mitigation: string | null
+          probability: string
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          mitigation?: string | null
+          probability: string
+          severity: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          mitigation?: string | null
+          probability?: string
+          severity?: string
+          status?: string
+          title?: string
           updated_at?: string
         }
         Relationships: []
@@ -1206,6 +1642,63 @@ export type Database = {
           },
         ]
       }
+      promise_ledgers: {
+        Row: {
+          actual_completion: string | null
+          announced_by: string | null
+          announcement_date: string | null
+          category: string | null
+          confidence: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          evidence_count: number
+          expected_completion: string | null
+          id: string
+          last_verified: string | null
+          promise: string
+          remarks: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          actual_completion?: string | null
+          announced_by?: string | null
+          announcement_date?: string | null
+          category?: string | null
+          confidence?: string
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          evidence_count?: number
+          expected_completion?: string | null
+          id?: string
+          last_verified?: string | null
+          promise: string
+          remarks?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          actual_completion?: string | null
+          announced_by?: string | null
+          announcement_date?: string | null
+          category?: string | null
+          confidence?: string
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          evidence_count?: number
+          expected_completion?: string | null
+          id?: string
+          last_verified?: string | null
+          promise?: string
+          remarks?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       unit_types: {
         Row: {
           balconies: number | null
@@ -1380,6 +1873,13 @@ export type Database = {
           slug: string
         }[]
       }
+      di_can_edit: { Args: { _uid: string }; Returns: boolean }
+      di_can_publish: { Args: { _uid: string }; Returns: boolean }
+      di_can_review: { Args: { _uid: string }; Returns: boolean }
+      di_entity_published: {
+        Args: { _decision_entity_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1436,7 +1936,13 @@ export type Database = {
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "editor"
+        | "reviewer"
+        | "publisher"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1564,7 +2070,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "editor",
+        "reviewer",
+        "publisher",
+      ],
     },
   },
 } as const
