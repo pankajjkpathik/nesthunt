@@ -686,14 +686,8 @@ export function PlaceEditor({ id }: { id?: string }) {
             items={form.growth_drivers}
             onChange={(v) => patch("growth_drivers", v)}
           />
-          <div className="mt-6">
-            <SectionListCard
-              title="Opportunities"
-              items={form.opportunities}
-              onChange={(v) => patch("opportunities", v)}
-            />
-          </div>
         </TabsContent>
+
         <TabsContent value="risks" className="mt-6">
           <SectionListCard
             title="Risks & Considerations"
