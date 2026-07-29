@@ -66,14 +66,19 @@ interface FormState {
   country: string;
   state: string;
   city: string;
+interface FormState {
+  slug: string;
+  name: string;
+  official_name: string;
+  region: string;
+  country: string;
+  state: string;
+  city: string;
   latitude: number | null;
   longitude: number | null;
   summary: string;
-  executive_summary: string;
   status: PlaceStatus;
   featured: boolean;
-  highlights: string[];
-  opportunities: string[];
   risks: string[];
   lifestyle: string[];
   education: string[];
@@ -83,11 +88,39 @@ interface FormState {
   seo: PlaceSeo;
   metrics: PlaceMetrics;
   decision: PlaceDecision;
+  market: MarketIntelligenceValues;
+  narrative: NarrativeValues;
 }
+
+const EMPTY_MARKET: MarketIntelligenceValues = {
+  market_segment: null,
+  investment_category: null,
+  development_stage: null,
+  average_price: null,
+  price_min: null,
+  price_max: null,
+  rental_yield: null,
+  absorption_rate: null,
+  vacancy_rate: null,
+  connectivity_summary: null,
+  employment_summary: null,
+  investment_outlook: null,
+  growth_outlook: null,
+  livability_outlook: null,
+};
+
+const EMPTY_NARRATIVE: NarrativeValues = {
+  executive_summary: "",
+  highlights: [],
+  weaknesses: [],
+  opportunities: [],
+  recommendation: null,
+};
 
 const EMPTY: FormState = {
   slug: "",
   name: "",
+  official_name: "",
   region: "",
   country: "India",
   state: "",
@@ -95,11 +128,8 @@ const EMPTY: FormState = {
   latitude: null,
   longitude: null,
   summary: "",
-  executive_summary: "",
   status: "draft",
   featured: false,
-  highlights: [],
-  opportunities: [],
   risks: [],
   lifestyle: [],
   education: [],
@@ -114,7 +144,10 @@ const EMPTY: FormState = {
     verdict: "",
     categoryRatings: DEFAULT_CATEGORIES,
   },
+  market: EMPTY_MARKET,
+  narrative: EMPTY_NARRATIVE,
 };
+
 
 
 export function PlaceEditor({ id }: { id?: string }) {
