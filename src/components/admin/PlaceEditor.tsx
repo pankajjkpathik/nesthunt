@@ -6,6 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
+import { EvidenceTab } from "@/components/admin/places/EvidenceTab";
+import { RisksTab as StructuredRisksTab } from "@/components/admin/places/RisksTab";
+import { PromiseLedgerTab } from "@/components/admin/places/PromiseLedgerTab";
+import {
+  MarketIntelligenceTab,
+  type MarketIntelligenceValues,
+} from "@/components/admin/places/MarketIntelligenceTab";
+import { NarrativeTab, type NarrativeValues } from "@/components/admin/places/NarrativeTab";
+import { checkPublishReadiness } from "@/lib/services/place-validation";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,
@@ -48,6 +57,7 @@ import {
   uploadMedia,
 } from "@/lib/services/media-admin";
 import { useQueryClient } from "@tanstack/react-query";
+
 
 interface FormState {
   slug: string;
