@@ -157,15 +157,33 @@ export function PlaceEditor({ id }: { id?: string }) {
     if (!existing) return;
     const dec = (existing.decision ?? {}) as Partial<PlaceDecision>;
     const ex = existing as PlaceRow & {
+      official_name?: string | null;
       country?: string | null;
       state?: string | null;
       city?: string | null;
       latitude?: number | null;
       longitude?: number | null;
+      market_segment?: string | null;
+      investment_category?: string | null;
+      development_stage?: string | null;
+      average_price?: number | null;
+      price_min?: number | null;
+      price_max?: number | null;
+      rental_yield?: number | null;
+      absorption_rate?: number | null;
+      vacancy_rate?: number | null;
+      connectivity_summary?: string | null;
+      employment_summary?: string | null;
+      investment_outlook?: string | null;
+      growth_outlook?: string | null;
+      livability_outlook?: string | null;
+      weaknesses?: string[] | null;
+      recommendation?: string | null;
     };
     setForm({
       slug: existing.slug,
       name: existing.name,
+      official_name: ex.official_name ?? "",
       region: existing.region,
       country: ex.country ?? "India",
       state: ex.state ?? "",
@@ -173,11 +191,8 @@ export function PlaceEditor({ id }: { id?: string }) {
       latitude: ex.latitude ?? null,
       longitude: ex.longitude ?? null,
       summary: existing.summary ?? "",
-      executive_summary: existing.executive_summary ?? "",
       status: (existing.status as PlaceStatus) ?? "draft",
       featured: existing.featured,
-      highlights: existing.highlights ?? [],
-      opportunities: existing.opportunities ?? [],
       risks: existing.risks ?? [],
       lifestyle: existing.lifestyle ?? [],
       education: existing.education ?? [],
@@ -193,12 +208,40 @@ export function PlaceEditor({ id }: { id?: string }) {
         categoryRatings:
           dec.categoryRatings && dec.categoryRatings.length ? dec.categoryRatings : DEFAULT_CATEGORIES,
       },
+      market: {
+        market_segment: ex.market_segment ?? null,
+        investment_category: ex.investment_category ?? null,
+        development_stage: ex.development_stage ?? null,
+        average_price: ex.average_price ?? null,
+        price_min: ex.price_min ?? null,
+        price_max: ex.price_max ?? null,
+        rental_yield: ex.rental_yield ?? null,
+        absorption_rate: ex.absorption_rate ?? null,
+        vacancy_rate: ex.vacancy_rate ?? null,
+        connectivity_summary: ex.connectivity_summary ?? null,
+        employment_summary: ex.employment_summary ?? null,
+        investment_outlook: ex.investment_outlook ?? null,
+        growth_outlook: ex.growth_outlook ?? null,
+        livability_outlook: ex.livability_outlook ?? null,
+      },
+      narrative: {
+        executive_summary: existing.executive_summary ?? "",
+        highlights: existing.highlights ?? [],
+        weaknesses: ex.weaknesses ?? [],
+        opportunities: existing.opportunities ?? [],
+        recommendation: ex.recommendation ?? null,
+      },
     });
   }, [existing]);
 
 
   const patch = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  const patchMarket = (p: Partial<MarketIntelligenceValues>) =>
+    setForm((f) => ({ ...f, market: { ...f.market, ...p } }));
+  const patchNarrative = (p: Partial<NarrativeValues>) =>
+    setForm((f) => ({ ...f, narrative: { ...f.narrative, ...p } }));
 
   const computedScore = useMemo(
     () => computeDecisionScore(form.decision.categoryRatings),
@@ -218,9 +261,27 @@ export function PlaceEditor({ id }: { id?: string }) {
       setTab("general");
       return;
     }
+
+    // Publish gate — validate before status flip
+    if (nextStatus === "published" && id && existing) {
+      const check = await checkPublishReadiness({
+        ...(existing as PlaceRow),
+        highlights: form.narrative.highlights,
+        risks: form.risks,
+        executive_summary: form.narrative.executive_summary,
+      } as PlaceRow);
+      if (!check.ok) {
+        toast.error(`Cannot publish: ${check.failures[0]}`, {
+          description: check.failures.slice(1, 4).join(" · "),
+        });
+        return;
+      }
+    }
+
     const payload = {
       slug: slugify(form.slug),
       name: form.name.trim(),
+      official_name: form.official_name.trim() || null,
       region: form.region.trim(),
       country: form.country.trim() || "India",
       state: form.state.trim(),
@@ -228,11 +289,13 @@ export function PlaceEditor({ id }: { id?: string }) {
       latitude: form.latitude,
       longitude: form.longitude,
       summary: form.summary,
-      executive_summary: form.executive_summary,
+      executive_summary: form.narrative.executive_summary,
       status: nextStatus,
       featured: form.featured,
-      highlights: form.highlights.filter(Boolean),
-      opportunities: form.opportunities.filter(Boolean),
+      highlights: form.narrative.highlights.filter(Boolean),
+      weaknesses: form.narrative.weaknesses.filter(Boolean),
+      opportunities: form.narrative.opportunities.filter(Boolean),
+      recommendation: form.narrative.recommendation,
       risks: form.risks.filter(Boolean),
       lifestyle: form.lifestyle.filter(Boolean),
       education: form.education.filter(Boolean),
@@ -242,6 +305,7 @@ export function PlaceEditor({ id }: { id?: string }) {
       seo: form.seo as unknown as import("@/integrations/supabase/types").Json,
       metrics: form.metrics as unknown as import("@/integrations/supabase/types").Json,
       decision: form.decision as unknown as import("@/integrations/supabase/types").Json,
+      ...form.market,
     };
 
 
@@ -258,6 +322,7 @@ export function PlaceEditor({ id }: { id?: string }) {
       toast.error((e as Error).message);
     }
   }
+
 
   if (id && isLoading) {
     return (
