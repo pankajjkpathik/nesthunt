@@ -62,13 +62,6 @@ import { useQueryClient } from "@tanstack/react-query";
 interface FormState {
   slug: string;
   name: string;
-  region: string;
-  country: string;
-  state: string;
-  city: string;
-interface FormState {
-  slug: string;
-  name: string;
   official_name: string;
   region: string;
   country: string;
