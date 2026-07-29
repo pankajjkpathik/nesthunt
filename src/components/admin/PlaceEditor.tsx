@@ -709,6 +709,28 @@ export function PlaceEditor({ id }: { id?: string }) {
           />
         </TabsContent>
 
+        <TabsContent value="market" className="mt-6">
+          <MarketIntelligenceTab value={form.market} onChange={patchMarket} />
+        </TabsContent>
+
+        <TabsContent value="risks-structured" className="mt-6">
+          <StructuredRisksTab placeId={id} />
+        </TabsContent>
+
+        <TabsContent value="evidence" className="mt-6">
+          <EvidenceTab placeId={id} />
+        </TabsContent>
+
+        <TabsContent value="promises" className="mt-6">
+          <PromiseLedgerTab placeId={id} />
+        </TabsContent>
+
+        <TabsContent value="narrative" className="mt-6">
+          <NarrativeTab value={form.narrative} onChange={patchNarrative} />
+        </TabsContent>
+
+
+
         <TabsContent value="media" className="mt-6">
           <MediaPanel placeId={id} onQueryInvalidate={() => qc.invalidateQueries({ queryKey: ["entity_images"] })} />
         </TabsContent>
