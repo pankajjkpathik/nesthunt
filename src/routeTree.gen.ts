@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectHeroHomesRouteImport } from './routes/project.hero-homes'
 import { Route as PlacesNewChandigarhRouteImport } from './routes/places.new-chandigarh'
+import { Route as BuildersSlugRouteImport } from './routes/builders.$slug'
 import { Route as BuilderOmaxeRouteImport } from './routes/builder.omaxe'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -79,6 +80,11 @@ const ProjectHeroHomesRoute = ProjectHeroHomesRouteImport.update({
 const PlacesNewChandigarhRoute = PlacesNewChandigarhRouteImport.update({
   id: '/places/new-chandigarh',
   path: '/places/new-chandigarh',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildersSlugRoute = BuildersSlugRouteImport.update({
+  id: '/builders/$slug',
+  path: '/builders/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuilderOmaxeRoute = BuilderOmaxeRouteImport.update({
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/login': typeof AdminLoginRoute
   '/builder/omaxe': typeof BuilderOmaxeRoute
+  '/builders/$slug': typeof BuildersSlugRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
@@ -277,6 +284,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/login': typeof AdminLoginRoute
   '/builder/omaxe': typeof BuilderOmaxeRoute
+  '/builders/$slug': typeof BuildersSlugRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin': typeof AdminIndexRoute
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin_/login': typeof AdminLoginRoute
   '/builder/omaxe': typeof BuilderOmaxeRoute
+  '/builders/$slug': typeof BuildersSlugRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
@@ -356,6 +365,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin/login'
     | '/builder/omaxe'
+    | '/builders/$slug'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin/'
@@ -393,6 +403,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin/login'
     | '/builder/omaxe'
+    | '/builders/$slug'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin'
@@ -431,6 +442,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin_/login'
     | '/builder/omaxe'
+    | '/builders/$slug'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin/'
@@ -470,6 +482,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
   BuilderOmaxeRoute: typeof BuilderOmaxeRoute
+  BuildersSlugRoute: typeof BuildersSlugRoute
   PlacesNewChandigarhRoute: typeof PlacesNewChandigarhRoute
   ProjectHeroHomesRoute: typeof ProjectHeroHomesRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -524,6 +537,13 @@ declare module '@tanstack/react-router' {
       path: '/places/new-chandigarh'
       fullPath: '/places/new-chandigarh'
       preLoaderRoute: typeof PlacesNewChandigarhRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/builders/$slug': {
+      id: '/builders/$slug'
+      path: '/builders/$slug'
+      fullPath: '/builders/$slug'
+      preLoaderRoute: typeof BuildersSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/builder/omaxe': {
@@ -800,6 +820,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
   BuilderOmaxeRoute: BuilderOmaxeRoute,
+  BuildersSlugRoute: BuildersSlugRoute,
   PlacesNewChandigarhRoute: PlacesNewChandigarhRoute,
   ProjectHeroHomesRoute: ProjectHeroHomesRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
