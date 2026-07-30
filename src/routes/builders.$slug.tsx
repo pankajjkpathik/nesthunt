@@ -171,22 +171,14 @@ function BuilderDetailPage() {
     <BuilderShell>
       <Crumbs name={builder.name} />
       <Section>
-        <header>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-            Builder Intelligence
-          </p>
-          <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {builder.name}
-          </h1>
-          {builder.summary && (
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {builder.summary}
-            </p>
-          )}
-        </header>
+        <BuilderHero builder={builder} />
+
+        <div className="mt-12">
+          <BuilderExecutiveSummary summary={builder.summary} />
+        </div>
 
         <div className="mt-10 space-y-6">
-          {SECTIONS.map((section) => (
+          {SECTIONS.filter((s) => s.id !== "hero" && s.id !== "executive-summary").map((section) => (
             <section
               key={section.id}
               id={section.id}
