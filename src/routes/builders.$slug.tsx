@@ -13,6 +13,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useBuilder, useBuilderProjects } from "@/hooks/useBuilder";
+import { BuilderHero } from "@/components/builder/BuilderHero";
+import { BuilderExecutiveSummary } from "@/components/builder/BuilderExecutiveSummary";
 
 const SECTIONS: Array<{ id: string; title: string; description: string }> = [
   { id: "hero", title: "Hero", description: "Builder identity, trust score and key badges." },
