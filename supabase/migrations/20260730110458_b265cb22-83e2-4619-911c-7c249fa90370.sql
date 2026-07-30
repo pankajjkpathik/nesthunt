@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.di_audit_row() FROM anon, authenticated, PUBLIC;
