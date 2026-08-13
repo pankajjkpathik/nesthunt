@@ -44,7 +44,7 @@ export function useCreateBuilderLeadership() {
   return useMutation({
     mutationFn: (payload: Partial<LeadershipMember> & { builder_id: string }) =>
       createBuilderChild("builder_leadership", payload),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.leadership(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.leadership(row.builder_id) }),
   });
 }
 
@@ -53,7 +53,7 @@ export function useUpdateBuilderLeadership() {
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: Partial<LeadershipMember> }) =>
       updateBuilderChild("builder_leadership", id, patch),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.leadership(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.leadership(row.builder_id) }),
   });
 }
 
@@ -79,7 +79,7 @@ export function useCreateBuilderCertification() {
   return useMutation({
     mutationFn: (payload: Partial<CertificationEntry> & { builder_id: string }) =>
       createBuilderChild("builder_certifications", payload),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.certifications(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.certifications(row.builder_id) }),
   });
 }
 
@@ -88,7 +88,7 @@ export function useUpdateBuilderCertification() {
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: Partial<CertificationEntry> }) =>
       updateBuilderChild("builder_certifications", id, patch),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.certifications(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.certifications(row.builder_id) }),
   });
 }
 
@@ -114,7 +114,7 @@ export function useCreateBuilderAward() {
   return useMutation({
     mutationFn: (payload: Partial<AwardEntry> & { builder_id: string }) =>
       createBuilderChild("builder_awards", payload),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.awards(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.awards(row.builder_id) }),
   });
 }
 
@@ -123,7 +123,7 @@ export function useUpdateBuilderAward() {
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: Partial<AwardEntry> }) =>
       updateBuilderChild("builder_awards", id, patch),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.awards(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.awards(row.builder_id) }),
   });
 }
 
@@ -149,7 +149,7 @@ export function useCreateBuilderRera() {
   return useMutation({
     mutationFn: (payload: Partial<ReraEntry> & { builder_id: string }) =>
       createBuilderChild("builder_rera_records", payload),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.rera(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.rera(row.builder_id) }),
   });
 }
 
@@ -158,7 +158,7 @@ export function useUpdateBuilderRera() {
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: Partial<ReraEntry> }) =>
       updateBuilderChild("builder_rera_records", id, patch),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.rera(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.rera(row.builder_id) }),
   });
 }
 
@@ -184,7 +184,7 @@ export function useCreateBuilderFaq() {
   return useMutation({
     mutationFn: (payload: Partial<BuilderFaq> & { builder_id: string }) =>
       createBuilderChild("builder_faqs", payload),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.faqs(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.faqs(row.builder_id) }),
   });
 }
 
@@ -193,7 +193,7 @@ export function useUpdateBuilderFaq() {
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: Partial<BuilderFaq> }) =>
       updateBuilderChild("builder_faqs", id, patch),
-    onSuccess: (row) => qc.invalidateQueries({ queryKey: builderIntellKeys.faqs(row.builder_id) }),
+    onSuccess: (row: any) => qc.invalidateQueries({ queryKey: builderIntellKeys.faqs(row.builder_id) }),
   });
 }
 
