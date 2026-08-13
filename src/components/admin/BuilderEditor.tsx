@@ -164,9 +164,9 @@ function fromRow(row: BuilderRow): FormState {
     awards: (row.awards as AwardEntry[] | undefined) ?? [],
     certifications: (row.certifications as CertificationEntry[] | undefined) ?? [],
     trust_breakdown:
-      (row.trust_breakdown as TrustBreakdownEntry[] | undefined) &&
-      (row.trust_breakdown as TrustBreakdownEntry[]).length > 0
-        ? (row.trust_breakdown as TrustBreakdownEntry[])
+      (row.trust_breakdown as unknown as TrustBreakdownEntry[] | undefined) &&
+      (row.trust_breakdown as unknown as TrustBreakdownEntry[]).length > 0
+        ? (row.trust_breakdown as unknown as TrustBreakdownEntry[])
         : DEFAULT_TRUST_BREAKDOWN,
     hero: (row.hero as BuilderHero) ?? {},
     seo: (row.seo as BuilderSeo) ?? {},
@@ -688,10 +688,10 @@ function ReraEditor({
         ) : (
           items.map((r, i) => (
             <div key={i} className="grid gap-3 rounded-lg border border-border p-4 md:grid-cols-3">
-              <TextField label="Registration no." value={r.registration ?? ""} onChange={(v) => update(i, { registration: v })} />
+              <TextField label="Registration no." value={r.registration_number ?? ""} onChange={(v) => update(i, { registration_number: v })} />
               <TextField label="Authority" value={r.authority ?? ""} onChange={(v) => update(i, { authority: v })} placeholder="e.g. HARERA" />
               <Field label="Status">
-                <Select value={r.status ?? "active"} onValueChange={(v) => update(i, { status: v as ReraEntry["status"] })}>
+                <Select value={r.status ?? "active"} onValueChange={(v) => update(i, { status: v as any })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="active">Active</SelectItem>
@@ -700,9 +700,9 @@ function ReraEditor({
                   </SelectContent>
                 </Select>
               </Field>
-              <TextField label="Registered on" value={r.registrationDate ?? ""} onChange={(v) => update(i, { registrationDate: v })} placeholder="YYYY-MM-DD" />
-              <TextField label="Valid until" value={r.validity ?? ""} onChange={(v) => update(i, { validity: v })} placeholder="YYYY-MM-DD" />
-              <TextField label="Document URL" value={r.documentUrl ?? ""} onChange={(v) => update(i, { documentUrl: v })} />
+              <TextField label="Registered on" value={r.registration_date ?? ""} onChange={(v) => update(i, { registration_date: v })} placeholder="YYYY-MM-DD" />
+              <TextField label="Valid until" value={(r as any).validity_date ?? ""} onChange={(v) => update(i, { validity_date: v } as any)} placeholder="YYYY-MM-DD" />
+              <TextField label="Document URL" value={r.registration_url ?? ""} onChange={(v) => update(i, { registration_url: v })} />
               <div className="md:col-span-3 flex justify-end">
                 <Button variant="ghost" size="sm" onClick={() => onChange(items.filter((_, idx) => idx !== i))}>
                   <Trash2 className="mr-2 h-4 w-4" /> Remove
@@ -711,7 +711,7 @@ function ReraEditor({
             </div>
           ))
         )}
-        <Button variant="outline" size="sm" onClick={() => onChange([...items, { registration: "", authority: "", status: "active" }])}>
+        <Button variant="outline" size="sm" onClick={() => onChange([...items, { registration_number: "", authority: "", status: "active" } as any])}>
           <Plus className="mr-2 h-4 w-4" /> Add RERA registration
         </Button>
       </div>
@@ -747,10 +747,10 @@ function AwardsEditor({
         ) : (
           items.map((a, i) => (
             <div key={i} className="grid gap-3 rounded-lg border border-border p-4 md:grid-cols-2">
-              <TextField label="Title" value={a.title ?? ""} onChange={(v) => update(i, { title: v })} />
-              <TextField label="Issuer" value={a.issuer ?? ""} onChange={(v) => update(i, { issuer: v })} />
-              <NumberField label="Year" value={a.year ?? 0} onChange={(v) => update(i, { year: v || undefined })} />
-              <TextField label="Image URL" value={a.imageUrl ?? ""} onChange={(v) => update(i, { imageUrl: v })} />
+              <TextField label="Title" value={a.name ?? ""} onChange={(v) => update(i, { name: v })} />
+              <TextField label="Issuer" value={(a as any).organization ?? ""} onChange={(v) => update(i, { organization: v } as any)} />
+              <NumberField label="Year" value={(a as any).year_awarded ?? (a as any).year_certified ?? 0} onChange={(v) => update(i, { [kind === "award" ? "year_awarded" : "year_certified"]: v || undefined } as any)} />
+              <TextField label="Image URL" value={(a as any).media_url ?? ""} onChange={(v) => update(i, { media_url: v } as any)} />
               <div className="md:col-span-2">
                 <TextareaField label="Description" value={a.description ?? ""} onChange={(v) => update(i, { description: v })} rows={2} />
               </div>
@@ -762,7 +762,7 @@ function AwardsEditor({
             </div>
           ))
         )}
-        <Button variant="outline" size="sm" onClick={() => onChange([...(items as AwardEntry[]), { title: "" }])}>
+        <Button variant="outline" size="sm" onClick={() => onChange([...(items as AwardEntry[]), { name: "" } as any])}>
           <Plus className="mr-2 h-4 w-4" /> Add {label.toLowerCase()}
         </Button>
       </CardContent>
