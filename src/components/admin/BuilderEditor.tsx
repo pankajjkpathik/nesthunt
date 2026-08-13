@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, ExternalLink, Loader2, Plus, Save, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2, Plus, Save, Trash2, Upload, FileText, ShieldAlert, History } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,10 @@ import {
   TextareaField,
 } from "@/components/admin/form/Fields";
 import { MediaField } from "@/components/admin/media/MediaField";
+
+import { EvidenceTab } from "@/components/admin/builders/EvidenceTab";
+import { RisksTab } from "@/components/admin/builders/RisksTab";
+import { PromiseLedgerTab } from "@/components/admin/builders/PromiseLedgerTab";
 
 import {
   useAdminBuilder,
