@@ -6,33 +6,34 @@ export type BuilderStatus = "draft" | "review" | "published" | "archived";
 /** Loose row type — the auto-generated Database types cover the base builders columns.
  *  The enterprise fields added in the latest migration are represented here explicitly. */
 export type BuilderRow = Database["public"]["Tables"]["builders"]["Row"] & {
-  status?: string;
-  verified?: boolean;
-  builder_type?: string;
-  tagline?: string;
-  description?: string;
-  country?: string;
-  state?: string;
-  city?: string;
-  year_established?: number | null;
-  head_office?: string;
-  website?: string;
-  email?: string;
-  phone?: string;
-  pan?: string;
-  gst?: string;
-  company_registration?: string;
-  organization_type?: string;
-  employee_count?: string;
-  trust_score?: number | null;
-  trust_breakdown?: TrustBreakdownEntry[];
+  // Child collections represented as JSON in legacy or for easy passing
+  // but now backed by tables.
   leadership?: LeadershipMember[];
   rera?: ReraEntry[];
   awards?: AwardEntry[];
   certifications?: CertificationEntry[];
+  faqs?: BuilderFaq[];
+  
+  // Extended fields
+  legal_name?: string | null;
+  mission?: string | null;
+  vision?: string | null;
+  operating_years_manual?: number | null;
+  portfolio_stats_manual?: Json;
+  delivery_stats_manual?: Json;
+
+  // Legacy mappings / Computed
   hero?: BuilderHero;
   seo?: BuilderSeo;
 };
+
+export interface BuilderFaq {
+  id?: string;
+  question: string;
+  answer: string;
+  display_order?: number;
+  is_published?: boolean;
+}
 
 export type BuilderInsert = Database["public"]["Tables"]["builders"]["Insert"] &
   Partial<Omit<BuilderRow, keyof Database["public"]["Tables"]["builders"]["Insert"]>>;
@@ -43,34 +44,43 @@ export interface LeadershipMember {
   name: string;
   designation: string;
   bio?: string;
-  photoUrl?: string;
+  photo_id?: string | null;
+  photoUrl?: string; // Legacy/Mapped
   linkedIn?: string;
-  order?: number;
+  display_order?: number;
 }
 
 export interface ReraEntry {
-  registration: string;
+  id?: string;
+  registration_number: string;
+  state?: string;
   authority: string;
-  registrationDate?: string;
-  validity?: string;
-  status?: "active" | "expired" | "pending";
-  documentUrl?: string;
+  registration_url?: string;
+  registration_date?: string;
+  expiry_date?: string;
+  status?: "active" | "expired" | "cancelled" | "unknown";
+  notes?: string;
 }
 
 export interface AwardEntry {
-  title: string;
+  id?: string;
+  name: string;
   issuer?: string;
   year?: number;
   description?: string;
-  imageUrl?: string;
+  media_id?: string | null;
+  display_order?: number;
 }
 
 export interface CertificationEntry {
-  title: string;
+  id?: string;
+  name: string;
   issuer?: string;
-  year?: number;
+  issue_date?: string;
+  expiry_date?: string;
   description?: string;
-  imageUrl?: string;
+  media_id?: string | null;
+  display_order?: number;
 }
 
 export interface TrustBreakdownEntry {
@@ -305,4 +315,76 @@ export async function listBuilderProjects(builderId: string): Promise<BuilderPro
     .order("name");
   if (error) throw error;
   return (data ?? []) as BuilderProjectSummary[];
+}
+
+// -----------------------------
+// Child Intelligence Collections
+// -----------------------------
+
+export async function listBuilderLeadership(builderId: string): Promise<LeadershipMember[]> {
+  const { data, error } = await supabase
+    .from("builder_leadership")
+    .select("*")
+    .eq("builder_id", builderId)
+    .order("display_order");
+  if (error) throw error;
+  return (data ?? []) as LeadershipMember[];
+}
+
+export async function listBuilderCertifications(builderId: string): Promise<CertificationEntry[]> {
+  const { data, error } = await supabase
+    .from("builder_certifications")
+    .select("*")
+    .eq("builder_id", builderId)
+    .order("display_order");
+  if (error) throw error;
+  return (data ?? []) as CertificationEntry[];
+}
+
+export async function listBuilderAwards(builderId: string): Promise<AwardEntry[]> {
+  const { data, error } = await supabase
+    .from("builder_awards")
+    .select("*")
+    .eq("builder_id", builderId)
+    .order("display_order");
+  if (error) throw error;
+  return (data ?? []) as AwardEntry[];
+}
+
+export async function listBuilderReraRecords(builderId: string): Promise<ReraEntry[]> {
+  const { data, error } = await supabase
+    .from("builder_rera_records")
+    .select("*")
+    .eq("builder_id", builderId)
+    .order("registration_date", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as ReraEntry[];
+}
+
+export async function listBuilderFaqs(builderId: string): Promise<BuilderFaq[]> {
+  const { data, error } = await supabase
+    .from("builder_faqs")
+    .select("*")
+    .eq("builder_id", builderId)
+    .order("display_order");
+  if (error) throw error;
+  return (data ?? []) as BuilderFaq[];
+}
+
+// Generic child CRUD helpers
+export async function createBuilderChild(table: string, payload: any) {
+  const { data, error } = await supabase.from(table as any).insert(payload).select("*").single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateBuilderChild(table: string, id: string, patch: any) {
+  const { data, error } = await supabase.from(table as any).update(patch).eq("id", id).select("*").single();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteBuilderChild(table: string, id: string) {
+  const { error } = await supabase.from(table as any).delete().eq("id", id);
+  if (error) throw error;
 }
