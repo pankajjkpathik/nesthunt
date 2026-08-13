@@ -177,3 +177,28 @@ export function useDeletePromise(entityId: string | undefined, entityType: Decis
   });
 }
 
+// Builder Specific Hooks
+export function useBuilderRisks(builderId: string | undefined) {
+  return useQuery({
+    queryKey: ["builder-risks", builderId],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("place_risks").select("*").eq("builder_id", builderId).order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!builderId,
+  });
+}
+
+export function useBuilderPromises(builderId: string | undefined) {
+  return useQuery({
+    queryKey: ["builder-promises", builderId],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("place_promises").select("*").eq("builder_id", builderId).order("announcement_date", { ascending: false, nullsFirst: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!builderId,
+  });
+}
+
