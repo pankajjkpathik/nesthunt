@@ -86,8 +86,12 @@ export function useDeleteEvidence(entityId: string | undefined, entityType: Deci
 export function useBuilderEvidence(builderId: string | undefined) {
   return useQuery({
     queryKey: ["builder-evidence", builderId],
-    queryFn: () => listPlaceEvidence(builderId!), // This is a hack until generic EvidenceService is fixed/verified
-    enabled: false, // Disabling for now to prevent runtime errors if table doesn't support filter
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("place_evidence").select("*").eq("builder_id", builderId).order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!builderId,
   });
 }
 
