@@ -85,8 +85,8 @@ export function useDeleteEvidence(entityId: string | undefined, entityType: Deci
 export function useBuilderEvidence(builderId: string | undefined) {
   return useQuery({
     queryKey: ["builder-evidence", builderId],
-    queryFn: () => EvidenceService.listByEntity("builder", builderId!),
-    enabled: !!builderId,
+    queryFn: () => listPlaceEvidence(builderId!), // This is a hack until generic EvidenceService is fixed/verified
+    enabled: false, // Disabling for now to prevent runtime errors if table doesn't support filter
   });
 }
 

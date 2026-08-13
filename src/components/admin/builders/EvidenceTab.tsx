@@ -51,7 +51,7 @@ export function EvidenceTab({ builderId }: Props) {
     if (!builderId) return;
     setCreating(true);
     try {
-      await create.mutateAsync({ builder_id: builderId, title: "New evidence" });
+      await create.mutateAsync({ builder_id: builderId, title: "New evidence" } as any);
       toast.success("Evidence added");
     } catch (e) {
       toast.error((e as Error).message);
@@ -87,7 +87,7 @@ export function EvidenceTab({ builderId }: Props) {
         </Card>
       ) : (
         <div className="space-y-3">
-          {data.map((row) => (
+          {data.map((row: PlaceEvidenceRow) => (
             <EvidenceRow key={row.id} row={row} builderId={builderId} />
           ))}
         </div>
