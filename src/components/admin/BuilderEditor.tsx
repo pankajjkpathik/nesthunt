@@ -607,6 +607,18 @@ export function BuilderEditor({ id }: Props) {
           </Card>
         </TabsContent>
 
+        <TabsContent value="evidence" className="mt-4">
+          <EvidenceTab builderId={id} />
+        </TabsContent>
+
+        <TabsContent value="risks" className="mt-4">
+          <RisksTab builderId={id} />
+        </TabsContent>
+
+        <TabsContent value="promises" className="mt-4">
+          <PromiseLedgerTab builderId={id} />
+        </TabsContent>
+
         <TabsContent value="relationships" className="mt-4">
           {id ? (
             <RelationshipsTab entity={{ type: "builder", id }} />
