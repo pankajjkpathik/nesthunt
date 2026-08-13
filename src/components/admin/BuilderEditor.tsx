@@ -336,12 +336,15 @@ export function BuilderEditor({ id }: Props) {
           <TabsTrigger value="company">Company</TabsTrigger>
           <TabsTrigger value="leadership">Leadership</TabsTrigger>
           <TabsTrigger value="rera">RERA & Compliance</TabsTrigger>
-          <TabsTrigger value="projects">Projects</TabsTrigger>
-          <TabsTrigger value="places">Places</TabsTrigger>
-          <TabsTrigger value="media">Media</TabsTrigger>
-          <TabsTrigger value="awards">Awards</TabsTrigger>
+          <TabsTrigger value="projects">Portfolio</TabsTrigger>
+          <TabsTrigger value="places">Operating Areas</TabsTrigger>
+          <TabsTrigger value="media">Branding</TabsTrigger>
+          <TabsTrigger value="awards">Awards & Certs</TabsTrigger>
           <TabsTrigger value="trust">Trust Score</TabsTrigger>
-          <TabsTrigger value="relationships">Relationships</TabsTrigger>
+          <TabsTrigger value="evidence" className="gap-1.5"><FileText className="h-3.5 w-3.5" /> Evidence</TabsTrigger>
+          <TabsTrigger value="risks" className="gap-1.5"><ShieldAlert className="h-3.5 w-3.5" /> Risks</TabsTrigger>
+          <TabsTrigger value="promises" className="gap-1.5"><History className="h-3.5 w-3.5" /> Promises</TabsTrigger>
+          <TabsTrigger value="relationships">Network</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
         </TabsList>
 
