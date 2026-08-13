@@ -2,17 +2,35 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
 // ---------- Types ----------
-export type PlaceEvidenceRow = Database["public"]["Tables"]["place_evidence"]["Row"];
-export type PlaceEvidenceInsert = Database["public"]["Tables"]["place_evidence"]["Insert"];
-export type PlaceEvidenceUpdate = Database["public"]["Tables"]["place_evidence"]["Update"];
+export type PlaceEvidenceRow = Database["public"]["Tables"]["place_evidence"]["Row"] & {
+  builder_id?: string | null;
+};
+export type PlaceEvidenceInsert = Database["public"]["Tables"]["place_evidence"]["Insert"] & {
+  builder_id?: string | null;
+};
+export type PlaceEvidenceUpdate = Database["public"]["Tables"]["place_evidence"]["Update"] & {
+  builder_id?: string | null;
+};
 
-export type PlaceRiskRow = Database["public"]["Tables"]["place_risks"]["Row"];
-export type PlaceRiskInsert = Database["public"]["Tables"]["place_risks"]["Insert"];
-export type PlaceRiskUpdate = Database["public"]["Tables"]["place_risks"]["Update"];
+export type PlaceRiskRow = Database["public"]["Tables"]["place_risks"]["Row"] & {
+  builder_id?: string | null;
+};
+export type PlaceRiskInsert = Database["public"]["Tables"]["place_risks"]["Insert"] & {
+  builder_id?: string | null;
+};
+export type PlaceRiskUpdate = Database["public"]["Tables"]["place_risks"]["Update"] & {
+  builder_id?: string | null;
+};
 
-export type PlacePromiseRow = Database["public"]["Tables"]["place_promises"]["Row"];
-export type PlacePromiseInsert = Database["public"]["Tables"]["place_promises"]["Insert"];
-export type PlacePromiseUpdate = Database["public"]["Tables"]["place_promises"]["Update"];
+export type PlacePromiseRow = Database["public"]["Tables"]["place_promises"]["Row"] & {
+  builder_id?: string | null;
+};
+export type PlacePromiseInsert = Database["public"]["Tables"]["place_promises"]["Insert"] & {
+  builder_id?: string | null;
+};
+export type PlacePromiseUpdate = Database["public"]["Tables"]["place_promises"]["Update"] & {
+  builder_id?: string | null;
+};
 
 export const EVIDENCE_TYPES = [
   "article",
@@ -69,21 +87,21 @@ export async function listPlaceEvidence(placeId: string): Promise<PlaceEvidenceR
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as PlaceEvidenceRow[];
 }
 
 export async function createPlaceEvidence(input: PlaceEvidenceInsert): Promise<PlaceEvidenceRow> {
   const { data: userRes } = await supabase.auth.getUser();
   const payload: PlaceEvidenceInsert = { ...input, created_by: input.created_by ?? userRes.user?.id ?? null };
-  const { data, error } = await supabase.from("place_evidence").insert(payload).select("*").single();
+  const { data, error } = await supabase.from("place_evidence").insert(payload as any).select("*").single();
   if (error) throw error;
-  return data;
+  return data as PlaceEvidenceRow;
 }
 
 export async function updatePlaceEvidence(id: string, patch: PlaceEvidenceUpdate): Promise<PlaceEvidenceRow> {
-  const { data, error } = await supabase.from("place_evidence").update(patch).eq("id", id).select("*").single();
+  const { data, error } = await supabase.from("place_evidence").update(patch as any).eq("id", id).select("*").single();
   if (error) throw error;
-  return data;
+  return data as PlaceEvidenceRow;
 }
 
 export async function deletePlaceEvidence(id: string): Promise<void> {
@@ -109,21 +127,21 @@ export async function listPlaceRisks(placeId: string): Promise<PlaceRiskRow[]> {
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as PlaceRiskRow[];
 }
 
 export async function createPlaceRisk(input: PlaceRiskInsert): Promise<PlaceRiskRow> {
   const { data: userRes } = await supabase.auth.getUser();
   const payload: PlaceRiskInsert = { ...input, created_by: input.created_by ?? userRes.user?.id ?? null };
-  const { data, error } = await supabase.from("place_risks").insert(payload).select("*").single();
+  const { data, error } = await supabase.from("place_risks").insert(payload as any).select("*").single();
   if (error) throw error;
-  return data;
+  return data as PlaceRiskRow;
 }
 
 export async function updatePlaceRisk(id: string, patch: PlaceRiskUpdate): Promise<PlaceRiskRow> {
-  const { data, error } = await supabase.from("place_risks").update(patch).eq("id", id).select("*").single();
+  const { data, error } = await supabase.from("place_risks").update(patch as any).eq("id", id).select("*").single();
   if (error) throw error;
-  return data;
+  return data as PlaceRiskRow;
 }
 
 export async function deletePlaceRisk(id: string): Promise<void> {
@@ -140,24 +158,25 @@ export async function listPlacePromises(placeId: string): Promise<PlacePromiseRo
     .order("sort_order", { ascending: true })
     .order("announcement_date", { ascending: false, nullsFirst: false });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as PlacePromiseRow[];
 }
 
 export async function createPlacePromise(input: PlacePromiseInsert): Promise<PlacePromiseRow> {
   const { data: userRes } = await supabase.auth.getUser();
   const payload: PlacePromiseInsert = { ...input, created_by: input.created_by ?? userRes.user?.id ?? null };
-  const { data, error } = await supabase.from("place_promises").insert(payload).select("*").single();
+  const { data, error } = await supabase.from("place_promises").insert(payload as any).select("*").single();
   if (error) throw error;
-  return data;
+  return data as PlacePromiseRow;
 }
 
 export async function updatePlacePromise(id: string, patch: PlacePromiseUpdate): Promise<PlacePromiseRow> {
-  const { data, error } = await supabase.from("place_promises").update(patch).eq("id", id).select("*").single();
+  const { data, error } = await supabase.from("place_promises").update(patch as any).eq("id", id).select("*").single();
   if (error) throw error;
-  return data;
+  return data as PlacePromiseRow;
 }
 
 export async function deletePlacePromise(id: string): Promise<void> {
   const { error } = await supabase.from("place_promises").delete().eq("id", id);
   if (error) throw error;
 }
+

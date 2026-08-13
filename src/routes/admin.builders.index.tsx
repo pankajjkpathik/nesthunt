@@ -142,7 +142,7 @@ function BuildersList() {
       }
       if (term) {
         const rera = (b.rera ?? [])
-          .map((r) => r.registration ?? "")
+          .map((r) => (r as any).registration_number ?? "")
           .join(" ")
           .toLowerCase();
         const hay =

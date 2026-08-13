@@ -110,6 +110,233 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_awards: {
+        Row: {
+          builder_id: string
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          issuer: string | null
+          media_id: string | null
+          name: string
+          updated_at: string | null
+          year: number | null
+        }
+        Insert: {
+          builder_id: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          issuer?: string | null
+          media_id?: string | null
+          name: string
+          updated_at?: string | null
+          year?: number | null
+        }
+        Update: {
+          builder_id?: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          issuer?: string | null
+          media_id?: string | null
+          name?: string
+          updated_at?: string | null
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_awards_builder_id_fkey"
+            columns: ["builder_id"]
+            isOneToOne: false
+            referencedRelation: "builders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builder_awards_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builder_awards_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      builder_certifications: {
+        Row: {
+          builder_id: string
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          expiry_date: string | null
+          id: string
+          issue_date: string | null
+          issuer: string | null
+          media_id: string | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          builder_id: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          issuer?: string | null
+          media_id?: string | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          builder_id?: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          issuer?: string | null
+          media_id?: string | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_certifications_builder_id_fkey"
+            columns: ["builder_id"]
+            isOneToOne: false
+            referencedRelation: "builders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builder_certifications_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builder_certifications_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      builder_faqs: {
+        Row: {
+          answer: string
+          builder_id: string
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_published: boolean | null
+          question: string
+          updated_at: string | null
+        }
+        Insert: {
+          answer: string
+          builder_id: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_published?: boolean | null
+          question: string
+          updated_at?: string | null
+        }
+        Update: {
+          answer?: string
+          builder_id?: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_published?: boolean | null
+          question?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_faqs_builder_id_fkey"
+            columns: ["builder_id"]
+            isOneToOne: false
+            referencedRelation: "builders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      builder_leadership: {
+        Row: {
+          bio: string | null
+          builder_id: string
+          created_at: string | null
+          designation: string
+          display_order: number | null
+          id: string
+          linked_in: string | null
+          name: string
+          photo_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bio?: string | null
+          builder_id: string
+          created_at?: string | null
+          designation: string
+          display_order?: number | null
+          id?: string
+          linked_in?: string | null
+          name: string
+          photo_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bio?: string | null
+          builder_id?: string
+          created_at?: string | null
+          designation?: string
+          display_order?: number | null
+          id?: string
+          linked_in?: string | null
+          name?: string
+          photo_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_leadership_builder_id_fkey"
+            columns: ["builder_id"]
+            isOneToOne: false
+            referencedRelation: "builders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builder_leadership_photo_id_fkey"
+            columns: ["photo_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builder_leadership_photo_id_fkey"
+            columns: ["photo_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets_with_usage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       builder_places: {
         Row: {
           builder_id: string
@@ -143,6 +370,59 @@ export type Database = {
           },
         ]
       }
+      builder_rera_records: {
+        Row: {
+          authority: string | null
+          builder_id: string
+          created_at: string | null
+          expiry_date: string | null
+          id: string
+          notes: string | null
+          registration_date: string | null
+          registration_number: string
+          registration_url: string | null
+          state: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          authority?: string | null
+          builder_id: string
+          created_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          notes?: string | null
+          registration_date?: string | null
+          registration_number: string
+          registration_url?: string | null
+          state?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          authority?: string | null
+          builder_id?: string
+          created_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          notes?: string | null
+          registration_date?: string | null
+          registration_number?: string
+          registration_url?: string | null
+          state?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builder_rera_records_builder_id_fkey"
+            columns: ["builder_id"]
+            isOneToOne: false
+            referencedRelation: "builders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       builders: {
         Row: {
           awards: Json
@@ -153,6 +433,7 @@ export type Database = {
           country: string
           created_at: string
           decision: Json
+          delivery_stats_manual: Json | null
           description: string
           email: string
           employee_count: string
@@ -163,11 +444,15 @@ export type Database = {
           hero: Json
           id: string
           leadership: Json
+          legal_name: string | null
           metrics: Json
+          mission: string | null
           name: string
+          operating_years_manual: number | null
           organization_type: string
           pan: string
           phone: string
+          portfolio_stats_manual: Json | null
           rera: Json
           seo: Json
           slug: string
@@ -181,6 +466,7 @@ export type Database = {
           trust_score: number | null
           updated_at: string
           verified: boolean
+          vision: string | null
           watch_outs: string[]
           website: string
           year_established: number | null
@@ -195,6 +481,7 @@ export type Database = {
           country?: string
           created_at?: string
           decision?: Json
+          delivery_stats_manual?: Json | null
           description?: string
           email?: string
           employee_count?: string
@@ -205,11 +492,15 @@ export type Database = {
           hero?: Json
           id?: string
           leadership?: Json
+          legal_name?: string | null
           metrics?: Json
+          mission?: string | null
           name: string
+          operating_years_manual?: number | null
           organization_type?: string
           pan?: string
           phone?: string
+          portfolio_stats_manual?: Json | null
           rera?: Json
           seo?: Json
           slug: string
@@ -223,6 +514,7 @@ export type Database = {
           trust_score?: number | null
           updated_at?: string
           verified?: boolean
+          vision?: string | null
           watch_outs?: string[]
           website?: string
           year_established?: number | null
@@ -237,6 +529,7 @@ export type Database = {
           country?: string
           created_at?: string
           decision?: Json
+          delivery_stats_manual?: Json | null
           description?: string
           email?: string
           employee_count?: string
@@ -247,11 +540,15 @@ export type Database = {
           hero?: Json
           id?: string
           leadership?: Json
+          legal_name?: string | null
           metrics?: Json
+          mission?: string | null
           name?: string
+          operating_years_manual?: number | null
           organization_type?: string
           pan?: string
           phone?: string
+          portfolio_stats_manual?: Json | null
           rera?: Json
           seo?: Json
           slug?: string
@@ -265,6 +562,7 @@ export type Database = {
           trust_score?: number | null
           updated_at?: string
           verified?: boolean
+          vision?: string | null
           watch_outs?: string[]
           website?: string
           year_established?: number | null
