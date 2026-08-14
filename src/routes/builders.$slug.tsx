@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AlertCircle, CheckCircle2, Info, TriangleAlert } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { Section } from "@/components/common/Section";
 import { PlaceholderCard } from "@/components/common/PlaceholderCard";
+import { InsightListCard } from "@/components/common/InsightListCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Breadcrumb,
@@ -12,6 +14,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useBuilder, useBuilderProjects } from "@/hooks/useBuilder";
 import { BuilderHero } from "@/components/builder/BuilderHero";
 import { BuilderExecutiveSummary } from "@/components/builder/BuilderExecutiveSummary";
