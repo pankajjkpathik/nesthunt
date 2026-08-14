@@ -30,6 +30,11 @@ export interface PublicBuilder {
   risks: PlaceRiskRow[];
   evidence: PlaceEvidenceRow[];
   promises: PlacePromiseRow[];
+  leadership: LeadershipMember[];
+  certifications: CertificationEntry[];
+  awards: AwardEntry[];
+  rera: ReraEntry[];
+  faqs: BuilderFaq[];
 }
 
 /**
