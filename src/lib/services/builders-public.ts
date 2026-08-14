@@ -10,7 +10,20 @@ import {
   type PlacePromiseRow 
 } from "@/lib/services/place-intelligence";
 import type { RelatedEntity } from "@/types/relationships";
-import type { BuilderRow, BuilderSeo } from "@/lib/services/builders-admin";
+import { 
+  type BuilderRow, 
+  type BuilderSeo,
+  type LeadershipMember,
+  type CertificationEntry,
+  type AwardEntry,
+  type ReraEntry,
+  type BuilderFaq,
+  listBuilderLeadership,
+  listBuilderCertifications,
+  listBuilderAwards,
+  listBuilderReraRecords,
+  listBuilderFaqs
+} from "@/lib/services/builders-admin";
 
 export interface PublicBuilderProject {
   id: string;
