@@ -362,7 +362,7 @@ function BuilderDetailPage() {
                   <Card key={promise.id} className="border-border bg-surface">
                     <CardContent className="p-5">
                       <Badge className="mb-2 bg-accent/10 text-accent border-none">
-                        {promise.current_status}
+                        {promise.status}
                       </Badge>
                       <h4 className="font-display font-semibold text-foreground">{promise.promise}</h4>
                       <p className="mt-2 text-sm text-muted-foreground line-clamp-2">

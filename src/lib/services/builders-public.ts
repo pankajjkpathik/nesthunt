@@ -2,13 +2,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { listEntityImages, type EntityImage } from "@/lib/services/media";
 import { getRelatedEntities } from "@/lib/services/relationships";
 import { 
-  listPlaceRisks, 
   listPlaceEvidence, 
-  listPlacePromises,
-  type PlaceRiskRow,
   type PlaceEvidenceRow,
-  type PlacePromiseRow 
 } from "@/lib/services/place-intelligence";
+import {
+  RiskService,
+  PromiseLedgerService,
+  type EntityRiskRow,
+  type PromiseLedgerRow,
+} from "@/lib/services/decision-intelligence";
 import type { RelatedEntity } from "@/types/relationships";
 import { 
   type BuilderRow, 
@@ -40,9 +42,9 @@ export interface PublicBuilder {
   media: EntityImage[];
   relationships: RelatedEntity[];
   seo: BuilderSeo;
-  risks: PlaceRiskRow[];
+  risks: EntityRiskRow[];
   evidence: PlaceEvidenceRow[];
-  promises: PlacePromiseRow[];
+  promises: PromiseLedgerRow[];
   leadership: LeadershipMember[];
   certifications: CertificationEntry[];
   awards: AwardEntry[];
@@ -82,9 +84,9 @@ export const BuilderPublicService = {
       getRelatedEntities({ type: "builder", id: row.id }).catch(
         () => [] as RelatedEntity[],
       ),
-      listPlaceRisks(row.id).catch(() => [] as PlaceRiskRow[]),
+      RiskService.listByEntity("builder", row.id).catch(() => [] as EntityRiskRow[]),
       listPlaceEvidence(row.id).catch(() => [] as PlaceEvidenceRow[]),
-      listPlacePromises(row.id).catch(() => [] as PlacePromiseRow[]),
+      PromiseLedgerService.listByEntity("builder", row.id).catch(() => [] as PromiseLedgerRow[]),
       listBuilderLeadership(row.id).catch(() => [] as LeadershipMember[]),
       listBuilderCertifications(row.id).catch(() => [] as CertificationEntry[]),
       listBuilderAwards(row.id).catch(() => [] as AwardEntry[]),
