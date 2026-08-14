@@ -186,10 +186,9 @@ export function useBuilderEvidence(builderId: string | undefined) {
   return useQuery({
     queryKey: ["builder-evidence", builderId],
     queryFn: async () => {
-      // For now, builders might not have a direct evidence table, 
-      // but if we are using entity_risks/promise_ledgers, they might link to decision_evidence.
-      // However, to keep it simple and consistent with current UI usage:
-      const { data, error } = await (supabase as any).from("place_evidence").select("*").eq("place_id", builderId).order("created_at", { ascending: false });
+      // Re-use the existing place_evidence table logic but for builders if needed, 
+      // or eventually switch to DecisionEvidenceService.
+      const { data, error } = await supabase.from("place_evidence").select("*").eq("builder_id", builderId).order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
