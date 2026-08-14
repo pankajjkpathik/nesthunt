@@ -1,6 +1,14 @@
 import { supabase } from "@/integrations/supabase/client";
 import { listEntityImages, type EntityImage } from "@/lib/services/media";
 import { getRelatedEntities } from "@/lib/services/relationships";
+import { 
+  listPlaceRisks, 
+  listPlaceEvidence, 
+  listPlacePromises,
+  type PlaceRiskRow,
+  type PlaceEvidenceRow,
+  type PlacePromiseRow 
+} from "@/lib/services/place-intelligence";
 import type { RelatedEntity } from "@/types/relationships";
 import type { BuilderRow, BuilderSeo } from "@/lib/services/builders-admin";
 
