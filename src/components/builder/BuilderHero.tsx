@@ -146,7 +146,29 @@ export function BuilderHero({ builder }: Props) {
         </dl>
       </div>
 
-      <div className="min-w-0">
+      <div className="min-w-0 space-y-6">
+        {showTrustScore ? (
+          <DecisionScoreCard
+            title="Builder Trust Score"
+            score={builder.trust_score!}
+            confidence="High"
+            categoryRatings={trustBreakdown}
+            className="border-border shadow-sm"
+          />
+        ) : (
+          <Card className="border-border border-dashed bg-muted/30">
+            <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+              <ShieldCheck className="h-10 w-10 text-muted-foreground/40" />
+              <p className="mt-4 font-display text-lg font-semibold text-foreground">
+                Assessment Pending
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Verification of this builder's credentials is in progress.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid gap-4 sm:grid-cols-2">
           {kpis.map((kpi) => (
             <Card key={kpi.label} className="border-border bg-surface">
