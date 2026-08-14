@@ -32,6 +32,7 @@ export function BuilderHero({ builder }: Props) {
 
   const hero = (builder.hero ?? {}) as BuilderHeroMeta;
   const metrics = (builder.metrics ?? {}) as Record<string, unknown>;
+  const trustBreakdown = (builder.trust_breakdown ?? []) as TrustBreakdownEntry[];
 
   const logoUrl = hero.logoUrl;
   const headquarters = builder.head_office || builder.headquarters || null;
@@ -55,6 +56,8 @@ export function BuilderHero({ builder }: Props) {
       value: yearsInBusiness ? String(yearsInBusiness) : NA,
     },
   ];
+
+  const showTrustScore = builder.trust_score !== null && trustBreakdown.length > 0;
 
   function handleViewProjects() {
     document
