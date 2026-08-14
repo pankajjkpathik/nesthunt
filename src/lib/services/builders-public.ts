@@ -27,6 +27,9 @@ export interface PublicBuilder {
   media: EntityImage[];
   relationships: RelatedEntity[];
   seo: BuilderSeo;
+  risks: PlaceRiskRow[];
+  evidence: PlaceEvidenceRow[];
+  promises: PlacePromiseRow[];
 }
 
 /**
