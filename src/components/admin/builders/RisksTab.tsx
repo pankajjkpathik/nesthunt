@@ -13,21 +13,23 @@ import {
 } from "@/components/ui/select";
 import { Field, TextField, TextareaField } from "@/components/admin/form/Fields";
 import {
+  type EntityRiskRow as DecisionRiskRow,
+} from "@/lib/services/decision-intelligence";
+import {
   useBuilderRisks,
-  // These aren't builder-specific yet but we use them as base
-  useCreateRisk,
-  useUpdateRisk,
-  useDeleteRisk,
   useBuilderEvidence
 } from "@/hooks/usePlaceIntelligence";
 import {
+  useCreateRisk,
+  useUpdateRisk,
+  useDeleteRisk,
+} from "@/hooks/useAdminDecisionIntelligence";
+import {
   RISK_CATEGORIES,
   RISK_PROBABILITIES,
-  RISK_REVIEW_CYCLES,
   RISK_SEVERITIES,
   RISK_STATUSES,
-  type PlaceRiskRow,
-} from "@/lib/services/place-intelligence";
+} from "@/lib/services/decision-intelligence";
 
 const PAGE_SIZE = 10;
 
@@ -64,7 +66,7 @@ export function RisksTab({ builderId }: { builderId?: string }) {
           size="sm"
           onClick={async () => {
             try {
-              await create.mutateAsync({ builder_id: builderId, title: "New risk" } as any);
+              await create.mutateAsync({ entity_id: builderId, entity_type: "builder", title: "New risk", severity: "medium", probability: "medium" } as any);
               toast.success("Risk added");
             } catch (e) {
               toast.error((e as Error).message);
@@ -88,7 +90,7 @@ export function RisksTab({ builderId }: { builderId?: string }) {
       ) : (
         <>
           <div className="space-y-3">
-            {paged.map((row: PlaceRiskRow) => (
+            {paged.map((row: DecisionRiskRow) => (
               <RiskRow key={row.id} row={row} evidence={evidence as any} builderId={builderId} />
             ))}
           </div>
@@ -113,13 +115,13 @@ export function RisksTab({ builderId }: { builderId?: string }) {
   );
 }
 
-function RiskRow({ row, evidence, builderId }: { row: PlaceRiskRow; evidence: { id: string; title: string }[]; builderId: string }) {
-  const [draft, setDraft] = useState<PlaceRiskRow>(row);
+function RiskRow({ row, evidence, builderId }: { row: DecisionRiskRow; evidence: { id: string; title: string }[]; builderId: string }) {
+  const [draft, setDraft] = useState<DecisionRiskRow>(row);
   const [dirty, setDirty] = useState(false);
   const update = useUpdateRisk();
   const remove = useDeleteRisk(builderId, "builder");
 
-  function edit<K extends keyof PlaceRiskRow>(key: K, value: PlaceRiskRow[K]) {
+  function edit<K extends keyof DecisionRiskRow>(key: K, value: DecisionRiskRow[K]) {
     setDraft((d) => ({ ...d, [key]: value }));
     setDirty(true);
   }
@@ -135,8 +137,6 @@ function RiskRow({ row, evidence, builderId }: { row: PlaceRiskRow; evidence: { 
           probability: draft.probability,
           description: draft.description,
           mitigation: draft.mitigation,
-          evidence_reference: draft.evidence_reference,
-          review_cycle: draft.review_cycle,
           status: draft.status,
         },
       });
@@ -178,9 +178,9 @@ function RiskRow({ row, evidence, builderId }: { row: PlaceRiskRow; evidence: { 
           </Button>
         </div>
 
-        <TextField label="Title" value={draft.title} onChange={(v) => edit("title", v)} />
+        <TextField label="Title" value={draft.title ?? ""} onChange={(v) => edit("title", v)} />
         <Field label="Category">
-          <Select value={draft.category} onValueChange={(v) => edit("category", v)}>
+          <Select value={draft.category ?? "financial"} onValueChange={(v) => edit("category", v as any)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               {RISK_CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
@@ -188,7 +188,7 @@ function RiskRow({ row, evidence, builderId }: { row: PlaceRiskRow; evidence: { 
           </Select>
         </Field>
         <Field label="Severity">
-          <Select value={draft.severity} onValueChange={(v) => edit("severity", v)}>
+          <Select value={draft.severity} onValueChange={(v) => edit("severity", v as any)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               {RISK_SEVERITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
@@ -196,7 +196,7 @@ function RiskRow({ row, evidence, builderId }: { row: PlaceRiskRow; evidence: { 
           </Select>
         </Field>
         <Field label="Probability">
-          <Select value={draft.probability} onValueChange={(v) => edit("probability", v)}>
+          <Select value={draft.probability} onValueChange={(v) => edit("probability", v as any)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               {RISK_PROBABILITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
@@ -204,30 +204,10 @@ function RiskRow({ row, evidence, builderId }: { row: PlaceRiskRow; evidence: { 
           </Select>
         </Field>
         <Field label="Status">
-          <Select value={draft.status} onValueChange={(v) => edit("status", v)}>
+          <Select value={draft.status} onValueChange={(v) => edit("status", v as any)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               {RISK_STATUSES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label="Review cycle">
-          <Select value={draft.review_cycle} onValueChange={(v) => edit("review_cycle", v)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {RISK_REVIEW_CYCLES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label="Evidence reference">
-          <Select
-            value={draft.evidence_reference ?? "__none"}
-            onValueChange={(v) => edit("evidence_reference", v === "__none" ? null : v)}
-          >
-            <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__none">None</SelectItem>
-              {evidence.map((e) => <SelectItem key={e.id} value={e.id}>{e.title}</SelectItem>)}
             </SelectContent>
           </Select>
         </Field>

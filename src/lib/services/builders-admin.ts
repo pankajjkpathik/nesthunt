@@ -84,7 +84,7 @@ export interface CertificationEntry {
 }
 
 export interface TrustBreakdownEntry {
-  label: string;
+  label: "experience" | "delivery" | "legal" | "customer" | "financial";
   score: number;
 }
 
@@ -95,6 +95,14 @@ export interface BuilderHero {
   heroImageUrl?: string;
   coverImageUrl?: string;
   logoUrl?: string;
+  // Metrics driven by JSONB
+  completedProjects?: number;
+  ongoingProjects?: number;
+  upcomingProjects?: number;
+  citiesServed?: number;
+  homesDelivered?: number;
+  customers_served?: number; // matching DB underscore naming if preferred, but following camelCase convention for interface
+  customersServed?: number;
 }
 
 export interface BuilderSeo {
@@ -109,12 +117,11 @@ export interface BuilderSeo {
 }
 
 export const DEFAULT_TRUST_BREAKDOWN: TrustBreakdownEntry[] = [
-  { label: "Experience", score: 8 },
-  { label: "Delivery Record", score: 8 },
-  { label: "RERA Compliance", score: 9 },
-  { label: "Financial Stability", score: 7 },
-  { label: "Customer Reviews", score: 8 },
-  { label: "Transparency", score: 8 },
+  { label: "experience", score: 0 },
+  { label: "delivery", score: 0 },
+  { label: "legal", score: 0 },
+  { label: "customer", score: 0 },
+  { label: "financial", score: 0 },
 ];
 
 export function computeTrustScore(cats: TrustBreakdownEntry[]): number {

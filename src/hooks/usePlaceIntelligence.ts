@@ -82,18 +82,6 @@ export function useDeleteEvidence(entityId: string | undefined, entityType: Deci
   });
 }
 
-// Builder Specific Evidence Hooks
-export function useBuilderEvidence(builderId: string | undefined) {
-  return useQuery({
-    queryKey: ["builder-evidence", builderId],
-    queryFn: async () => {
-      const { data, error } = await (supabase as any).from("place_evidence").select("*").eq("builder_id", builderId).order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
-    },
-    enabled: !!builderId,
-  });
-}
 
 // -------- Risks --------
 export function usePlaceRisks(placeId: string | undefined) {
@@ -181,11 +169,7 @@ export function useDeletePromise(entityId: string | undefined, entityType: Decis
 export function useBuilderRisks(builderId: string | undefined) {
   return useQuery({
     queryKey: ["builder-risks", builderId],
-    queryFn: async () => {
-      const { data, error } = await (supabase as any).from("place_risks").select("*").eq("builder_id", builderId).order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: () => RiskService.listByEntity("builder", builderId!),
     enabled: !!builderId,
   });
 }
@@ -193,8 +177,19 @@ export function useBuilderRisks(builderId: string | undefined) {
 export function useBuilderPromises(builderId: string | undefined) {
   return useQuery({
     queryKey: ["builder-promises", builderId],
+    queryFn: () => PromiseLedgerService.listByEntity("builder", builderId!),
+    enabled: !!builderId,
+  });
+}
+
+export function useBuilderEvidence(builderId: string | undefined) {
+  return useQuery({
+    queryKey: ["builder-evidence", builderId],
     queryFn: async () => {
-      const { data, error } = await (supabase as any).from("place_promises").select("*").eq("builder_id", builderId).order("announcement_date", { ascending: false, nullsFirst: false });
+      // Re-use the existing place_evidence table logic but for builders if needed.
+      // Use (any) cast for the filter column since builder_id might be missing in local types 
+      // even if it exists in the database.
+      const { data, error } = await supabase.from("place_evidence").select("*").eq("place_id" as any, builderId).order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },

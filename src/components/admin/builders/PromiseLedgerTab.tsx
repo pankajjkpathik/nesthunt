@@ -14,12 +14,18 @@ import {
 import { Field, TextField, TextareaField } from "@/components/admin/form/Fields";
 import {
   useBuilderPromises,
-  useCreatePromise,
-  useDeletePromise,
-  useUpdatePromise,
   useBuilderEvidence,
 } from "@/hooks/usePlaceIntelligence";
-import { PROMISE_STATUSES, type PlacePromiseRow } from "@/lib/services/place-intelligence";
+import {
+  useCreatePromise,
+  useUpdatePromise,
+  useDeletePromise,
+} from "@/hooks/useAdminDecisionIntelligence";
+import { type PlacePromiseRow } from "@/lib/services/place-intelligence";
+import { 
+  PROMISE_STATUSES,
+  type PromiseLedgerRow as DecisionPromiseRow
+} from "@/lib/services/decision-intelligence";
 
 export function PromiseLedgerTab({ builderId }: { builderId?: string }) {
   const { data = [], isLoading } = useBuilderPromises(builderId);
@@ -49,7 +55,7 @@ export function PromiseLedgerTab({ builderId }: { builderId?: string }) {
           size="sm"
           onClick={async () => {
             try {
-              await create.mutateAsync({ builder_id: builderId, promise: "New promise" } as any);
+              await create.mutateAsync({ entity_id: builderId, entity_type: "builder", promise: "New promise", status: "planned" } as any);
               toast.success("Promise added");
             } catch (e) {
               toast.error((e as Error).message);
@@ -72,7 +78,7 @@ export function PromiseLedgerTab({ builderId }: { builderId?: string }) {
         </Card>
       ) : (
         <div className="space-y-3">
-          {data.map((row: PlacePromiseRow) => (
+          {data.map((row: DecisionPromiseRow) => (
             <PromiseRow key={row.id} row={row} evidence={evidence as any} builderId={builderId} />
           ))}
         </div>
@@ -86,16 +92,16 @@ function PromiseRow({
   evidence,
   builderId,
 }: {
-  row: PlacePromiseRow;
+  row: DecisionPromiseRow;
   evidence: { id: string; title: string }[];
   builderId: string;
 }) {
-  const [draft, setDraft] = useState<PlacePromiseRow>(row);
+  const [draft, setDraft] = useState<DecisionPromiseRow>(row);
   const [dirty, setDirty] = useState(false);
   const update = useUpdatePromise();
   const remove = useDeletePromise(builderId, "builder");
 
-  function edit<K extends keyof PlacePromiseRow>(key: K, value: PlacePromiseRow[K]) {
+  function edit<K extends keyof DecisionPromiseRow>(key: K, value: DecisionPromiseRow[K]) {
     setDraft((d) => ({ ...d, [key]: value }));
     setDirty(true);
   }
@@ -109,8 +115,8 @@ function PromiseRow({
           announced_by: draft.announced_by,
           announcement_date: draft.announcement_date,
           expected_completion: draft.expected_completion,
-          current_status: draft.current_status,
-          evidence: draft.evidence,
+          actual_completion: draft.actual_completion,
+          status: draft.status,
           remarks: draft.remarks,
           last_verified: draft.last_verified,
         },
@@ -134,8 +140,8 @@ function PromiseRow({
     <Card>
       <CardContent className="grid gap-4 p-5 md:grid-cols-2">
         <div className="md:col-span-2 flex items-center justify-between">
-          <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase ${statusColor[draft.current_status] ?? statusColor.Planned}`}>
-            {draft.current_status}
+          <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase ${statusColor[draft.status] ?? statusColor.Planned}`}>
+            {draft.status}
           </span>
           <Button
             size="sm"
@@ -155,7 +161,7 @@ function PromiseRow({
 
         <TextField label="Announced by" value={draft.announced_by ?? ""} onChange={(v) => edit("announced_by", v)} />
         <Field label="Current status">
-          <Select value={draft.current_status} onValueChange={(v) => edit("current_status", v)}>
+          <Select value={draft.status} onValueChange={(v) => edit("status", v as any)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               {PROMISE_STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -186,17 +192,13 @@ function PromiseRow({
             onChange={(e) => edit("last_verified", e.target.value || null)}
           />
         </Field>
-        <Field label="Evidence">
-          <Select
-            value={draft.evidence ?? "__none"}
-            onValueChange={(v) => edit("evidence", v === "__none" ? null : v)}
-          >
-            <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__none">None</SelectItem>
-              {evidence.map((e) => <SelectItem key={e.id} value={e.id}>{e.title}</SelectItem>)}
-            </SelectContent>
-          </Select>
+        <Field label="Actual completion">
+          <input
+            type="date"
+            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+            value={draft.actual_completion ?? ""}
+            onChange={(e) => edit("actual_completion", e.target.value || null)}
+          />
         </Field>
 
         <div className="md:col-span-2">

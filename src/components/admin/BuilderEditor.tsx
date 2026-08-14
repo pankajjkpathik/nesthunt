@@ -172,7 +172,14 @@ function fromRow(row: BuilderRow): FormState {
       (row.trust_breakdown as unknown as TrustBreakdownEntry[]).length > 0
         ? (row.trust_breakdown as unknown as TrustBreakdownEntry[])
         : DEFAULT_TRUST_BREAKDOWN,
-    hero: (row.hero as BuilderHero) ?? {},
+    hero: {
+      ...(row.hero as BuilderHero ?? {}),
+      completedProjects: (row.metrics as any)?.completed_projects,
+      ongoingProjects: (row.metrics as any)?.ongoing_projects,
+      citiesServed: (row.metrics as any)?.cities_served,
+      homesDelivered: (row.metrics as any)?.homes_delivered,
+      customersServed: (row.metrics as any)?.customers_served,
+    },
     seo: (row.seo as BuilderSeo) ?? {},
   };
 }
@@ -256,7 +263,14 @@ export function BuilderEditor({ id }: Props) {
       seo: form.seo,
       // preserve legacy JSON columns
       decision: { score: trustScore, confidence: "Medium" as const, verdict: form.tagline || form.summary },
-      metrics: existing?.metrics ?? {},
+      metrics: {
+        ...(existing?.metrics as Record<string, any> || {}),
+        completed_projects: form.hero.completedProjects ?? (existing?.metrics as any)?.completed_projects,
+        ongoing_projects: form.hero.ongoingProjects ?? (existing?.metrics as any)?.ongoing_projects,
+        cities_served: form.hero.citiesServed ?? (existing?.metrics as any)?.cities_served,
+        homes_delivered: form.hero.homesDelivered ?? (existing?.metrics as any)?.homes_delivered,
+        customers_served: form.hero.customersServed ?? (existing?.metrics as any)?.customers_served,
+      },
       timeline: existing?.timeline ?? [],
     };
 
@@ -450,6 +464,16 @@ export function BuilderEditor({ id }: Props) {
               <TextField label="Website" value={form.website} onChange={(v) => patch("website", v)} placeholder="https://" />
               <TextField label="Email" value={form.email} onChange={(v) => patch("email", v)} type="email" />
               <TextField label="Phone" value={form.phone} onChange={(v) => patch("phone", v)} />
+              <div className="md:col-span-2 border-t pt-4 mt-2">
+                <h4 className="text-sm font-semibold mb-3">Builder Metrics (maintained in metrics JSONB)</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <NumberField label="Completed projects" value={form.hero.completedProjects ?? 0} onChange={(v) => patchHero("completedProjects", v)} />
+                  <NumberField label="Ongoing projects" value={form.hero.ongoingProjects ?? 0} onChange={(v) => patchHero("ongoingProjects", v)} />
+                  <NumberField label="Cities served" value={form.hero.citiesServed ?? 0} onChange={(v) => patchHero("citiesServed", v)} />
+                  <NumberField label="Homes delivered" value={form.hero.homesDelivered ?? 0} onChange={(v) => patchHero("homesDelivered", v)} />
+                  <NumberField label="Customers served" value={form.hero.customersServed ?? 0} onChange={(v) => patchHero("customersServed", v)} />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -536,15 +560,8 @@ export function BuilderEditor({ id }: Props) {
               </div>
               <div className="space-y-5">
                 {form.trust_breakdown.map((cat, i) => (
-                  <div key={i} className="grid grid-cols-1 items-center gap-3 md:grid-cols-[240px_1fr_60px_40px]">
-                    <Input
-                      value={cat.label}
-                      onChange={(e) => {
-                        const next = [...form.trust_breakdown];
-                        next[i] = { ...next[i], label: e.target.value };
-                        patch("trust_breakdown", next);
-                      }}
-                    />
+                  <div key={cat.label} className="grid grid-cols-1 items-center gap-3 md:grid-cols-[240px_1fr_60px]">
+                    <div className="text-sm font-medium capitalize">{cat.label}</div>
                     <Slider
                       value={[cat.score]}
                       min={0}
@@ -557,20 +574,9 @@ export function BuilderEditor({ id }: Props) {
                       }}
                     />
                     <span className="text-right font-medium">{cat.score.toFixed(1)}</span>
-                    <Button variant="ghost" size="icon" onClick={() => patch("trust_breakdown", form.trust_breakdown.filter((_, idx) => idx !== i))}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
                   </div>
                 ))}
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4"
-                onClick={() => patch("trust_breakdown", [...form.trust_breakdown, { label: "New category", score: 7 }])}
-              >
-                <Plus className="mr-2 h-4 w-4" /> Add category
-              </Button>
             </CardContent>
           </Card>
           <StringListField

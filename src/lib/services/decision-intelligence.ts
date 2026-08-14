@@ -87,6 +87,9 @@ export type RecommendationLevel = (typeof RECOMMENDATION_LEVELS)[number];
 export const INSIGHT_CATEGORIES = ["market", "growth", "risk", "builder", "place", "project"] as const;
 export type InsightCategory = (typeof INSIGHT_CATEGORIES)[number];
 
+export const RISK_CATEGORIES = ["financial", "legal", "delivery", "market", "reputational", "operational", "regulatory"] as const;
+export type RiskCategory = (typeof RISK_CATEGORIES)[number];
+
 export const PROMISE_STATUSES = ["planned", "progress", "completed", "delayed", "cancelled"] as const;
 export type PromiseStatus = (typeof PROMISE_STATUSES)[number];
 
