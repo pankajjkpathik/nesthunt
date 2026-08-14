@@ -171,7 +171,7 @@ function BuilderDetailPage() {
   if (isError) return <BuilderError />;
   if (!data) return <BuilderNotFound />;
 
-  const { builder, risks, evidence } = data;
+  const { builder, risks, evidence, promises, leadership, rera, certifications, awards, faqs } = data;
 
   const strengths = builder.strengths as string[] || [];
   const watchOuts = builder.watch_outs as string[] || [];
