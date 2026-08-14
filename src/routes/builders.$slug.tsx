@@ -362,11 +362,11 @@ function BuilderDetailPage() {
                   <Card key={promise.id} className="border-border bg-surface">
                     <CardContent className="p-5">
                       <Badge className="mb-2 bg-accent/10 text-accent border-none">
-                        {promise.status}
+                        {promise.current_status}
                       </Badge>
-                      <h4 className="font-display font-semibold text-foreground">{promise.title}</h4>
+                      <h4 className="font-display font-semibold text-foreground">{promise.promise}</h4>
                       <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
-                        {promise.description}
+                        {promise.remarks}
                       </p>
                       {promise.announcement_date && (
                         <p className="mt-4 text-[10px] uppercase tracking-wider text-muted-foreground/60">
