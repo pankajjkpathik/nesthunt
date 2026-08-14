@@ -351,10 +351,117 @@ function BuilderDetailPage() {
             </section>
           )}
 
+          {/* Promise Ledger */}
+          {promises.length > 0 && (
+            <section id="delivery" aria-labelledby="delivery-heading">
+              <h2 id="delivery-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                Commitment Tracker
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {promises.map((promise) => (
+                  <Card key={promise.id} className="border-border bg-surface">
+                    <CardContent className="p-5">
+                      <Badge className="mb-2 bg-accent/10 text-accent border-none">
+                        {promise.status}
+                      </Badge>
+                      <h4 className="font-display font-semibold text-foreground">{promise.title}</h4>
+                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+                        {promise.description}
+                      </p>
+                      {promise.announcement_date && (
+                        <p className="mt-4 text-[10px] uppercase tracking-wider text-muted-foreground/60">
+                          Announced: {new Date(promise.announcement_date).toLocaleDateString()}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Regulatory & RERA */}
+          {rera.length > 0 && (
+            <section id="regulatory" aria-labelledby="regulatory-heading">
+              <h2 id="regulatory-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                Regulatory Compliance
+              </h2>
+              <div className="space-y-4">
+                {rera.map((reg) => (
+                  <Card key={reg.id} className="border-border bg-surface">
+                    <CardContent className="p-5 flex flex-wrap items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="grid h-10 w-10 place-items-center rounded-full bg-success/10 text-success">
+                          <ShieldCheck className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">RERA Registration</p>
+                          <h4 className="font-display font-bold text-foreground">{reg.registration_number}</h4>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-muted-foreground">{reg.authority}</p>
+                        <Badge variant="outline" className="mt-1">{reg.status}</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Leadership */}
+          {leadership.length > 0 && (
+            <section id="leadership" aria-labelledby="leadership-heading">
+              <h2 id="leadership-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                Leadership Team
+              </h2>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {leadership.map((member) => (
+                  <div key={member.id} className="group">
+                    <div className="aspect-square rounded-xl bg-muted overflow-hidden border border-border">
+                       {/* TODO: Hydrate photoUrl if media_id exists */}
+                       <div className="h-full w-full flex items-center justify-center text-muted-foreground/20">
+                         <Building2 className="h-12 w-12" />
+                       </div>
+                    </div>
+                    <div className="mt-4">
+                      <h4 className="font-display font-bold text-foreground">{member.name}</h4>
+                      <p className="text-sm text-muted-foreground">{member.designation}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* FAQ */}
+          {faqs.length > 0 && (
+            <section id="faq" aria-labelledby="faq-heading">
+              <h2 id="faq-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                Frequently Asked Questions
+              </h2>
+              <div className="grid gap-4">
+                {faqs.map((faq) => (
+                  <Card key={faq.id} className="border-border bg-surface">
+                    <CardHeader className="p-5 pb-2">
+                      <CardTitle className="text-base font-display font-bold">{faq.question}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-5 pt-0">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Placeholder for remaining sections - only show if no major data exists */}
-          {risks.length === 0 && evidence.length === 0 && (
+          {risks.length === 0 && evidence.length === 0 && rera.length === 0 && leadership.length === 0 && (
             <div className="space-y-6">
-              {SECTIONS.filter((s) => !["hero", "executive-summary", "portfolio", "risks"].includes(s.id)).map((section) => (
+              {SECTIONS.filter((s) => !["hero", "executive-summary", "portfolio", "risks", "delivery", "regulatory", "leadership", "faq"].includes(s.id)).map((section) => (
                 <section
                   key={section.id}
                   id={section.id}
