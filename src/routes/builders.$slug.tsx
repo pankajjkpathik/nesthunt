@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AlertCircle, Building2, CheckCircle2, Info, ShieldCheck, TriangleAlert } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { Section } from "@/components/common/Section";
 import { PlaceholderCard } from "@/components/common/PlaceholderCard";
+import { InsightListCard } from "@/components/common/InsightListCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Breadcrumb,
@@ -12,6 +14,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useBuilder, useBuilderProjects } from "@/hooks/useBuilder";
 import { BuilderHero } from "@/components/builder/BuilderHero";
 import { BuilderExecutiveSummary } from "@/components/builder/BuilderExecutiveSummary";
@@ -167,7 +171,10 @@ function BuilderDetailPage() {
   if (isError) return <BuilderError />;
   if (!data) return <BuilderNotFound />;
 
-  const { builder } = data;
+  const { builder, risks, evidence, promises, leadership, rera, certifications, awards, faqs } = data;
+
+  const strengths = builder.strengths as string[] || [];
+  const watchOuts = builder.watch_outs as string[] || [];
 
   return (
     <BuilderShell>
@@ -179,26 +186,309 @@ function BuilderDetailPage() {
           <BuilderExecutiveSummary summary={builder.summary} />
         </div>
 
-        <div className="mt-10 space-y-6">
-          {SECTIONS.filter((s) => s.id !== "hero" && s.id !== "executive-summary").map((section) => (
-            <section
-              key={section.id}
-              id={section.id}
-              aria-labelledby={`${section.id}-heading`}
-            >
-              <h2 id={`${section.id}-heading`} className="sr-only">
-                {section.title}
-              </h2>
-              <PlaceholderCard
-                title={section.title}
-                description={
-                  section.id === "portfolio" && projects.data
-                    ? `${projects.data.length} published project(s) linked to this builder.`
-                    : section.description
-                }
+        {/* Intelligence Cards */}
+        {(strengths.length > 0 || watchOuts.length > 0) && (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {strengths.length > 0 && (
+              <InsightListCard
+                title="Key Strengths"
+                items={strengths}
+                tone="positive"
+                icon={<CheckCircle2 className="h-4 w-4" />}
               />
+            )}
+            {watchOuts.length > 0 && (
+              <InsightListCard
+                title="Watch Outs"
+                items={watchOuts}
+                tone="negative"
+                icon={<TriangleAlert className="h-4 w-4" />}
+              />
+            )}
+          </div>
+        )}
+
+        <div className="mt-10 space-y-12">
+          {/* Portfolio Section */}
+          <section id="portfolio" aria-labelledby="portfolio-heading">
+            <div className="flex items-center justify-between mb-6">
+              <h2 id="portfolio-heading" className="font-display text-2xl font-bold tracking-tight text-foreground">
+                Project Portfolio
+              </h2>
+              {projects.data && (
+                <Badge variant="secondary" className="font-mono">
+                  {projects.data.length} Projects
+                </Badge>
+              )}
+            </div>
+            
+            {projects.data && projects.data.length > 0 ? (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {projects.data.map((project) => (
+                  <Link
+                    key={project.id}
+                    to={`/projects/${project.slug}` as any}
+                    className="group block overflow-hidden rounded-xl border border-border bg-surface transition-all hover:border-accent/40 hover:shadow-md"
+                  >
+                    <div className="aspect-[16/9] bg-muted relative overflow-hidden">
+                      {/* TODO: Add project hero image when media relationship is wired to projects */}
+                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/20">
+                        <Building2 className="h-12 w-12" />
+                      </div>
+                      <div className="absolute bottom-3 left-3">
+                        <Badge className="bg-background/80 backdrop-blur-sm text-foreground border-none">
+                          {project.constructionStatus || project.status}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-display font-bold text-foreground group-hover:text-accent transition-colors">
+                        {project.name}
+                      </h3>
+                      {project.tagline && (
+                        <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
+                          {project.tagline}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <PlaceholderCard
+                title="Portfolio Pending"
+                description="Project associations are currently being verified for this builder."
+                icon={<Building2 className="h-5 w-5" />}
+              />
+            )}
+          </section>
+
+          {/* Risks & Watch-outs (Table driven) */}
+          {(risks.length > 0 || evidence.length > 0) && (
+            <section id="intelligence" aria-labelledby="intelligence-heading" className="grid gap-8 lg:grid-cols-2">
+              {risks.length > 0 && (
+                <div>
+                  <h2 id="risks-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                    Risk Assessment
+                  </h2>
+                  <div className="space-y-4">
+                    {risks.map((risk) => (
+                      <Card key={risk.id} className="border-border bg-surface overflow-hidden">
+                        <div className={`h-1 w-full ${
+                          risk.severity === 'critical' ? 'bg-destructive' :
+                          risk.severity === 'high' ? 'bg-orange-500' :
+                          risk.severity === 'medium' ? 'bg-warning' : 'bg-muted'
+                        }`} />
+                        <CardContent className="p-5">
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <Badge variant="outline" className="mb-2 uppercase text-[10px] tracking-wider">
+                                {risk.category}
+                              </Badge>
+                              <h4 className="font-display font-semibold text-foreground">{risk.title}</h4>
+                            </div>
+                            <Badge className={
+                              risk.status === 'mitigated' ? 'bg-success/10 text-success border-success/20' : 
+                              'bg-muted text-muted-foreground border-none'
+                            }>
+                              {risk.status}
+                            </Badge>
+                          </div>
+                          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                            {risk.description}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {evidence.length > 0 && (
+                <div>
+                  <h2 id="evidence-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                    Verified Evidence
+                  </h2>
+                  <div className="space-y-4">
+                    {evidence.map((ev) => (
+                      <Card key={ev.id} className="border-border bg-surface">
+                        <CardContent className="p-5">
+                          <div className="flex items-start gap-4">
+                            <div className="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-muted">
+                              <Info className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <Badge variant="outline" className="uppercase text-[10px] tracking-wider">
+                                  {ev.evidence_type}
+                                </Badge>
+                                {ev.verification_status === 'verified' && (
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                                )}
+                              </div>
+                              <h4 className="font-display font-semibold text-foreground">{ev.title}</h4>
+                              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                                {ev.description}
+                              </p>
+                              {ev.source_url && (
+                                <a 
+                                  href={ev.source_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="mt-3 inline-flex items-center text-xs font-medium text-accent hover:underline"
+                                >
+                                  View Source Document
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
-          ))}
+          )}
+
+          {/* Promise Ledger */}
+          {promises.length > 0 && (
+            <section id="delivery" aria-labelledby="delivery-heading">
+              <h2 id="delivery-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                Commitment Tracker
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {promises.map((promise) => (
+                  <Card key={promise.id} className="border-border bg-surface">
+                    <CardContent className="p-5">
+                      <Badge className="mb-2 bg-accent/10 text-accent border-none">
+                        {promise.current_status}
+                      </Badge>
+                      <h4 className="font-display font-semibold text-foreground">{promise.promise}</h4>
+                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+                        {promise.remarks}
+                      </p>
+                      {promise.announcement_date && (
+                        <p className="mt-4 text-[10px] uppercase tracking-wider text-muted-foreground/60">
+                          Announced: {new Date(promise.announcement_date).toLocaleDateString()}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Regulatory & RERA */}
+          {rera.length > 0 && (
+            <section id="regulatory" aria-labelledby="regulatory-heading">
+              <h2 id="regulatory-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                Regulatory Compliance
+              </h2>
+              <div className="space-y-4">
+                {rera.map((reg) => (
+                  <Card key={reg.id} className="border-border bg-surface">
+                    <CardContent className="p-5 flex flex-wrap items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="grid h-10 w-10 place-items-center rounded-full bg-success/10 text-success">
+                          <ShieldCheck className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">RERA Registration</p>
+                          <h4 className="font-display font-bold text-foreground">{reg.registration_number}</h4>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-muted-foreground">{reg.authority}</p>
+                        <Badge variant="outline" className="mt-1">{reg.status}</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Leadership */}
+          {leadership.length > 0 && (
+            <section id="leadership" aria-labelledby="leadership-heading">
+              <h2 id="leadership-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                Leadership Team
+              </h2>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {leadership.map((member) => (
+                  <div key={member.id} className="group">
+                    <div className="aspect-square rounded-xl bg-muted overflow-hidden border border-border">
+                       {/* TODO: Hydrate photoUrl if media_id exists */}
+                       <div className="h-full w-full flex items-center justify-center text-muted-foreground/20">
+                         <Building2 className="h-12 w-12" />
+                       </div>
+                    </div>
+                    <div className="mt-4">
+                      <h4 className="font-display font-bold text-foreground">{member.name}</h4>
+                      <p className="text-sm text-muted-foreground">{member.designation}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* FAQ */}
+          {faqs.length > 0 && (
+            <section id="faq" aria-labelledby="faq-heading">
+              <h2 id="faq-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+                Frequently Asked Questions
+              </h2>
+              <div className="grid gap-4">
+                {faqs.map((faq) => (
+                  <Card key={faq.id} className="border-border bg-surface">
+                    <CardHeader className="p-5 pb-2">
+                      <CardTitle className="text-base font-display font-bold">{faq.question}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-5 pt-0">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Placeholder for remaining sections - only show if no major data exists */}
+          {risks.length === 0 && evidence.length === 0 && rera.length === 0 && leadership.length === 0 && (
+            <div className="space-y-6">
+              {SECTIONS.filter((s) => !["hero", "executive-summary", "portfolio", "risks", "delivery", "regulatory", "leadership", "faq"].includes(s.id)).map((section) => (
+                <section
+                  key={section.id}
+                  id={section.id}
+                  aria-labelledby={`${section.id}-heading`}
+                >
+                  <h2 id={`${section.id}-heading`} className="sr-only">
+                    {section.title}
+                  </h2>
+                  <PlaceholderCard
+                    title={section.title}
+                    description={section.description}
+                  />
+                </section>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Disclaimer */}
+        <div className="mt-16 p-6 rounded-xl border border-border bg-muted/30">
+          <div className="flex gap-4">
+            <AlertCircle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+            <div className="text-sm text-muted-foreground leading-relaxed">
+              <p className="font-semibold text-foreground mb-1">NestHunt Assessment Disclaimer</p>
+              NestHunt assessment is based on currently available verified information. While we strive for accuracy, development plans and corporate structures can change. This report is for informational purposes only and does not constitute financial or investment advice. Complete project-level due diligence before making a purchase decision.
+            </div>
+          </div>
         </div>
       </Section>
     </BuilderShell>

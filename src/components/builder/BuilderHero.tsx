@@ -1,4 +1,4 @@
-import { Building2, MapPin } from "lucide-react";
+import { Building2, MapPin, ShieldCheck } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { useAdminSession } from "@/hooks/useAdmin";
-import type { BuilderRow, BuilderHero as BuilderHeroMeta } from "@/lib/services/builders-admin";
+import type { BuilderRow, BuilderHero as BuilderHeroMeta, TrustBreakdownEntry } from "@/lib/services/builders-admin";
+import { DecisionScoreCard } from "@/components/common/DecisionScoreCard";
 
 interface Props {
   builder: BuilderRow;
@@ -31,6 +32,7 @@ export function BuilderHero({ builder }: Props) {
 
   const hero = (builder.hero ?? {}) as BuilderHeroMeta;
   const metrics = (builder.metrics ?? {}) as Record<string, unknown>;
+  const trustBreakdown = (builder.trust_breakdown as unknown as TrustBreakdownEntry[]) ?? [];
 
   const logoUrl = hero.logoUrl;
   const headquarters = builder.head_office || builder.headquarters || null;
@@ -54,6 +56,8 @@ export function BuilderHero({ builder }: Props) {
       value: yearsInBusiness ? String(yearsInBusiness) : NA,
     },
   ];
+
+  const showTrustScore = builder.trust_score !== null && trustBreakdown.length > 0;
 
   function handleViewProjects() {
     document
@@ -142,7 +146,29 @@ export function BuilderHero({ builder }: Props) {
         </dl>
       </div>
 
-      <div className="min-w-0">
+      <div className="min-w-0 space-y-6">
+        {showTrustScore ? (
+          <DecisionScoreCard
+            title="Builder Trust Score"
+            score={builder.trust_score!}
+            confidence="High"
+            categoryRatings={trustBreakdown}
+            className="border-border shadow-sm"
+          />
+        ) : (
+          <Card className="border-border border-dashed bg-muted/30">
+            <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+              <ShieldCheck className="h-10 w-10 text-muted-foreground/40" />
+              <p className="mt-4 font-display text-lg font-semibold text-foreground">
+                Assessment Pending
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Verification of this builder's credentials is in progress.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid gap-4 sm:grid-cols-2">
           {kpis.map((kpi) => (
             <Card key={kpi.label} className="border-border bg-surface">
