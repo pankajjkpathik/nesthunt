@@ -66,7 +66,18 @@ export const BuilderPublicService = {
     const row = data as BuilderRow | null;
     if (!row || (row.status ?? "draft") !== "published") return null;
 
-    const [media, relationships, risks, evidence, promises] = await Promise.all([
+    const [
+      media, 
+      relationships, 
+      risks, 
+      evidence, 
+      promises,
+      leadership,
+      certifications,
+      awards,
+      rera,
+      faqs
+    ] = await Promise.all([
       listEntityImages("builder", row.id).catch(() => [] as EntityImage[]),
       getRelatedEntities({ type: "builder", id: row.id }).catch(
         () => [] as RelatedEntity[],
@@ -74,6 +85,11 @@ export const BuilderPublicService = {
       listPlaceRisks(row.id).catch(() => [] as PlaceRiskRow[]),
       listPlaceEvidence(row.id).catch(() => [] as PlaceEvidenceRow[]),
       listPlacePromises(row.id).catch(() => [] as PlacePromiseRow[]),
+      listBuilderLeadership(row.id).catch(() => [] as LeadershipMember[]),
+      listBuilderCertifications(row.id).catch(() => [] as CertificationEntry[]),
+      listBuilderAwards(row.id).catch(() => [] as AwardEntry[]),
+      listBuilderReraRecords(row.id).catch(() => [] as ReraEntry[]),
+      listBuilderFaqs(row.id).catch(() => [] as BuilderFaq[]),
     ]);
 
     return {
@@ -84,6 +100,11 @@ export const BuilderPublicService = {
       risks,
       evidence,
       promises,
+      leadership,
+      certifications,
+      awards,
+      rera,
+      faqs,
     };
   },
 
