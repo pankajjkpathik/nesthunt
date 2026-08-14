@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertCircle, CheckCircle2, Info, TriangleAlert } from "lucide-react";
+import { AlertCircle, Building2, CheckCircle2, Info, TriangleAlert } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { Section } from "@/components/common/Section";
