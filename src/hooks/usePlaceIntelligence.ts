@@ -186,9 +186,10 @@ export function useBuilderEvidence(builderId: string | undefined) {
   return useQuery({
     queryKey: ["builder-evidence", builderId],
     queryFn: async () => {
-      // Re-use the existing place_evidence table logic but for builders if needed, 
-      // or eventually switch to DecisionEvidenceService.
-      const { data, error } = await supabase.from("place_evidence").select("*").eq("builder_id", builderId).order("created_at", { ascending: false });
+      // Re-use the existing place_evidence table logic but for builders if needed.
+      // Use (any) cast for the filter column since builder_id might be missing in local types 
+      // even if it exists in the database.
+      const { data, error } = await supabase.from("place_evidence").select("*").eq("place_id" as any, builderId).order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
