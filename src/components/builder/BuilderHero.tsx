@@ -1,4 +1,4 @@
-import { Building2, MapPin } from "lucide-react";
+import { Building2, MapPin, ShieldCheck } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { useAdminSession } from "@/hooks/useAdmin";
-import type { BuilderRow, BuilderHero as BuilderHeroMeta } from "@/lib/services/builders-admin";
+import type { BuilderRow, BuilderHero as BuilderHeroMeta, TrustBreakdownEntry } from "@/lib/services/builders-admin";
+import { DecisionScoreCard } from "@/components/common/DecisionScoreCard";
 
 interface Props {
   builder: BuilderRow;
