@@ -48,11 +48,14 @@ export const BuilderPublicService = {
     const row = data as BuilderRow | null;
     if (!row || (row.status ?? "draft") !== "published") return null;
 
-    const [media, relationships] = await Promise.all([
+    const [media, relationships, risks, evidence, promises] = await Promise.all([
       listEntityImages("builder", row.id).catch(() => [] as EntityImage[]),
       getRelatedEntities({ type: "builder", id: row.id }).catch(
         () => [] as RelatedEntity[],
       ),
+      listPlaceRisks(row.id).catch(() => [] as PlaceRiskRow[]),
+      listPlaceEvidence(row.id).catch(() => [] as PlaceEvidenceRow[]),
+      listPlacePromises(row.id).catch(() => [] as PlacePromiseRow[]),
     ]);
 
     return {
@@ -60,6 +63,9 @@ export const BuilderPublicService = {
       media,
       relationships,
       seo: (row.seo ?? {}) as BuilderSeo,
+      risks,
+      evidence,
+      promises,
     };
   },
 
