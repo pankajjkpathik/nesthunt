@@ -78,7 +78,7 @@ function RelationshipCard({ title, name, slug, type, icon, description }: {
               <ArrowRight className="h-3.5 w-3.5 ml-2 group-hover/btn:translate-x-1 transition-transform" />
             </Link>
           ) : (
-            <Link to="/places/$slug" params={{ slug } as any}>
+            <Link to={slug === 'new-chandigarh' ? "/places/new-chandigarh" : "/" as any}>
               Explore Locality
               <ArrowRight className="h-3.5 w-3.5 ml-2 group-hover/btn:translate-x-1 transition-transform" />
             </Link>
