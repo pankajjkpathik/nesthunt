@@ -76,6 +76,8 @@ export interface ProjectHero {
   subheadline?: string;
   heroImageUrl?: string;
   coverImageUrl?: string;
+  url?: string;
+  alt?: string;
   masterPlanUrl?: string;
   brochureUrl?: string;
   gallery?: GalleryImage[];
