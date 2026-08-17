@@ -154,7 +154,7 @@ function ProjectDetailPage() {
   if (isPending && !projectData) return <ProjectSkeleton />;
   if ((isError || !projectData) && !isPending) return <ProjectNotFound />;
 
-  const { project, risks, promises, media, decisionEntity } = projectData!;
+  const { project, risks, promises, media, decisionEntity, insights } = projectData!;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -225,7 +225,7 @@ function ProjectDetailPage() {
         <div className="grid gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:py-14">
           <div className="min-w-0 space-y-20">
             {/* 01 · Intelligence Summary */}
-            <ProjectIntelligenceSummary decisionEntity={decisionEntity} />
+            <ProjectIntelligenceSummary decisionEntity={decisionEntity} insights={insights} />
 
             {/* 02 · Executive Summary */}
             <ProjectExecutiveSummary summary={project.summary} />

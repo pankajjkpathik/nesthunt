@@ -4,39 +4,30 @@ import {
   TrendingUp, 
   ShieldCheck, 
   AlertTriangle,
-  Lightbulb
+  Lightbulb,
+  Info,
+  Activity,
+  BarChart
 } from "lucide-react";
-import type { DecisionEntityRow } from "@/lib/services/decision-intelligence";
+import type { DecisionEntityRow, DecisionInsightRow } from "@/lib/services/decision-intelligence";
+import { cn } from "@/lib/utils";
 
 interface ProjectIntelligenceSummaryProps {
   decisionEntity: DecisionEntityRow | null;
+  insights: DecisionInsightRow[];
 }
 
-export function ProjectIntelligenceSummary({ decisionEntity }: ProjectIntelligenceSummaryProps) {
-  if (!decisionEntity) return null;
+export function ProjectIntelligenceSummary({ decisionEntity, insights }: ProjectIntelligenceSummaryProps) {
+  if (!decisionEntity || insights.length === 0) return null;
 
-  // In a real scenario, we'd fetch decision_insights for this entity
-  // For now, we'll keep the high-fidelity UI but note it's CMS-backed
-  const insights = [
-    { 
-      label: "Market Outlook", 
-      value: "Rising Demand", 
-      icon: <TrendingUp className="h-4 w-4 text-success" />,
-      detail: "High absorption rates in this sector over the last two quarters."
-    },
-    { 
-      label: "Legal Status", 
-      value: "RERA Verified", 
-      icon: <ShieldCheck className="h-4 w-4 text-success" />,
-      detail: "All mandatory regulatory filings are current and verified."
-    },
-    { 
-      label: "Construction", 
-      value: "On Schedule", 
-      icon: <CheckCircle2 className="h-4 w-4 text-success" />,
-      detail: "Physical progress aligns with the declared RERA timeline."
-    }
-  ];
+  const categoryIcons: Record<string, any> = {
+    market: <TrendingUp className="h-4 w-4 text-success" />,
+    growth: <Activity className="h-4 w-4 text-success" />,
+    risk: <AlertTriangle className="h-4 w-4 text-destructive" />,
+    builder: <ShieldCheck className="h-4 w-4 text-success" />,
+    place: <BarChart className="h-4 w-4 text-success" />,
+    project: <CheckCircle2 className="h-4 w-4 text-success" />,
+  };
 
   return (
     <section id="intelligence-summary" aria-labelledby="intel-heading">
@@ -50,18 +41,18 @@ export function ProjectIntelligenceSummary({ decisionEntity }: ProjectIntelligen
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {insights.map((insight) => (
-              <div key={insight.label} className="space-y-2">
+            {insights.slice(0, 3).map((insight) => (
+              <div key={insight.id} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  {insight.icon}
+                  {categoryIcons[insight.category] || <Info className="h-4 w-4 text-accent" />}
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                    {insight.label}
+                    {insight.category} Insight
                   </span>
                 </div>
                 <div>
-                  <div className="font-display font-bold text-foreground">{insight.value}</div>
-                  <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                    {insight.detail}
+                  <div className="font-display font-bold text-foreground line-clamp-2">{insight.title}</div>
+                  <p className="mt-1 text-xs text-muted-foreground leading-relaxed line-clamp-3">
+                    {insight.summary}
                   </p>
                 </div>
               </div>
