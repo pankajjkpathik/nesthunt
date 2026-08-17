@@ -47,7 +47,7 @@ export const ComparisonService = {
         const placeId = pp.project.place_id;
 
         const [builderData, placeData, decisionEntity] = await Promise.all([
-          builderId ? BuilderPublicService.getBuilderById(builderId).catch(() => null) : Promise.resolve(null),
+          builderId ? ComparisonService.getBuilderMinimal(builderId) : Promise.resolve(null),
           placeId ? getPlaceById(placeId).catch(() => null) : Promise.resolve(null),
           DecisionEntityService.getByEntity("project", pp.project.id).catch(() => null)
         ]);
