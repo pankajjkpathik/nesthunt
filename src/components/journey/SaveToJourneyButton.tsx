@@ -1,3 +1,4 @@
+import React from "react";
 import { Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useJourney } from "@/hooks/useJourney";
