@@ -122,7 +122,7 @@ function RiskRow({ row, evidence, builderId }: { row: DecisionRiskRow; evidence:
   const remove = useDeleteRisk(builderId, "builder");
 
   function edit<K extends keyof DecisionRiskRow>(key: K, value: DecisionRiskRow[K]) {
-    setDraft((d) => ({ ...d, [key]: value }));
+    setDraft((d: DecisionRiskRow) => ({ ...d, [key]: value }));
     setDirty(true);
   }
 
