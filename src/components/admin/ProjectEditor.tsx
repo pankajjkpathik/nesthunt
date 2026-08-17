@@ -974,7 +974,7 @@ export function ProjectEditor({ id }: Props) {
         onSelect={(assets) => {
           if (mediaPicker.target === "hero") {
             const url = getPublicUrl(assets[0].storagePath);
-            set("hero", { ...form.hero, url, alt: assets[0].alt || assets[0].fileName });
+            set("hero", { ...form.hero, heroImageUrl: url, alt: assets[0].alt || assets[0].fileName });
           } else {
             const newImages = assets.map(a => ({ 
               url: getPublicUrl(a.storagePath), 
