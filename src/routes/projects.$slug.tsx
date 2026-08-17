@@ -154,7 +154,7 @@ function ProjectDetailPage() {
   if (isPending && !projectData) return <ProjectSkeleton />;
   if ((isError || !projectData) && !isPending) return <ProjectNotFound />;
 
-  const { project, risks, promises, media, decisionEntity } = projectData;
+  const { project, risks, promises, media, decisionEntity } = projectData!;
 
   const jsonLd = {
     "@context": "https://schema.org",

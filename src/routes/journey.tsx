@@ -38,7 +38,7 @@ export const Route = createFileRoute("/journey")({
 interface JourneyItem {
   primary: string;
   secondary?: string;
-  href?: { to: string };
+  href?: { to: string; params?: Record<string, string> };
   meta?: string;
 }
 
