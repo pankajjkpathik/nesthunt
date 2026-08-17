@@ -149,7 +149,7 @@ function ComparisonMatrix({ context, preferences }: { context: any, preferences:
       const prefA = preferences.find(p => p.dimensionId === a.id);
       const prefB = preferences.find(p => p.dimensionId === b.id);
       
-      const priorityWeight = { high: 3, medium: 2, low: 1, none: 0 };
+      const priorityWeight: Record<string, number> = { high: 3, medium: 2, low: 1, none: 0 };
       const weightA = priorityWeight[prefA?.priority || 'none'] || 0;
       const weightB = priorityWeight[prefB?.priority || 'none'] || 0;
       
