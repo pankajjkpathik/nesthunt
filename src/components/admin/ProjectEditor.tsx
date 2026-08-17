@@ -265,9 +265,9 @@ function formToPayload(f: FormState) {
             ? `from ₹${f.starting_price}`
             : "",
       possessionYear: f.possession_date ? new Date(f.possession_date).getFullYear() : 0,
-      reraAuthority: f.metrics.reraAuthority ?? null,
-      reraStatus: f.metrics.reraStatus ?? null,
-      reraUrl: f.metrics.reraUrl ?? null,
+      reraAuthority: f.metrics.reraAuthority || null,
+      reraStatus: f.metrics.reraStatus || null,
+      reraUrl: f.metrics.reraUrl || null,
       totalUnits: 0,
     },
   };
