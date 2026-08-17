@@ -101,6 +101,9 @@ export interface ProjectMetrics {
   priceRange?: string;
   possessionYear?: number;
   totalUnits?: number;
+  reraAuthority?: string | null;
+  reraStatus?: string | null;
+  reraUrl?: string | null;
 }
 
 export interface ProjectRow {

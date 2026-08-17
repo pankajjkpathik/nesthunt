@@ -64,7 +64,7 @@ export function RisksTab({ entityType, entityId }: { entityType: "project" | "bu
           size="sm"
           onClick={async () => {
             try {
-              await create.mutateAsync({ entity_id: entityId, entity_type: entityType, title: "New risk", severity: "medium", probability: "medium" } as any);
+              await create.mutateAsync({ entity_id: entityId, entity_type: entityType, title: "New risk", severity: "medium", probability: "medium", category: "legal", status: "active" } as any);
               toast.success("Risk added");
             } catch (e) {
               toast.error((e as Error).message);

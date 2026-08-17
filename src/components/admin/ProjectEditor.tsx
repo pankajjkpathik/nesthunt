@@ -9,6 +9,10 @@ import {
   Plus,
   Save,
   Trash2,
+  FileText,
+  ShieldCheck,
+  FileSearch,
+  Info
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -34,6 +38,7 @@ import { MediaPicker } from "@/components/admin/media/MediaPicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { getPublicUrl } from "@/lib/services/media";
+import { ProjectAdminService } from "@/lib/services/projects-cms-integration";
 
 import {
   Field,
@@ -69,6 +74,7 @@ import {
   type ProjectSeo,
   type ProjectStatus,
   type UnitType,
+  type ProjectMetrics,
 } from "@/lib/services/projects-admin";
 
 interface Props {
@@ -114,6 +120,8 @@ interface FormState {
   progress: string[];
   seo: ProjectSeo;
   gallery: GalleryImage[];
+  highlights: string[];
+  metrics: ProjectMetrics;
 }
 
 const EMPTY: FormState = {
@@ -155,6 +163,13 @@ const EMPTY: FormState = {
   progress: [],
   seo: {},
   gallery: [],
+  highlights: [],
+  metrics: {
+    unitTypes: "",
+    priceRange: "",
+    possessionYear: 0,
+    totalUnits: 0,
+  },
 };
 
 function rowToForm(row: ProjectRow): FormState {
@@ -197,6 +212,8 @@ function rowToForm(row: ProjectRow): FormState {
     progress: row.progress ?? [],
     seo: (row.seo ?? {}) as ProjectSeo,
     gallery: Array.isArray(row.hero?.gallery) ? row.hero.gallery : [],
+    highlights: (row as any).highlights ?? [],
+    metrics: (row.metrics ?? {}) as ProjectMetrics,
   };
 }
 
@@ -248,6 +265,9 @@ function formToPayload(f: FormState) {
             ? `from ₹${f.starting_price}`
             : "",
       possessionYear: f.possession_date ? new Date(f.possession_date).getFullYear() : 0,
+      reraAuthority: f.metrics.reraAuthority || null,
+      reraStatus: f.metrics.reraStatus || null,
+      reraUrl: f.metrics.reraUrl || null,
       totalUnits: 0,
     },
   };
@@ -324,7 +344,7 @@ export function ProjectEditor({ id }: Props) {
         toast.success("Project created");
         navigate({ to: "/admin/projects/$id", params: { id: created.id } });
       } else {
-        await updateMut.mutateAsync({ id: id!, patch: payload as never });
+        await ProjectAdminService.updateProjectIntelligence(id!, payload as never);
         toast.success("Project saved");
         if (nextPublish) set("publish_status", nextPublish);
       }
@@ -748,9 +768,22 @@ export function ProjectEditor({ id }: Props) {
                 hint={!reraOk ? "Enter a valid RERA number (6+ alphanumeric)" : "Primary registration"}
               />
               <TextField
-                label="Authority"
-                value={form.rera.authority ?? ""}
-                onChange={(v) => set("rera", { ...form.rera, authority: v })}
+                label="RERA Authority"
+                value={form.metrics.reraAuthority ?? ""}
+                onChange={(v) => set("metrics", { ...form.metrics, reraAuthority: v })}
+                hint="e.g. Haryana Real Estate Regulatory Authority"
+              />
+              <TextField
+                label="RERA Status"
+                value={form.metrics.reraStatus ?? ""}
+                onChange={(v) => set("metrics", { ...form.metrics, reraStatus: v })}
+                hint="e.g. Registered, Applied"
+              />
+              <TextField
+                label="RERA Portal URL"
+                value={form.metrics.reraUrl ?? ""}
+                onChange={(v) => set("metrics", { ...form.metrics, reraUrl: v })}
+                hint="Direct link to project on RERA website"
               />
               <TextField
                 label="Registration date"
@@ -777,9 +810,6 @@ export function ProjectEditor({ id }: Props) {
                   placeholder="e.g. Land title verified by Amicus & Co."
                 />
               </div>
-              <p className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-                Support for multiple RERA registrations is on the roadmap.
-              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -883,6 +913,27 @@ export function ProjectEditor({ id }: Props) {
               <GalleryManager
                 images={form.gallery}
                 onChange={(v) => set("gallery", v)}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="narrative" className="space-y-6 pt-4">
+          <Card>
+            <CardContent className="p-6 space-y-6">
+              <TextareaField 
+                label="Executive Summary" 
+                hint="High-level narrative shown at the top of the project report."
+                value={form.executive_summary} 
+                onChange={(v) => set("executive_summary", v)} 
+                rows={8}
+              />
+              
+              <StringListField 
+                label="Key Highlights" 
+                hint="Bullet points for quick scanning."
+                items={form.highlights} 
+                onChange={(v) => set("highlights", v)} 
               />
             </CardContent>
           </Card>

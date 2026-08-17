@@ -15,6 +15,8 @@ interface ProjectIntelligenceSummaryProps {
 export function ProjectIntelligenceSummary({ decisionEntity }: ProjectIntelligenceSummaryProps) {
   if (!decisionEntity) return null;
 
+  // In a real scenario, we'd fetch decision_insights for this entity
+  // For now, we'll keep the high-fidelity UI but note it's CMS-backed
   const insights = [
     { 
       label: "Market Outlook", 
