@@ -261,8 +261,9 @@ export function BuilderEditor({ id }: Props) {
       trust_score: trustScore,
       hero: form.hero,
       seo: form.seo,
-      // preserve legacy JSON columns
+      // preserve legacy JSON columns for reporting compatibility
       decision: { score: trustScore, confidence: "Medium" as const, verdict: form.tagline || form.summary },
+
       metrics: {
         ...(existing?.metrics as Record<string, any> || {}),
         completed_projects: form.hero.completedProjects ?? (existing?.metrics as any)?.completed_projects,

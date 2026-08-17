@@ -1,9 +1,10 @@
+/**
+ * DECISION LAYER V1 FROZEN
+ * Primary entry point for Decision Layer intelligence.
+ * Includes: Entities, Dimensions, Scores, Factors, Evidence, Risks, Promises.
+ * See: src/docs/decision-layer-v1.md
+ */
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
-
-// ============================================================
-// BUILD-017 — Decision Intelligence Layer (services, no UI)
-// ============================================================
 
 type Tables = Database["public"]["Tables"];
 

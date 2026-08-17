@@ -1,3 +1,8 @@
+/**
+ * DECISION LAYER V1 FROZEN
+ * Public comparison matrix for projects.
+ * See: src/docs/decision-layer-v1.md
+ */
 import React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { 

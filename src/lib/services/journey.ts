@@ -1,3 +1,8 @@
+/**
+ * DECISION LAYER V1 FROZEN
+ * Local-only user journey and decision context.
+ * See: src/docs/decision-layer-v1.md
+ */
 export type JourneyEntityType = "project" | "builder" | "place";
 
 export interface JourneyItem {

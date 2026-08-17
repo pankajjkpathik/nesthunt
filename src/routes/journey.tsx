@@ -1,3 +1,8 @@
+/**
+ * DECISION LAYER V1 FROZEN
+ * Personal decision workspace.
+ * See: src/docs/decision-layer-v1.md
+ */
 import React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
