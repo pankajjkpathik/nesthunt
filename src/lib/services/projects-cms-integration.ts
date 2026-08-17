@@ -9,7 +9,8 @@ import {
   PromiseLedgerService, 
   DecisionEntityService,
   DecisionScoreService,
-  DecisionFactorService
+  DecisionFactorService,
+  DecisionDimensionService
 } from "./decision-intelligence";
 
 /**
