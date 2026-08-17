@@ -52,7 +52,11 @@ export const Route = createFileRoute("/places/new-chandigarh")({
   component: PlacePage,
 });
 
-/* ------------------------------- Mock Data ------------------------------- */
+/* ------------------------------- Intelligence Data ------------------------------- */
+// NOTE: Some data in this route remains in a transition state between 
+// static reporting and the dynamic Decision Layer. Mock values here 
+// are for display only and do not influence the Decision Engine.
+
 
 const TAGS = ["Planned City", "Emerging Growth", "Residential"];
 

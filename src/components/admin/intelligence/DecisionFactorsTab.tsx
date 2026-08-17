@@ -147,7 +147,7 @@ function FactorRow({
   const remove = useDeleteDecisionFactor(row.decision_score_id);
 
   const edit = (patch: Partial<DecisionFactorRow>) => {
-    setDraft(d => ({ ...d, ...patch }));
+    setDraft((d: DecisionFactorRow) => ({ ...d, ...patch }));
     setDirty(true);
   };
 

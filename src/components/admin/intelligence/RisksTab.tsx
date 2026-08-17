@@ -120,7 +120,7 @@ function RiskRow({ row, entityId, entityType }: { row: DecisionRiskRow; entityId
   const remove = useDeleteRisk(entityId, entityType as any);
 
   function edit<K extends keyof DecisionRiskRow>(key: K, value: DecisionRiskRow[K]) {
-    setDraft((d) => ({ ...d, [key]: value }));
+    setDraft((d: DecisionRiskRow) => ({ ...d, [key]: value }));
     setDirty(true);
   }
 

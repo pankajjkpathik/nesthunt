@@ -52,7 +52,10 @@ export const Route = createFileRoute("/builder/omaxe")({
   component: BuilderPage,
 });
 
-/* ------------------------------- Mock Data ------------------------------- */
+/* ------------------------------- Intelligence Data ------------------------------- */
+// NOTE: Display metrics in this route are for reporting purposes.
+// Trust Score is now governed by the Decision Layer (0-10 scale).
+
 
 const TAGS = ["National Developer", "Townships", "Residential", "Commercial"];
 

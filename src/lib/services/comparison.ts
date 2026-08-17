@@ -1,4 +1,8 @@
-// Service definition for project comparisons
+/**
+ * DECISION LAYER V1 FROZEN
+ * Logic for transparent entity comparison.
+ * See: src/docs/decision-layer-v1.md
+ */
 import { supabase } from "@/integrations/supabase/client";
 import { ProjectPublicService, type PublicProject } from "./projects-public";
 import { BuilderPublicService, type PublicBuilder } from "./builders-public";

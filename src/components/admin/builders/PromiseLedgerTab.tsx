@@ -102,7 +102,7 @@ function PromiseRow({
   const remove = useDeletePromise(builderId, "builder");
 
   function edit<K extends keyof DecisionPromiseRow>(key: K, value: DecisionPromiseRow[K]) {
-    setDraft((d) => ({ ...d, [key]: value }));
+    setDraft((d: DecisionPromiseRow) => ({ ...d, [key]: value }));
     setDirty(true);
   }
 
