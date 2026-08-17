@@ -27,6 +27,9 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
+import { RisksTab } from "@/components/admin/intelligence/RisksTab";
+import { PromisesTab } from "@/components/admin/intelligence/PromisesTab";
+import { MediaPicker } from "@/components/admin/media/MediaPicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 
@@ -392,6 +395,7 @@ export function ProjectEditor({ id }: Props) {
           <TabsTrigger value="rera">RERA</TabsTrigger>
           <TabsTrigger value="nearby">Nearby</TabsTrigger>
           <TabsTrigger value="investment">Investment</TabsTrigger>
+          <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
         </TabsList>
 
@@ -844,6 +848,24 @@ export function ProjectEditor({ id }: Props) {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="intelligence">
+          <div className="space-y-6">
+            {!isNew && (
+              <>
+                <RisksTab entityType="project" entityId={id} />
+                <PromisesTab entityType="project" entityId={id} />
+              </>
+            )}
+            {isNew && (
+              <Card>
+                <CardContent className="p-6 text-center text-muted-foreground">
+                  Save the project first to manage intelligence records.
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="seo">
