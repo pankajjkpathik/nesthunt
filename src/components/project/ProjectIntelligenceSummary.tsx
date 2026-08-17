@@ -50,18 +50,18 @@ export function ProjectIntelligenceSummary({ decisionEntity }: ProjectIntelligen
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {insights.map((insight) => (
-              <div key={insight.label} className="space-y-2">
+            {insights.slice(0, 3).map((insight) => (
+              <div key={insight.id} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  {insight.icon}
+                  {categoryIcons[insight.category] || <Info className="h-4 w-4 text-accent" />}
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                    {insight.label}
+                    {insight.category} Insight
                   </span>
                 </div>
                 <div>
-                  <div className="font-display font-bold text-foreground">{insight.value}</div>
+                  <div className="font-display font-bold text-foreground">{insight.title}</div>
                   <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                    {insight.detail}
+                    {insight.summary}
                   </p>
                 </div>
               </div>
