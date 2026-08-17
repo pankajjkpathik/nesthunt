@@ -45,3 +45,9 @@ export async function getPlaceBySlug(slug: string): Promise<Place | null> {
   if (error) throw error;
   return data ? mapPlace(data as unknown as Row) : null;
 }
+
+export async function getPlaceById(id: string): Promise<Place | null> {
+  const { data, error } = await supabase.from("places").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data ? mapPlace(data as unknown as Row) : null;
+}

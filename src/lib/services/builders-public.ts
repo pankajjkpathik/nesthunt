@@ -117,6 +117,61 @@ export const BuilderPublicService = {
     };
   },
 
+  },
+
+  async getBuilderById(id: string): Promise<PublicBuilder | null> {
+    const { data, error } = await supabase
+      .from("builders")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw error;
+
+    const row = data as BuilderRow | null;
+    if (!row || (row.status ?? "draft") !== "published") return null;
+
+    const [
+      media,
+      relationships,
+      risks,
+      evidence,
+      promises,
+      leadership,
+      certifications,
+      awards,
+      rera,
+      faqs
+    ] = await Promise.all([
+      listEntityImages("builder", row.id).catch(() => [] as EntityImage[]),
+      getRelatedEntities({ type: "builder", id: row.id }).catch(
+        () => [] as RelatedEntity[],
+      ),
+      RiskService.listByEntity("builder", row.id).catch(() => [] as EntityRiskRow[]),
+      listPlaceEvidence(row.id).catch(() => [] as PlaceEvidenceRow[]),
+      PromiseLedgerService.listByEntity("builder", row.id).catch(() => [] as PromiseLedgerRow[]),
+      listBuilderLeadership(row.id).catch(() => [] as LeadershipMember[]),
+      listBuilderCertifications(row.id).catch(() => [] as CertificationEntry[]),
+      listBuilderAwards(row.id).catch(() => [] as AwardEntry[]),
+      listBuilderReraRecords(row.id).catch(() => [] as ReraEntry[]),
+      listBuilderFaqs(row.id).catch(() => [] as BuilderFaq[]),
+    ]);
+
+    return {
+      builder: row,
+      media,
+      relationships,
+      seo: (row.seo as unknown as BuilderSeo) || {},
+      risks,
+      evidence,
+      promises,
+      leadership,
+      certifications,
+      awards,
+      rera,
+      faqs
+    };
+  },
+
   async getRelatedProjects(builderId: string): Promise<PublicBuilderProject[]> {
     const { data, error } = await supabase
       .from("projects")
