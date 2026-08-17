@@ -39,8 +39,8 @@ export const Route = createFileRoute("/builders/$slug")({
   component: BuilderDetailPage,
   errorComponent: BuilderError,
   notFoundComponent: BuilderNotFound,
-  head: ({ loaderData, params }: { loaderData: PublicBuilder | null; params: { slug: string } }) => {
-    const builder = loaderData?.builder;
+  head: ({ loaderData, params }) => {
+    const builder = (loaderData as PublicBuilder | undefined)?.builder;
     const isPublished = (builder?.status ?? "draft") === "published";
     const name = builder?.name || "Builder";
     const slug = params.slug;
@@ -194,7 +194,7 @@ function BuilderError() {
 
 function BuilderDetailPage() {
   const { slug } = Route.useParams();
-  const loaderData = Route.useLoaderData();
+  const loaderData = Route.useLoaderData() as PublicBuilder | null;
   const { data: queryData, isPending, isError } = useBuilder(slug);
   
   // Prefer loaderData for SSR/initial, queryData for client updates
