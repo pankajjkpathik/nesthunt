@@ -99,6 +99,31 @@ export const ComparisonService = {
       preferences
     };
   },
+  
+  async getBuilderMinimal(id: string): Promise<PublicBuilder | null> {
+    const { data, error } = await supabase
+      .from("builders")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data || (data.status ?? "draft") !== "published") return null;
+    
+    return {
+      builder: data as any,
+      media: [],
+      relationships: [],
+      seo: (data.seo as any) || {},
+      risks: [],
+      evidence: [],
+      promises: [],
+      leadership: [],
+      certifications: [],
+      awards: [],
+      rera: [],
+      faqs: []
+    };
+  },
 
   isCompatible(dim1: DecisionDimensionRow, dim2: DecisionDimensionRow): boolean {
     if (!dim1.compatibility_group || !dim2.compatibility_group) return false;
