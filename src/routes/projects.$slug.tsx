@@ -25,6 +25,9 @@ import { ProjectIntelligenceSummary } from "@/components/project/ProjectIntellig
 import { ProjectNearbyInfrastructure } from "@/components/project/ProjectNearbyInfrastructure";
 import { ProjectConfigurations } from "@/components/project/ProjectConfigurations";
 
+/**
+ * PROJECT INTELLIGENCE V1 FROZEN
+ */
 export const Route = createFileRoute("/projects/$slug")({
   component: ProjectDetailPage,
   notFoundComponent: ProjectNotFound,

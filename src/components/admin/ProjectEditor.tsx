@@ -40,6 +40,12 @@ import { Badge } from "@/components/ui/badge";
 import { getPublicUrl } from "@/lib/services/media";
 import { ProjectAdminService } from "@/lib/services/projects-cms-integration";
 
+/**
+ * PROJECT INTELLIGENCE V1 FROZEN
+ * Project Intelligence V1 is feature-complete. Future changes should be limited to bug fixes, 
+ * security fixes, data-integrity fixes and explicitly approved V2 work.
+ */
+
 import {
   Field,
   NumberField,
