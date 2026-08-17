@@ -38,28 +38,58 @@ export const Route = createFileRoute("/builders/$slug")({
   component: BuilderDetailPage,
   errorComponent: BuilderError,
   notFoundComponent: BuilderNotFound,
-  head: ({ params }) => {
-    const url = `https://nesthunt.in/builders/${params.slug}`;
+  head: ({ loaderData, params }) => {
+    const builder = loaderData?.builder;
+    const isPublished = (builder?.status ?? "draft") === "published";
+    const name = builder?.name || "Builder";
+    const slug = params.slug;
+    const url = `https://www.nesthunt.in/builders/${slug}`;
+    
+    const title = `${name} | Builder Intelligence | NestHunt`;
+    const description = builder?.summary || builder?.description 
+      ? (builder.summary || builder.description).substring(0, 160)
+      : `Explore verified information, projects, performance and key considerations for ${name} on NestHunt.`;
+
+    const meta = [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "profile" },
+      { property: "og:url", content: url },
+      { property: "og:site_name", content: "NestHunt" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+    ];
+
+    if (!isPublished) {
+      meta.push({ name: "robots", content: "noindex, nofollow" });
+    } else {
+      meta.push({ name: "robots", content: "index, follow" });
+    }
+
+    const logoUrl = (builder?.hero as any)?.logoUrl;
+    if (logoUrl) {
+      meta.push({ property: "og:image", content: logoUrl });
+      meta.push({ name: "twitter:image", content: logoUrl });
+    } else {
+      // Fallback to default NestHunt social image
+      const defaultImage = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9471d1c9-304b-4e47-9847-65fc97f88baf/id-preview-095ab6e1--05125b68-1c29-49a1-ae8f-0a25a14f8684.lovable.app-1784118590439.png";
+      meta.push({ property: "og:image", content: defaultImage });
+      meta.push({ name: "twitter:image", content: defaultImage });
+    }
+
     return {
-      meta: [
-        { title: "Builder Intelligence | NestHunt" },
-        {
-          name: "description",
-          content:
-            "Verified builder intelligence — delivery record, regulatory standing and portfolio analysis on NestHunt.",
-        },
-        { property: "og:title", content: "Builder Intelligence | NestHunt" },
-        {
-          property: "og:description",
-          content:
-            "Verified builder intelligence — delivery record, regulatory standing and portfolio analysis on NestHunt.",
-        },
-        { property: "og:type", content: "profile" },
-        { property: "og:url", content: url },
-        { name: "twitter:card", content: "summary_large_image" },
-      ],
+      meta,
       links: [{ rel: "canonical", href: url }],
     };
+  },
+  loader: async ({ params, context: { queryClient } }) => {
+    return queryClient.ensureQueryData({
+      queryKey: ["public", "builder", params.slug],
+      queryFn: () => BuilderPublicService.getBuilderBySlug(params.slug),
+    });
   },
 });
 
@@ -163,12 +193,16 @@ function BuilderError() {
 
 function BuilderDetailPage() {
   const { slug } = Route.useParams();
-  const { data, isPending, isError } = useBuilder(slug);
+  const loaderData = Route.useLoaderData();
+  const { data: queryData, isPending, isError } = useBuilder(slug);
+  
+  // Prefer loaderData for SSR/initial, queryData for client updates
+  const data = queryData || loaderData;
   const builderId = data?.builder.id;
   const projects = useBuilderProjects(builderId);
 
-  if (isPending) return <BuilderSkeleton />;
-  if (isError) return <BuilderError />;
+  if (isPending && !data) return <BuilderSkeleton />;
+  if (isError && !data) return <BuilderError />;
   if (!data) return <BuilderNotFound />;
 
   const { builder, risks, evidence, promises, leadership, rera, certifications, awards, faqs } = data;
@@ -176,8 +210,65 @@ function BuilderDetailPage() {
   const strengths = builder.strengths as string[] || [];
   const watchOuts = builder.watch_outs as string[] || [];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": builder.name,
+        "url": `https://www.nesthunt.in/builders/${slug}`,
+        "logo": (builder.hero as any)?.logoUrl,
+        "description": builder.summary || builder.description,
+        "foundingDate": builder.year_established,
+        "address": builder.headquarters ? {
+          "@type": "PostalAddress",
+          "addressLocality": builder.headquarters
+        } : undefined,
+        "sameAs": builder.website ? [builder.website] : []
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.nesthunt.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Builders",
+            "item": "https://www.nesthunt.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": builder.name,
+            "item": `https://www.nesthunt.in/builders/${slug}`
+          }
+        ]
+      },
+      faqs && faqs.length > 0 ? {
+        "@type": "FAQPage",
+        "mainEntity": faqs.map(f => ({
+          "@type": "Question",
+          "name": f.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": f.answer
+          }
+        }))
+      } : null
+    ].filter(Boolean)
+  };
+
   return (
     <BuilderShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Crumbs name={builder.name} />
       <Section>
         <BuilderHero builder={builder} />
