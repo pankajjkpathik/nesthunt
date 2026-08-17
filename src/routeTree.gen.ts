@@ -18,6 +18,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as ProjectHeroHomesRouteImport } from './routes/project.hero-homes'
 import { Route as PlacesNewChandigarhRouteImport } from './routes/places.new-chandigarh'
+import { Route as CompareProjectsRouteImport } from './routes/compare.projects'
 import { Route as BuildersSlugRouteImport } from './routes/builders.$slug'
 import { Route as BuilderOmaxeRouteImport } from './routes/builder.omaxe'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
@@ -93,6 +94,11 @@ const ProjectHeroHomesRoute = ProjectHeroHomesRouteImport.update({
 const PlacesNewChandigarhRoute = PlacesNewChandigarhRouteImport.update({
   id: '/places/new-chandigarh',
   path: '/places/new-chandigarh',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareProjectsRoute = CompareProjectsRouteImport.update({
+  id: '/compare/projects',
+  path: '/compare/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuildersSlugRoute = BuildersSlugRouteImport.update({
@@ -265,6 +271,7 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/builder/omaxe': typeof BuilderOmaxeRoute
   '/builders/$slug': typeof BuildersSlugRoute
+  '/compare/projects': typeof CompareProjectsRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -306,6 +313,7 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/builder/omaxe': typeof BuilderOmaxeRoute
   '/builders/$slug': typeof BuildersSlugRoute
+  '/compare/projects': typeof CompareProjectsRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -349,6 +357,7 @@ export interface FileRoutesById {
   '/admin_/login': typeof AdminLoginRoute
   '/builder/omaxe': typeof BuilderOmaxeRoute
   '/builders/$slug': typeof BuildersSlugRoute
+  '/compare/projects': typeof CompareProjectsRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/builder/omaxe'
     | '/builders/$slug'
+    | '/compare/projects'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/projects/$slug'
@@ -434,6 +444,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/builder/omaxe'
     | '/builders/$slug'
+    | '/compare/projects'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/projects/$slug'
@@ -476,6 +487,7 @@ export interface FileRouteTypes {
     | '/admin_/login'
     | '/builder/omaxe'
     | '/builders/$slug'
+    | '/compare/projects'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/projects/$slug'
@@ -519,6 +531,7 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   BuilderOmaxeRoute: typeof BuilderOmaxeRoute
   BuildersSlugRoute: typeof BuildersSlugRoute
+  CompareProjectsRoute: typeof CompareProjectsRoute
   PlacesNewChandigarhRoute: typeof PlacesNewChandigarhRoute
   ProjectHeroHomesRoute: typeof ProjectHeroHomesRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
@@ -590,6 +603,13 @@ declare module '@tanstack/react-router' {
       path: '/places/new-chandigarh'
       fullPath: '/places/new-chandigarh'
       preLoaderRoute: typeof PlacesNewChandigarhRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare/projects': {
+      id: '/compare/projects'
+      path: '/compare/projects'
+      fullPath: '/compare/projects'
+      preLoaderRoute: typeof CompareProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/builders/$slug': {
@@ -881,6 +901,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   BuilderOmaxeRoute: BuilderOmaxeRoute,
   BuildersSlugRoute: BuildersSlugRoute,
+  CompareProjectsRoute: CompareProjectsRoute,
   PlacesNewChandigarhRoute: PlacesNewChandigarhRoute,
   ProjectHeroHomesRoute: ProjectHeroHomesRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,

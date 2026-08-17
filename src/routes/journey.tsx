@@ -83,7 +83,7 @@ function JourneyPage() {
             <p className="max-w-md text-muted-foreground mb-8">
               Save Projects, Builders or Places you're considering and we'll keep them together for your decision journey.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Button asChild variant="outline">
                 <Link to="/projects/$slug" params={{ slug: "hero-homes" }}>View Projects</Link>
               </Button>
@@ -98,7 +98,19 @@ function JourneyPage() {
             <DecisionCriteriaManager />
 
             <div className="space-y-6">
-              <h2 className="font-display text-xl font-bold text-foreground">Shortlist</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h2 className="font-display text-xl font-bold text-foreground">Shortlist</h2>
+                {projects.length >= 2 && (
+                  <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+                    <Link 
+                      to="/compare/projects" 
+                      search={{ ids: projects.slice(0, 3).map(p => p.id).join(",") }}
+                    >
+                      Compare Projects ({Math.min(projects.length, 3)})
+                    </Link>
+                  </Button>
+                )}
+              </div>
               <div className="grid gap-8 lg:grid-cols-2">
                 <JourneySection
                   title="Saved places"
@@ -128,7 +140,7 @@ function JourneyPage() {
                       Decision Intelligence
                     </h3>
                     <p className="mt-2 text-xs text-muted-foreground max-w-[200px]">
-                      Comparison tools and personalized metrics will appear here in future updates.
+                      Select 2 or more projects to unlock detailed side-by-side comparison.
                     </p>
                   </CardContent>
                 </Card>
