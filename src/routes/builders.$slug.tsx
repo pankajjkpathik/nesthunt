@@ -368,11 +368,11 @@ function BuilderDetailPage() {
                           {p.remarks && <p className="text-sm text-muted-foreground">{p.remarks}</p>}
                         </div>
                         <Badge className={
-                          p.current_status === 'delivered' ? 'bg-success/10 text-success border-success/20' : 
-                          p.current_status === 'ongoing' ? 'bg-warning/10 text-warning border-warning/20' :
+                          p.status === 'completed' || p.status === 'delivered' ? 'bg-success/10 text-success border-success/20' : 
+                          p.status === 'progress' || p.status === 'ongoing' ? 'bg-warning/10 text-warning border-warning/20' :
                           'bg-muted text-muted-foreground border-none'
                         }>
-                          {p.current_status}
+                          {p.status}
                         </Badge>
                       </div>
                     </CardContent>
