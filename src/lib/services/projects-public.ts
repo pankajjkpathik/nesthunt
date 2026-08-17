@@ -4,9 +4,11 @@ import {
   RiskService, 
   PromiseLedgerService,
   DecisionEntityService,
+  DecisionInsightService,
   type EntityRiskRow,
   type PromiseLedgerRow,
-  type DecisionEntityRow
+  type DecisionEntityRow,
+  type DecisionInsightRow
 } from "./decision-intelligence";
 import { listEntityImages, type EntityImage } from "@/lib/services/media";
 import type { ProjectRow } from "./projects-admin";
@@ -24,6 +26,7 @@ export interface PublicProject {
   risks: EntityRiskRow[];
   promises: PromiseLedgerRow[];
   decisionEntity: DecisionEntityRow | null;
+  insights: DecisionInsightRow[];
   media: EntityImage[];
 }
 
@@ -45,10 +48,12 @@ export const ProjectPublicService = {
     
     const project = data as unknown as PublicProject["project"];
     
-    const [risks, promises, decisionEntity, media] = await Promise.all([
+    const decisionEntity = await DecisionEntityService.getByEntity("project", project.id).catch(() => null);
+    
+    const [risks, promises, insights, media] = await Promise.all([
       RiskService.listByEntity("project", project.id).catch(() => []),
       PromiseLedgerService.listByEntity("project", project.id).catch(() => []),
-      DecisionEntityService.getByEntity("project", project.id).catch(() => null),
+      decisionEntity ? DecisionInsightService.listByEntity(decisionEntity.id).catch(() => []) : Promise.resolve([]),
       listEntityImages("project", project.id).catch(() => [])
     ]);
 
@@ -57,6 +62,7 @@ export const ProjectPublicService = {
       risks,
       promises,
       decisionEntity,
+      insights,
       media
     };
   }
