@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { useBuilder, useBuilderProjects } from "@/hooks/useBuilder";
 import { BuilderHero } from "@/components/builder/BuilderHero";
 import { BuilderExecutiveSummary } from "@/components/builder/BuilderExecutiveSummary";
+import { BuilderPublicService, type PublicBuilder } from "@/lib/services/builders-public";
 
 const SECTIONS: Array<{ id: string; title: string; description: string }> = [
   { id: "hero", title: "Hero", description: "Builder identity, trust score and key badges." },
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/builders/$slug")({
   component: BuilderDetailPage,
   errorComponent: BuilderError,
   notFoundComponent: BuilderNotFound,
-  head: ({ loaderData, params }) => {
+  head: ({ loaderData, params }: { loaderData: PublicBuilder | null; params: { slug: string } }) => {
     const builder = loaderData?.builder;
     const isPublished = (builder?.status ?? "draft") === "published";
     const name = builder?.name || "Builder";
