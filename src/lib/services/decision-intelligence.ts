@@ -102,6 +102,17 @@ export type RiskProbability = (typeof RISK_PROBABILITIES)[number];
 export const RISK_STATUSES = ["active", "resolved", "monitoring"] as const;
 export type RiskStatus = (typeof RISK_STATUSES)[number];
 
+export const DECISION_SOURCE_TYPES = [
+  "LEGACY_MIGRATION",
+  "CMS_ASSESSMENT",
+  "DERIVED_METRIC",
+  "VERIFIED_EVIDENCE",
+  "SYSTEM_CALCULATION",
+  "USER_INPUT",
+] as const;
+export type DecisionSourceType = (typeof DECISION_SOURCE_TYPES)[number];
+
+
 // ============================================================
 // DecisionEntityService
 // ============================================================
