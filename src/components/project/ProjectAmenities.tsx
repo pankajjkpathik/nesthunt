@@ -8,7 +8,7 @@ interface ProjectAmenitiesProps {
 export function ProjectAmenities({ amenities }: ProjectAmenitiesProps) {
   if (!amenities) return null;
   
-  const amenityArray = Array.isArray(amenities) ? amenities : [];
+  const amenityArray = Array.isArray(amenities) ? (amenities as string[]) : [];
   if (amenityArray.length === 0) return null;
 
   // Group by category if format is "Category:Amenity"
@@ -33,7 +33,7 @@ export function ProjectAmenities({ amenities }: ProjectAmenitiesProps) {
                 {category}
               </h3>
               <ul className="space-y-2.5">
-                {items.map((item) => (
+                {(items as string[]).map((item: string) => (
                   <li key={item} className="flex items-start gap-2.5 text-sm text-foreground">
                     <CheckCircle2 className="h-4 w-4 text-success shrink-0 mt-0.5" />
                     {item}
