@@ -9,6 +9,10 @@ import {
   Plus,
   Save,
   Trash2,
+  FileText,
+  ShieldCheck,
+  FileSearch,
+  Info
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -34,6 +38,7 @@ import { MediaPicker } from "@/components/admin/media/MediaPicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { getPublicUrl } from "@/lib/services/media";
+import { ProjectAdminService } from "@/lib/services/projects-cms-integration";
 
 import {
   Field,
@@ -248,6 +253,9 @@ function formToPayload(f: FormState) {
             ? `from ₹${f.starting_price}`
             : "",
       possessionYear: f.possession_date ? new Date(f.possession_date).getFullYear() : 0,
+      reraAuthority: f.metrics.reraAuthority,
+      reraStatus: f.metrics.reraStatus,
+      reraUrl: f.metrics.reraUrl,
       totalUnits: 0,
     },
   };
@@ -324,7 +332,7 @@ export function ProjectEditor({ id }: Props) {
         toast.success("Project created");
         navigate({ to: "/admin/projects/$id", params: { id: created.id } });
       } else {
-        await updateMut.mutateAsync({ id: id!, patch: payload as never });
+        await ProjectAdminService.updateProjectIntelligence(id!, payload as never);
         toast.success("Project saved");
         if (nextPublish) set("publish_status", nextPublish);
       }
@@ -883,6 +891,27 @@ export function ProjectEditor({ id }: Props) {
               <GalleryManager
                 images={form.gallery}
                 onChange={(v) => set("gallery", v)}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="narrative" className="space-y-6 pt-4">
+          <Card>
+            <CardContent className="p-6 space-y-6">
+              <TextareaField 
+                label="Executive Summary" 
+                description="High-level narrative shown at the top of the project report."
+                value={form.executive_summary} 
+                onChange={(v) => set("executive_summary", v)} 
+                rows={8}
+              />
+              
+              <StringListField 
+                label="Key Highlights" 
+                description="Bullet points for quick scanning."
+                items={form.highlights} 
+                onChange={(v) => set("highlights", v)} 
               />
             </CardContent>
           </Card>
