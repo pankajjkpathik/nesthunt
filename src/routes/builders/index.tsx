@@ -83,9 +83,13 @@ function BuildersIndexPage() {
                     View Intelligence
                     <ArrowRight className="h-3 w-3" />
                   </div>
-                  {builder.decision?.score && (
+                  {builder.decision?.score ? (
                     <Badge variant="secondary" className="font-mono">
-                      {builder.decision.score} / 10
+                      {Number(builder.decision.score) > 10 ? (Number(builder.decision.score) / 10).toFixed(1) : builder.decision.score} / 10
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="font-mono text-[10px] uppercase">
+                      Pending
                     </Badge>
                   )}
                 </div>
