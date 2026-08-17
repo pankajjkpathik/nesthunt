@@ -82,8 +82,9 @@ export function DecisionFactorsTab({ entityType, entityId }: Props) {
 
       await create.mutateAsync({
         decision_score_id: scoreId,
-        factor: "New strength",
-        type: "positive",
+        title: "New strength",
+        factor_type: "positive",
+        impact: 7,
         display_order: factors.length,
       });
       toast.success("Strength added");
@@ -155,10 +156,10 @@ function FactorRow({
       await update.mutateAsync({
         id: row.id,
         patch: {
-          factor: draft.factor,
+          title: draft.title,
           description: draft.description,
-          type: draft.type,
-          impact_weight: draft.impact_weight,
+          factor_type: draft.factor_type,
+          impact: draft.impact,
         }
       });
       setDirty(false);
@@ -175,8 +176,8 @@ function FactorRow({
           <div className="flex-1">
             <TextField 
               label="Factor / Strength" 
-              value={draft.factor} 
-              onChange={(v) => edit({ factor: v })} 
+              value={draft.title} 
+              onChange={(v) => edit({ title: v })} 
             />
           </div>
           <div className="flex items-center gap-1 mt-6">
@@ -198,8 +199,8 @@ function FactorRow({
         <div className="grid gap-4 md:grid-cols-3">
           <Field label="Type">
             <Select 
-              value={draft.type} 
-              onValueChange={(v) => edit({ type: v as any })}
+              value={draft.factor_type} 
+              onValueChange={(v) => edit({ factor_type: v as any })}
             >
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>

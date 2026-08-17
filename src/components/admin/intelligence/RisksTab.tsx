@@ -16,8 +16,8 @@ import {
   type EntityRiskRow as DecisionRiskRow,
 } from "@/lib/services/decision-intelligence";
 import {
-  useProjectRisks,
-} from "@/hooks/usePlaceIntelligence";
+  useEntityRisks,
+} from "@/hooks/useDecisionIntelligence";
 import {
   useCreateRisk,
   useUpdateRisk,
@@ -33,7 +33,7 @@ import {
 const PAGE_SIZE = 10;
 
 export function RisksTab({ entityType, entityId }: { entityType: "project" | "builder" | "place", entityId?: string }) {
-  const { data = [], isLoading } = useProjectRisks(entityId);
+  const { data = [], isLoading } = useEntityRisks(entityType, entityId);
   const create = useCreateRisk();
   const [page, setPage] = useState(0);
 

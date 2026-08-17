@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Field, TextField, TextareaField } from "@/components/admin/form/Fields";
 import {
-  useProjectPromises,
-} from "@/hooks/usePlaceIntelligence";
+  usePromiseLedger,
+} from "@/hooks/useDecisionIntelligence";
 import {
   useCreatePromise,
   useUpdatePromise,
@@ -26,7 +26,7 @@ import {
 } from "@/lib/services/decision-intelligence";
 
 export function PromisesTab({ entityType, entityId }: { entityType: "project" | "builder" | "place", entityId?: string }) {
-  const { data = [], isLoading } = useProjectPromises(entityId);
+  const { data = [], isLoading } = usePromiseLedger(entityType, entityId);
   const create = useCreatePromise();
 
   if (!entityId) {
