@@ -1,4 +1,5 @@
 // Service definition for project comparisons
+import { supabase } from "@/integrations/supabase/client";
 import { ProjectPublicService, type PublicProject } from "./projects-public";
 import { BuilderPublicService, type PublicBuilder } from "./builders-public";
 import { getPlaceById } from "./places";
