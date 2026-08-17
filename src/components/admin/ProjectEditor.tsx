@@ -111,6 +111,7 @@ interface FormState {
   legal: string[];
   progress: string[];
   seo: ProjectSeo;
+  gallery: GalleryImage[];
 }
 
 const EMPTY: FormState = {
@@ -151,6 +152,7 @@ const EMPTY: FormState = {
   legal: [],
   progress: [],
   seo: {},
+  gallery: [],
 };
 
 function rowToForm(row: ProjectRow): FormState {
@@ -192,6 +194,7 @@ function rowToForm(row: ProjectRow): FormState {
     legal: row.legal ?? [],
     progress: row.progress ?? [],
     seo: (row.seo ?? {}) as ProjectSeo,
+    gallery: Array.isArray(row.hero?.gallery) ? row.hero.gallery : [],
   };
 }
 
@@ -226,7 +229,7 @@ function formToPayload(f: FormState) {
     rera_number: f.rera_number || null,
     rera: f.rera,
     investment: f.investment,
-    hero: f.hero,
+    hero: { ...f.hero, gallery: f.gallery },
     suitable_for: f.suitable_for,
     less_suitable_for: f.less_suitable_for,
     strengths: f.strengths,
@@ -268,6 +271,11 @@ export function ProjectEditor({ id }: Props) {
       setSlugDirty(true);
     }
   }, [row]);
+
+  const [mediaPicker, setMediaPicker] = useState<{ open: boolean; target: "hero" | "gallery" }>({
+    open: false,
+    target: "hero",
+  });
 
   useEffect(() => {
     if (isNew && !slugDirty && form.name) {
@@ -850,6 +858,31 @@ export function ProjectEditor({ id }: Props) {
           </Card>
         </TabsContent>
 
+        <TabsContent value="gallery">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">Project Gallery</h3>
+                  <p className="text-xs text-muted-foreground">Manage project photos and captions.</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setMediaPicker({ open: true, target: "gallery" })}
+                >
+                  <Plus className="mr-2 h-4 w-4" /> Add from DAM
+                </Button>
+              </div>
+
+              <GalleryManager
+                images={form.gallery}
+                onChange={(v) => set("gallery", v)}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="intelligence">
           <div className="space-y-6">
             {!isNew && (
@@ -932,6 +965,21 @@ export function ProjectEditor({ id }: Props) {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <MediaPicker
+        open={mediaPicker.open}
+        onClose={() => setMediaPicker({ ...mediaPicker, open: false })}
+        folder="projects"
+        onSelect={(assets) => {
+          if (mediaPicker.target === "hero") {
+            set("hero", { ...form.hero, url: assets[0].url, alt: assets[0].name });
+          } else {
+            const newImages = assets.map(a => ({ url: a.url, caption: a.name }));
+            set("gallery", [...form.gallery, ...newImages]);
+          }
+        }}
+        multiple={mediaPicker.target === "gallery"}
+      />
     </div>
   );
 }
