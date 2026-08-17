@@ -31,6 +31,7 @@ import { Route as AdminContentHealthIndexRouteImport } from './routes/admin.cont
 import { Route as AdminCategoriesIndexRouteImport } from './routes/admin.categories.index'
 import { Route as AdminBuildersIndexRouteImport } from './routes/admin.builders.index'
 import { Route as AdminAmenitiesIndexRouteImport } from './routes/admin.amenities.index'
+import { Route as ApiPublicSitemapRouteImport } from './routes/api/public/sitemap'
 import { Route as AdminUnitTypesNewRouteImport } from './routes/admin.unit-types.new'
 import { Route as AdminUnitTypesIdRouteImport } from './routes/admin.unit-types.$id'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
@@ -160,6 +161,11 @@ const AdminAmenitiesIndexRoute = AdminAmenitiesIndexRouteImport.update({
   path: '/amenities/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicSitemapRoute = ApiPublicSitemapRouteImport.update({
+  id: '/api/public/sitemap',
+  path: '/api/public/sitemap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminUnitTypesNewRoute = AdminUnitTypesNewRouteImport.update({
   id: '/unit-types/new',
   path: '/unit-types/new',
@@ -265,6 +271,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/admin/amenities/': typeof AdminAmenitiesIndexRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
@@ -303,6 +310,7 @@ export interface FileRoutesByTo {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/admin/amenities': typeof AdminAmenitiesIndexRoute
   '/admin/builders': typeof AdminBuildersIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
@@ -343,6 +351,7 @@ export interface FileRoutesById {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/admin/amenities/': typeof AdminAmenitiesIndexRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
@@ -384,6 +393,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
+    | '/api/public/sitemap'
     | '/admin/amenities/'
     | '/admin/builders/'
     | '/admin/categories/'
@@ -422,6 +432,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
+    | '/api/public/sitemap'
     | '/admin/amenities'
     | '/admin/builders'
     | '/admin/categories'
@@ -461,6 +472,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
+    | '/api/public/sitemap'
     | '/admin/amenities/'
     | '/admin/builders/'
     | '/admin/categories/'
@@ -486,6 +498,7 @@ export interface RootRouteChildren {
   PlacesNewChandigarhRoute: typeof PlacesNewChandigarhRoute
   ProjectHeroHomesRoute: typeof ProjectHeroHomesRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicSitemapRoute: typeof ApiPublicSitemapRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -643,6 +656,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/amenities/'
       preLoaderRoute: typeof AdminAmenitiesIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/api/public/sitemap': {
+      id: '/api/public/sitemap'
+      path: '/api/public/sitemap'
+      fullPath: '/api/public/sitemap'
+      preLoaderRoute: typeof ApiPublicSitemapRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/unit-types/new': {
       id: '/admin/unit-types/new'
@@ -824,6 +844,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlacesNewChandigarhRoute: PlacesNewChandigarhRoute,
   ProjectHeroHomesRoute: ProjectHeroHomesRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicSitemapRoute: ApiPublicSitemapRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
