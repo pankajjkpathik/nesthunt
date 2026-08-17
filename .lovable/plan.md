@@ -24,11 +24,11 @@ Objective: Implement comprehensive SEO, metadata, canonical URLs, and structured
     *   Ensure all JSON-LD properties are cleaned of `null`/`undefined` values.
 
 3.  **Sitemap Generation**:
-    *   Create `src/routes/api/public/sitemap.ts` (or similar) to dynamically list all published builders if the infrastructure allows, or update the existing sitemap pattern.
-    *   *Note: I'll check for a sitemap pattern first.*
+    *   Create `src/routes/api/public/sitemap.ts` to dynamically list all published builders.
+    *   Integrate with existing sitemap logic if present.
 
 4.  **Builders Index SEO**:
-    *   Implement title, description, and canonical for the builders listing page (likely `src/routes/index.tsx` or a specific route if found).
+    *   The builders index seems to be the homepage or a missing route; I will verify if a `/builders` route needs to be created or if it's integrated elsewhere.
 
 ## Acceptance Criteria
 - [ ] Unique HTML title and meta description for every builder.
