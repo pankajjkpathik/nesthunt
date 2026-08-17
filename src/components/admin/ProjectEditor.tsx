@@ -204,7 +204,7 @@ function rowToForm(row: ProjectRow): FormState {
     progress: row.progress ?? [],
     seo: (row.seo ?? {}) as ProjectSeo,
     gallery: Array.isArray(row.hero?.gallery) ? row.hero.gallery : [],
-    highlights: row.highlights ?? [],
+    highlights: (row as any).highlights ?? [],
     metrics: (row.metrics ?? {}) as ProjectMetrics,
   };
 }
