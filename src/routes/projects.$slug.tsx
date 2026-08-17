@@ -123,7 +123,7 @@ function ProjectDetailPage() {
       </div>
 
       {/* Hero Section */}
-      <ProjectHero project={project} media={media} />
+      <ProjectHero project={project} />
 
       <Container>
         <div className="grid gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:py-14">
@@ -159,7 +159,7 @@ function ProjectDetailPage() {
 
             {/* 09 · Regulatory & Documents */}
             <div className="grid gap-12 md:grid-cols-2">
-              <ProjectDocuments />
+              <ProjectDocuments project={project} />
               <ProjectDueDiligence />
             </div>
           </div>
