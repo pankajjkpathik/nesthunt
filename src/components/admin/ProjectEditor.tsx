@@ -119,6 +119,8 @@ interface FormState {
   progress: string[];
   seo: ProjectSeo;
   gallery: GalleryImage[];
+  highlights: string[];
+  metrics: ProjectMetrics;
 }
 
 const EMPTY: FormState = {
@@ -202,6 +204,8 @@ function rowToForm(row: ProjectRow): FormState {
     progress: row.progress ?? [],
     seo: (row.seo ?? {}) as ProjectSeo,
     gallery: Array.isArray(row.hero?.gallery) ? row.hero.gallery : [],
+    highlights: row.highlights ?? [],
+    metrics: (row.metrics ?? {}) as ProjectMetrics,
   };
 }
 
@@ -253,9 +257,9 @@ function formToPayload(f: FormState) {
             ? `from ₹${f.starting_price}`
             : "",
       possessionYear: f.possession_date ? new Date(f.possession_date).getFullYear() : 0,
-      reraAuthority: f.metrics.reraAuthority,
-      reraStatus: f.metrics.reraStatus,
-      reraUrl: f.metrics.reraUrl,
+      reraAuthority: f.metrics.reraAuthority ?? null,
+      reraStatus: f.metrics.reraStatus ?? null,
+      reraUrl: f.metrics.reraUrl ?? null,
       totalUnits: 0,
     },
   };
@@ -901,7 +905,7 @@ export function ProjectEditor({ id }: Props) {
             <CardContent className="p-6 space-y-6">
               <TextareaField 
                 label="Executive Summary" 
-                description="High-level narrative shown at the top of the project report."
+                hint="High-level narrative shown at the top of the project report."
                 value={form.executive_summary} 
                 onChange={(v) => set("executive_summary", v)} 
                 rows={8}
@@ -909,7 +913,7 @@ export function ProjectEditor({ id }: Props) {
               
               <StringListField 
                 label="Key Highlights" 
-                description="Bullet points for quick scanning."
+                hint="Bullet points for quick scanning."
                 items={form.highlights} 
                 onChange={(v) => set("highlights", v)} 
               />
