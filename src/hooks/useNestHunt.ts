@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { listPlaces, getPlaceBySlug } from "@/lib/services/places";
 import { listBuilders, getBuilderBySlug } from "@/lib/services/builders";
-import { listProjects, getProjectBySlug } from "@/lib/services/projects";
+import { listProjects } from "@/lib/services/projects";
+import { getProjectBySlug, getProjectIntelligence } from "@/lib/services/projects-public";
 import {
   listEntityImages,
   listEntityDocuments,
@@ -51,6 +52,14 @@ export function useProject(slug: string | undefined) {
     queryKey: ["projects", "slug", slug],
     queryFn: () => getProjectBySlug(slug!),
     enabled: !!slug,
+  });
+}
+
+export function useProjectIntelligence(projectId: string | undefined) {
+  return useQuery({
+    queryKey: ["projects", "intelligence", projectId],
+    queryFn: () => getProjectIntelligence(projectId!),
+    enabled: !!projectId,
   });
 }
 

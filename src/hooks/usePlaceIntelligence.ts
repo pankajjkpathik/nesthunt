@@ -197,3 +197,20 @@ export function useBuilderEvidence(builderId: string | undefined) {
   });
 }
 
+// Project Specific Hooks
+export function useProjectRisks(projectId: string | undefined) {
+  return useQuery({
+    queryKey: ["project-risks", projectId],
+    queryFn: () => RiskService.listByEntity("project", projectId!),
+    enabled: !!projectId,
+  });
+}
+
+export function useProjectPromises(projectId: string | undefined) {
+  return useQuery({
+    queryKey: ["project-promises", projectId],
+    queryFn: () => PromiseLedgerService.listByEntity("project", projectId!),
+    enabled: !!projectId,
+  });
+}
+

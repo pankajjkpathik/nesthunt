@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BuildersIndexRouteImport } from './routes/builders/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as ProjectHeroHomesRouteImport } from './routes/project.hero-homes'
 import { Route as PlacesNewChandigarhRouteImport } from './routes/places.new-chandigarh'
 import { Route as BuildersSlugRouteImport } from './routes/builders.$slug'
@@ -78,6 +79,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectHeroHomesRoute = ProjectHeroHomesRouteImport.update({
   id: '/project/hero-homes',
@@ -261,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/builders/$slug': typeof BuildersSlugRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/builders/': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -301,6 +308,7 @@ export interface FileRoutesByTo {
   '/builders/$slug': typeof BuildersSlugRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin': typeof AdminIndexRoute
   '/builders': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -343,6 +351,7 @@ export interface FileRoutesById {
   '/builders/$slug': typeof BuildersSlugRoute
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/builders/': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -386,6 +395,7 @@ export interface FileRouteTypes {
     | '/builders/$slug'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
+    | '/projects/$slug'
     | '/admin/'
     | '/builders/'
     | '/.mcp/invoke-tool/$tool'
@@ -426,6 +436,7 @@ export interface FileRouteTypes {
     | '/builders/$slug'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
+    | '/projects/$slug'
     | '/admin'
     | '/builders'
     | '/.mcp/invoke-tool/$tool'
@@ -467,6 +478,7 @@ export interface FileRouteTypes {
     | '/builders/$slug'
     | '/places/new-chandigarh'
     | '/project/hero-homes'
+    | '/projects/$slug'
     | '/admin/'
     | '/builders/'
     | '/.mcp/invoke-tool/$tool'
@@ -509,6 +521,7 @@ export interface RootRouteChildren {
   BuildersSlugRoute: typeof BuildersSlugRoute
   PlacesNewChandigarhRoute: typeof PlacesNewChandigarhRoute
   ProjectHeroHomesRoute: typeof ProjectHeroHomesRoute
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
   BuildersIndexRoute: typeof BuildersIndexRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicSitemapRoute: typeof ApiPublicSitemapRoute
@@ -557,6 +570,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/projects/$slug': {
+      id: '/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/project/hero-homes': {
       id: '/project/hero-homes'
@@ -863,6 +883,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuildersSlugRoute: BuildersSlugRoute,
   PlacesNewChandigarhRoute: PlacesNewChandigarhRoute,
   ProjectHeroHomesRoute: ProjectHeroHomesRoute,
+  ProjectsSlugRoute: ProjectsSlugRoute,
   BuildersIndexRoute: BuildersIndexRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicSitemapRoute: ApiPublicSitemapRoute,

@@ -27,8 +27,12 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
+import { RisksTab } from "@/components/admin/intelligence/RisksTab";
+import { PromisesTab } from "@/components/admin/intelligence/PromisesTab";
+import { MediaPicker } from "@/components/admin/media/MediaPicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { getPublicUrl } from "@/lib/services/media";
 
 import {
   Field,
@@ -108,6 +112,7 @@ interface FormState {
   legal: string[];
   progress: string[];
   seo: ProjectSeo;
+  gallery: GalleryImage[];
 }
 
 const EMPTY: FormState = {
@@ -148,6 +153,7 @@ const EMPTY: FormState = {
   legal: [],
   progress: [],
   seo: {},
+  gallery: [],
 };
 
 function rowToForm(row: ProjectRow): FormState {
@@ -189,6 +195,7 @@ function rowToForm(row: ProjectRow): FormState {
     legal: row.legal ?? [],
     progress: row.progress ?? [],
     seo: (row.seo ?? {}) as ProjectSeo,
+    gallery: Array.isArray(row.hero?.gallery) ? row.hero.gallery : [],
   };
 }
 
@@ -223,7 +230,7 @@ function formToPayload(f: FormState) {
     rera_number: f.rera_number || null,
     rera: f.rera,
     investment: f.investment,
-    hero: f.hero,
+    hero: { ...f.hero, gallery: f.gallery },
     suitable_for: f.suitable_for,
     less_suitable_for: f.less_suitable_for,
     strengths: f.strengths,
@@ -265,6 +272,11 @@ export function ProjectEditor({ id }: Props) {
       setSlugDirty(true);
     }
   }, [row]);
+
+  const [mediaPicker, setMediaPicker] = useState<{ open: boolean; target: "hero" | "gallery" }>({
+    open: false,
+    target: "hero",
+  });
 
   useEffect(() => {
     if (isNew && !slugDirty && form.name) {
@@ -392,6 +404,7 @@ export function ProjectEditor({ id }: Props) {
           <TabsTrigger value="rera">RERA</TabsTrigger>
           <TabsTrigger value="nearby">Nearby</TabsTrigger>
           <TabsTrigger value="investment">Investment</TabsTrigger>
+          <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
         </TabsList>
 
@@ -846,6 +859,49 @@ export function ProjectEditor({ id }: Props) {
           </Card>
         </TabsContent>
 
+        <TabsContent value="gallery">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">Project Gallery</h3>
+                  <p className="text-xs text-muted-foreground">Manage project photos and captions.</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setMediaPicker({ open: true, target: "gallery" })}
+                >
+                  <Plus className="mr-2 h-4 w-4" /> Add from DAM
+                </Button>
+              </div>
+
+              <GalleryManager
+                images={form.gallery}
+                onChange={(v) => set("gallery", v)}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="intelligence">
+          <div className="space-y-6">
+            {!isNew && (
+              <>
+                <RisksTab entityType="project" entityId={id} />
+                <PromisesTab entityType="project" entityId={id} />
+              </>
+            )}
+            {isNew && (
+              <Card>
+                <CardContent className="p-6 text-center text-muted-foreground">
+                  Save the project first to manage intelligence records.
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+
         <TabsContent value="seo">
           <Card>
             <CardContent className="grid gap-4 p-6 md:grid-cols-2">
@@ -910,6 +966,25 @@ export function ProjectEditor({ id }: Props) {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <MediaPicker
+        open={mediaPicker.open}
+        onClose={() => setMediaPicker({ ...mediaPicker, open: false })}
+        folder="projects"
+        onSelect={(assets) => {
+          if (mediaPicker.target === "hero") {
+            const url = getPublicUrl(assets[0].storagePath);
+            set("hero", { ...form.hero, heroImageUrl: url, alt: assets[0].alt || assets[0].fileName });
+          } else {
+            const newImages = assets.map(a => ({ 
+              url: getPublicUrl(a.storagePath), 
+              caption: a.alt || a.fileName 
+            }));
+            set("gallery", [...form.gallery, ...newImages]);
+          }
+        }}
+        multiple={mediaPicker.target === "gallery"}
+      />
     </div>
   );
 }
@@ -1249,6 +1324,103 @@ function SeoField({
     </Field>
   );
 }
+
+function GalleryManager({
+  images,
+  onChange,
+}: {
+  images: GalleryImage[];
+  onChange: (v: GalleryImage[]) => void;
+}) {
+  const update = (i: number, patch: Partial<GalleryImage>) => {
+    const next = [...images];
+    next[i] = { ...next[i], ...patch };
+    onChange(next);
+  };
+
+  const remove = (i: number) => {
+    onChange(images.filter((_, idx) => idx !== i));
+  };
+
+  const move = (i: number, delta: number) => {
+    const next = [...images];
+    const target = i + delta;
+    if (target < 0 || target >= next.length) return;
+    const [item] = next.splice(i, 1);
+    next.splice(target, 0, item);
+    onChange(next);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {images.map((img, i) => (
+          <Card key={i} className="overflow-hidden">
+            <CardContent className="space-y-3 p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase text-muted-foreground">
+                  Image {i + 1}
+                </span>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    disabled={i === 0}
+                    onClick={() => move(i, -1)}
+                  >
+                    <ArrowUp className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    disabled={i === images.length - 1}
+                    onClick={() => move(i, 1)}
+                  >
+                    <ArrowDown className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+              {img.url ? (
+                <img
+                  src={img.url}
+                  alt=""
+                  className="h-32 w-full rounded-md border border-border object-cover"
+                />
+              ) : (
+                <div className="flex h-32 items-center justify-center rounded-md border border-dashed border-border bg-muted/30 text-xs text-muted-foreground">
+                  No preview
+                </div>
+              )}
+              <Input
+                value={img.url}
+                onChange={(e) => update(i, { url: e.target.value })}
+                placeholder="Image URL"
+              />
+              <Input
+                value={img.caption ?? ""}
+                onChange={(e) => update(i, { caption: e.target.value })}
+                placeholder="Caption (optional)"
+              />
+              <div className="flex justify-end">
+                <Button variant="ghost" size="sm" onClick={() => remove(i)}>
+                  <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Remove
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      {images.length === 0 && (
+        <div className="py-12 text-center text-sm text-muted-foreground">
+          No gallery images. Use "Add from DAM" or provide URLs below.
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 function SeoTextarea({
   label,
