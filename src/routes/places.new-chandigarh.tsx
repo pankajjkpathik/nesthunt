@@ -29,6 +29,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePlace } from "@/hooks/useNestHunt";
+import { SaveToJourneyButton } from "@/components/journey/SaveToJourneyButton";
 
 
 export const Route = createFileRoute("/places/new-chandigarh")({
@@ -284,9 +285,17 @@ function PlacePage() {
               <MapPin className="h-3.5 w-3.5" aria-hidden />
               {place.region}
             </div>
-            <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              {place.name}
-            </h1>
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+                {place.name}
+              </h1>
+              <SaveToJourneyButton
+                type="place"
+                id={place.id}
+                name={place.name}
+                size="sm"
+              />
+            </div>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               {place.summary}
             </p>
