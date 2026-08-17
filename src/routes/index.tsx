@@ -321,17 +321,20 @@ function FeaturedIntelligence() {
                 : card.description}
             </p>
             <div className="mt-6">
-              {card.href ? (
+              {card.to || card.href ? (
                 <Button
                   variant="ghost"
                   size="sm"
                   className="gap-1.5 px-0 hover:bg-transparent"
                   asChild
                 >
-                  <a href={card.href}>
+                  <Link 
+                    to={(card.to || card.href) as any}
+                    params={card.params as any}
+                  >
                     {meta.ctaLabel}
                     <ArrowRight className="h-4 w-4" />
-                  </a>
+                  </Link>
                 </Button>
               ) : (
                 <span className="text-xs font-medium text-muted-foreground">

@@ -391,7 +391,7 @@ export function ProjectEditor({ id }: Props) {
         </div>
         <div className="flex flex-wrap gap-2">
           {!isNew && form.slug ? (
-            <a
+            <Link
               to={`/projects/$slug` as any}
               params={{ slug: form.slug } as any}
               target="_blank"
@@ -399,7 +399,7 @@ export function ProjectEditor({ id }: Props) {
               className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
             >
               <ExternalLink className="h-3.5 w-3.5" /> Preview
-            </a>
+            </Link>
           ) : null}
           <Button variant="outline" size="sm" onClick={() => save("draft")} disabled={saving || !canSave}>
             <Save className="mr-1.5 h-3.5 w-3.5" /> Save draft

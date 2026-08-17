@@ -559,7 +559,7 @@ function ProjectsList() {
                         ) : null}
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
-                            <a
+                            <Link
                               to={`/projects/$slug` as any}
                               params={{ slug: p.slug } as any}
                               target="_blank"
@@ -569,7 +569,7 @@ function ProjectsList() {
                               title="Preview"
                             >
                               <ExternalLink className="h-4 w-4" />
-                            </a>
+                            </Link>
                             <Button
                               variant="ghost"
                               size="icon"
