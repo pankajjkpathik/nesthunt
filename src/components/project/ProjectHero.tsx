@@ -59,7 +59,8 @@ export function ProjectHero({ project }: ProjectHeroProps) {
                 name={project.name}
                 className="w-full"
               />
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground">
+            </div>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground mt-4">
               {project.place && (
                 <div className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4" />
