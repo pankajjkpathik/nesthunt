@@ -23,6 +23,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useProject } from "@/hooks/useNestHunt";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const Route = createFileRoute("/projects/$slug")({
   component: ProjectDetailPage,
@@ -57,7 +58,7 @@ function Crumbs({ name }: { name?: string }) {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/projects" search={{}}>Projects</Link>
+              <Link to="/">Projects</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
