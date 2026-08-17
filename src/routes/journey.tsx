@@ -185,7 +185,8 @@ function JourneySection({
               <li key={item.primary}>
                 {item.href ? (
                   <Link
-                    to={item.href.to}
+                    to={item.href.to as any}
+                    params={item.href.params as any}
                     className="block -mx-2 rounded px-2 hover:bg-muted/60"
                   >
                     {body}

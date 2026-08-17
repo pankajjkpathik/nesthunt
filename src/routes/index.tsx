@@ -262,6 +262,8 @@ function FeaturedIntelligence() {
   const cards: Array<{
     key: IntelKey;
     href: string | null;
+    to?: string;
+    params?: Record<string, any>;
     heading: string;
     description: string;
     loading: boolean;
