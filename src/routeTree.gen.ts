@@ -13,6 +13,7 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BuildersIndexRouteImport } from './routes/builders/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectHeroHomesRouteImport } from './routes/project.hero-homes'
 import { Route as PlacesNewChandigarhRouteImport } from './routes/places.new-chandigarh'
@@ -31,6 +32,7 @@ import { Route as AdminContentHealthIndexRouteImport } from './routes/admin.cont
 import { Route as AdminCategoriesIndexRouteImport } from './routes/admin.categories.index'
 import { Route as AdminBuildersIndexRouteImport } from './routes/admin.builders.index'
 import { Route as AdminAmenitiesIndexRouteImport } from './routes/admin.amenities.index'
+import { Route as ApiPublicSitemapRouteImport } from './routes/api/public/sitemap'
 import { Route as AdminUnitTypesNewRouteImport } from './routes/admin.unit-types.new'
 import { Route as AdminUnitTypesIdRouteImport } from './routes/admin.unit-types.$id'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
@@ -65,6 +67,11 @@ const AdminRoute = AdminRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildersIndexRoute = BuildersIndexRouteImport.update({
+  id: '/builders/',
+  path: '/builders/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -160,6 +167,11 @@ const AdminAmenitiesIndexRoute = AdminAmenitiesIndexRouteImport.update({
   path: '/amenities/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicSitemapRoute = ApiPublicSitemapRouteImport.update({
+  id: '/api/public/sitemap',
+  path: '/api/public/sitemap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminUnitTypesNewRoute = AdminUnitTypesNewRouteImport.update({
   id: '/unit-types/new',
   path: '/unit-types/new',
@@ -250,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
+  '/builders/': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/amenities/$id': typeof AdminAmenitiesIdRoute
   '/admin/amenities/new': typeof AdminAmenitiesNewRoute
@@ -265,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/admin/amenities/': typeof AdminAmenitiesIndexRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
@@ -288,6 +302,7 @@ export interface FileRoutesByTo {
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin': typeof AdminIndexRoute
+  '/builders': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/amenities/$id': typeof AdminAmenitiesIdRoute
   '/admin/amenities/new': typeof AdminAmenitiesNewRoute
@@ -303,6 +318,7 @@ export interface FileRoutesByTo {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/admin/amenities': typeof AdminAmenitiesIndexRoute
   '/admin/builders': typeof AdminBuildersIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
@@ -328,6 +344,7 @@ export interface FileRoutesById {
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
+  '/builders/': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/amenities/$id': typeof AdminAmenitiesIdRoute
   '/admin/amenities/new': typeof AdminAmenitiesNewRoute
@@ -343,6 +360,7 @@ export interface FileRoutesById {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/admin/amenities/': typeof AdminAmenitiesIndexRoute
   '/admin/builders/': typeof AdminBuildersIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
@@ -369,6 +387,7 @@ export interface FileRouteTypes {
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin/'
+    | '/builders/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/amenities/$id'
     | '/admin/amenities/new'
@@ -384,6 +403,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
+    | '/api/public/sitemap'
     | '/admin/amenities/'
     | '/admin/builders/'
     | '/admin/categories/'
@@ -407,6 +427,7 @@ export interface FileRouteTypes {
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin'
+    | '/builders'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/amenities/$id'
     | '/admin/amenities/new'
@@ -422,6 +443,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
+    | '/api/public/sitemap'
     | '/admin/amenities'
     | '/admin/builders'
     | '/admin/categories'
@@ -446,6 +468,7 @@ export interface FileRouteTypes {
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin/'
+    | '/builders/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/amenities/$id'
     | '/admin/amenities/new'
@@ -461,6 +484,7 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
+    | '/api/public/sitemap'
     | '/admin/amenities/'
     | '/admin/builders/'
     | '/admin/categories/'
@@ -485,7 +509,9 @@ export interface RootRouteChildren {
   BuildersSlugRoute: typeof BuildersSlugRoute
   PlacesNewChandigarhRoute: typeof PlacesNewChandigarhRoute
   ProjectHeroHomesRoute: typeof ProjectHeroHomesRoute
+  BuildersIndexRoute: typeof BuildersIndexRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicSitemapRoute: typeof ApiPublicSitemapRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -516,6 +542,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/builders/': {
+      id: '/builders/'
+      path: '/builders'
+      fullPath: '/builders/'
+      preLoaderRoute: typeof BuildersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -643,6 +676,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/amenities/'
       preLoaderRoute: typeof AdminAmenitiesIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/api/public/sitemap': {
+      id: '/api/public/sitemap'
+      path: '/api/public/sitemap'
+      fullPath: '/api/public/sitemap'
+      preLoaderRoute: typeof ApiPublicSitemapRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/unit-types/new': {
       id: '/admin/unit-types/new'
@@ -823,7 +863,9 @@ const rootRouteChildren: RootRouteChildren = {
   BuildersSlugRoute: BuildersSlugRoute,
   PlacesNewChandigarhRoute: PlacesNewChandigarhRoute,
   ProjectHeroHomesRoute: ProjectHeroHomesRoute,
+  BuildersIndexRoute: BuildersIndexRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicSitemapRoute: ApiPublicSitemapRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

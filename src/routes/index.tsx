@@ -22,6 +22,26 @@ import { usePlaces, useBuilders, useProjects } from "@/hooks/useNestHunt";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
+  head: () => ({
+    meta: [
+      { title: "NestHunt — Make your next property decision with confidence" },
+      {
+        name: "description",
+        content:
+          "NestHunt is a property decision intelligence platform. Verified information, structured comparisons, and transparent explanations for confident property decisions.",
+      },
+      { property: "og:title", content: "NestHunt — Make your next property decision with confidence" },
+      {
+        property: "og:description",
+        content:
+          "NestHunt is a property decision intelligence platform. Verified information, structured comparisons, and transparent explanations for confident property decisions.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.nesthunt.in/" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "https://www.nesthunt.in/" }],
+  }),
 });
 
 const TRUST_ITEMS = [
