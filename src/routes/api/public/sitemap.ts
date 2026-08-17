@@ -21,7 +21,7 @@ export const Route = createFileRoute("/api/public/sitemap")({
 
         const staticPages = [
           "/",
-          "/journey",
+          
         ];
 
         let xml = '<?xml version="1.0" encoding="UTF-8"?>';
