@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { useAdminSession } from "@/hooks/useAdmin";
+import { SaveToJourneyButton } from "@/components/journey/SaveToJourneyButton";
 import type { BuilderRow, BuilderHero as BuilderHeroMeta, TrustBreakdownEntry } from "@/lib/services/builders-admin";
 import { DecisionScoreCard } from "@/components/common/DecisionScoreCard";
 
@@ -28,7 +28,7 @@ function toCount(value: unknown): string {
 
 export function BuilderHero({ builder }: Props) {
   const navigate = useNavigate();
-  const { signedIn } = useAdminSession();
+  
 
   const hero = (builder.hero ?? {}) as BuilderHeroMeta;
   const metrics = (builder.metrics ?? {}) as Record<string, unknown>;
@@ -65,13 +65,6 @@ export function BuilderHero({ builder }: Props) {
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  function handleSave() {
-    if (!signedIn) {
-      void navigate({ to: "/admin/login" });
-      return;
-    }
-    toast.success(`${builder.name} saved to your journey`);
-  }
 
   return (
     <section aria-labelledby="builder-hero-heading" className="grid gap-8 lg:grid-cols-2 lg:gap-12">
@@ -206,9 +199,12 @@ export function BuilderHero({ builder }: Props) {
             </Tooltip>
           </TooltipProvider>
 
-          <Button variant="outline" className="w-full sm:w-auto" onClick={handleSave}>
-            Save Builder
-          </Button>
+          <SaveToJourneyButton
+            type="builder"
+            id={builder.id}
+            name={builder.name}
+            className="w-full sm:w-auto"
+          />
         </div>
       </div>
     </section>

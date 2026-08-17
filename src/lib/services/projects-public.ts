@@ -66,6 +66,42 @@ export const ProjectPublicService = {
       insights,
       media
     };
+  },
+
+  async getProjectById(id: string): Promise<PublicProject | null> {
+    const { data, error } = await supabase
+      .from("projects")
+      .select(`
+        *,
+        builder:builders(id, name, slug),
+        place:places(id, name, slug)
+      `)
+      .eq("id", id)
+      .eq("publish_status", "published")
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return null;
+
+    const project = data as unknown as PublicProject["project"];
+
+    const decisionEntity = await DecisionEntityService.getByEntity("project", project.id).catch(() => null);
+
+    const [risks, promises, insights, media] = await Promise.all([
+      RiskService.listByEntity("project", project.id).catch(() => []),
+      PromiseLedgerService.listByEntity("project", project.id).catch(() => []),
+      decisionEntity ? DecisionInsightService.listByEntity(decisionEntity.id).catch(() => []) : Promise.resolve([]),
+      listEntityImages("project", project.id).catch(() => [])
+    ]);
+
+    return {
+      project,
+      risks,
+      promises,
+      decisionEntity,
+      insights,
+      media
+    };
   }
 };
 
