@@ -262,6 +262,8 @@ function FeaturedIntelligence() {
   const cards: Array<{
     key: IntelKey;
     href: string | null;
+    to?: string;
+    params?: Record<string, any>;
     heading: string;
     description: string;
     loading: boolean;
@@ -285,7 +287,9 @@ function FeaturedIntelligence() {
     },
     {
       key: "project",
-      href: projects.data?.[0] ? `/project/${projects.data[0].slug}` : null,
+      to: projects.data?.[0] ? ("/projects/$slug" as const) : undefined,
+      params: projects.data?.[0] ? { slug: projects.data[0].slug } : undefined,
+      href: null as any,
       heading: projects.data?.[0]?.name ?? INTELLIGENCE_META.project.title,
       description: projects.data?.[0]?.summary ?? INTELLIGENCE_META.project.fallback,
       loading: projects.isLoading,
@@ -317,17 +321,20 @@ function FeaturedIntelligence() {
                 : card.description}
             </p>
             <div className="mt-6">
-              {card.href ? (
+              {card.to || card.href ? (
                 <Button
                   variant="ghost"
                   size="sm"
                   className="gap-1.5 px-0 hover:bg-transparent"
                   asChild
                 >
-                  <a href={card.href}>
+                  <Link 
+                    to={(card.to || card.href) as any}
+                    params={card.params as any}
+                  >
                     {meta.ctaLabel}
                     <ArrowRight className="h-4 w-4" />
-                  </a>
+                  </Link>
                 </Button>
               ) : (
                 <span className="text-xs font-medium text-muted-foreground">

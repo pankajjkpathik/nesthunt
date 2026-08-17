@@ -7,7 +7,7 @@ const COLUMNS = [
     links: [
       { label: "Places", to: "/places/new-chandigarh" as const },
       { label: "Builders", to: "/builders" as const },
-      { label: "Projects", to: "/project/hero-homes" as const },
+      { label: "Projects", to: "/projects/$slug" as const, params: { slug: "hero-homes" } },
     ],
   },
   {

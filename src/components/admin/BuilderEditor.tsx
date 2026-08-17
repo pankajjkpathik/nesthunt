@@ -834,14 +834,15 @@ function ProjectsPanel({ builderId }: { builderId?: string }) {
                   <p className="text-sm font-medium text-foreground">{p.name}</p>
                   <p className="text-xs text-muted-foreground">/{p.slug} · {p.status}</p>
                 </div>
-                <a
-                  href={`/project/${p.slug}`}
+                <Link
+                  to={`/projects/$slug` as any}
+                  params={{ slug: p.slug } as any}
                   target="_blank"
                   rel="noreferrer"
                   className="text-xs text-accent hover:underline"
                 >
                   View
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

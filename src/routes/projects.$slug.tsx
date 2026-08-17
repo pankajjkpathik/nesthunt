@@ -8,7 +8,7 @@ import { Container } from "@/components/common/Container";
 import { PlaceholderCard } from "@/components/common/PlaceholderCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
-import { ProjectPublicService } from "@/lib/services/projects-public";
+import { ProjectPublicService, type PublicProject } from "@/lib/services/projects-public";
 import { useQuery } from "@tanstack/react-query";
 
 // Import new modular components
@@ -29,14 +29,65 @@ export const Route = createFileRoute("/projects/$slug")({
   component: ProjectDetailPage,
   notFoundComponent: ProjectNotFound,
   head: ({ loaderData, params }) => {
-    // Note: head metadata can't use hooks/query, but TanStack Router allows passing data
-    // For now we'll set a generic title which is better than "NestHunt"
+    const project = (loaderData as PublicProject | undefined)?.project;
+    const isPublished = (project?.publish_status ?? "draft") === "published";
+    const name = project?.name || "Project";
+    const slug = params.slug;
+    const url = `https://www.nesthunt.in/projects/${slug}`;
+    
+    const title = `${name} | Project Intelligence | NestHunt`;
+    
+    // Construct meta description
+    let description = "";
+    if (project?.summary || project?.short_description) {
+      description = (project.summary || project.short_description || "").substring(0, 160);
+    } else {
+      const builderName = project?.builder?.name;
+      const placeName = project?.place?.name;
+      const type = project?.property_type || "property";
+      description = `Explore verified information, project details, ${builderName ? `by ${builderName}, ` : ""}${placeName ? `in ${placeName}, ` : ""}configurations and key considerations for ${name} on NestHunt.`;
+    }
+
+    const meta = [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: url },
+      { property: "og:site_name", content: "NestHunt" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+    ];
+
+    if (!isPublished) {
+      meta.push({ name: "robots", content: "noindex, nofollow" });
+    } else {
+      meta.push({ name: "robots", content: "index, follow" });
+    }
+
+    // Image priority: Project Hero Image -> NestHunt default social image
+    const heroImage = project?.hero?.heroImageUrl || project?.hero?.coverImageUrl;
+    if (heroImage) {
+      meta.push({ property: "og:image", content: heroImage });
+      meta.push({ name: "twitter:image", content: heroImage });
+    } else {
+      const defaultImage = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9471d1c9-304b-4e47-9847-65fc97f88baf/id-preview-095ab6e1--05125b68-1c29-49a1-ae8f-0a25a14f8684.lovable.app-1784118590439.png";
+      meta.push({ property: "og:image", content: defaultImage });
+      meta.push({ name: "twitter:image", content: defaultImage });
+    }
+
     return {
-      meta: [
-        { title: "Project Intelligence Report | NestHunt" },
-        { name: "description", content: "Detailed project intelligence, verified commitments, risks, and infrastructure analysis." }
-      ],
+      meta,
+      links: [{ rel: "canonical", href: url }],
     };
+  },
+  loader: async ({ params, context: { queryClient } }) => {
+    return queryClient.ensureQueryData({
+      queryKey: ["projects", "slug", params.slug],
+      queryFn: () => ProjectPublicService.getProjectBySlug(params.slug!),
+    });
   },
 });
 
@@ -91,19 +142,64 @@ function ProjectNotFound() {
 
 function ProjectDetailPage() {
   const { slug } = Route.useParams();
-  const { data: projectData, isPending, isError } = useQuery({
+  const loaderData = Route.useLoaderData() as PublicProject | null;
+  const { data: queryData, isPending, isError } = useQuery({
     queryKey: ["projects", "slug", slug],
     queryFn: () => ProjectPublicService.getProjectBySlug(slug!),
     enabled: !!slug,
   });
 
-  if (isPending) return <ProjectSkeleton />;
-  if (isError || !projectData) return <ProjectNotFound />;
+  const projectData = queryData || loaderData;
 
-  const { project, risks, promises, media, decisionEntity } = projectData;
+  if (isPending && !projectData) return <ProjectSkeleton />;
+  if ((isError || !projectData) && !isPending) return <ProjectNotFound />;
+
+  const { project, risks, promises, media, decisionEntity } = projectData!;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `https://www.nesthunt.in/projects/${slug}#webpage`,
+        "url": `https://www.nesthunt.in/projects/${slug}`,
+        "name": `${project.name} | Project Intelligence | NestHunt`,
+        "description": project.summary || project.short_description,
+        "breadcrumb": { "@id": `https://www.nesthunt.in/projects/${slug}#breadcrumb` }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `https://www.nesthunt.in/projects/${slug}#breadcrumb`,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.nesthunt.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Projects",
+            "item": "https://www.nesthunt.in/projects"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": project.name,
+            "item": `https://www.nesthunt.in/projects/${slug}`
+          }
+        ]
+      }
+    ]
+  };
 
   return (
     <ProjectShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Breadcrumb */}
       <div className="border-b border-border bg-surface">
         <Container>

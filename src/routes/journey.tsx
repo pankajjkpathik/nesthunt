@@ -38,13 +38,13 @@ export const Route = createFileRoute("/journey")({
 interface JourneyItem {
   primary: string;
   secondary?: string;
-  href?: { to: string };
+  href?: { to: string; params?: Record<string, string> };
   meta?: string;
 }
 
 const RECENTLY_VIEWED: JourneyItem[] = [
   { primary: "New Chandigarh", secondary: "Place · viewed 2h ago", href: { to: "/places/new-chandigarh" } },
-  { primary: "Hero Homes", secondary: "Project · viewed yesterday", href: { to: "/project/hero-homes" } },
+  { primary: "Hero Homes", secondary: "Project · viewed yesterday", href: { to: "/projects/$slug" as const, params: { slug: "hero-homes" } } },
   { primary: "Omaxe", secondary: "Builder · viewed 3 days ago", href: { to: "/builder/omaxe" } },
 ];
 
@@ -59,7 +59,7 @@ const SAVED_BUILDERS: JourneyItem[] = [
 ];
 
 const SAVED_PROJECTS: JourneyItem[] = [
-  { primary: "Hero Homes", secondary: "New Chandigarh · Omaxe", meta: "₹1.1–2.4 Cr", href: { to: "/project/hero-homes" } },
+  { primary: "Hero Homes", secondary: "New Chandigarh · Omaxe", meta: "₹1.1–2.4 Cr", href: { to: "/projects/$slug" as const, params: { slug: "hero-homes" } } },
   { primary: "The Palm Drive", secondary: "Zirakpur · Emaar", meta: "₹0.9–1.6 Cr" },
 ];
 
@@ -185,7 +185,8 @@ function JourneySection({
               <li key={item.primary}>
                 {item.href ? (
                   <Link
-                    to={item.href.to}
+                    to={item.href.to as any}
+                    params={item.href.params as any}
                     className="block -mx-2 rounded px-2 hover:bg-muted/60"
                   >
                     {body}
