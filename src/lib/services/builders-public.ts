@@ -1,3 +1,10 @@
+/**
+ * BUILDER INTELLIGENCE V1 FROZEN
+ * 
+ * Builder Intelligence V1 is feature-complete. Future changes should be limited 
+ * to bug fixes, security fixes, data-integrity fixes and explicitly approved V2 work.
+ */
+
 import { supabase } from "@/integrations/supabase/client";
 import { listEntityImages, type EntityImage } from "@/lib/services/media";
 import { getRelatedEntities } from "@/lib/services/relationships";

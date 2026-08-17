@@ -1,3 +1,10 @@
+/**
+ * BUILDER INTELLIGENCE V1 FROZEN
+ * 
+ * Builder Intelligence V1 is feature-complete. Future changes should be limited 
+ * to bug fixes, security fixes, data-integrity fixes and explicitly approved V2 work.
+ */
+
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { 
   Building2, 
