@@ -285,7 +285,8 @@ function FeaturedIntelligence() {
     },
     {
       key: "project",
-      href: projects.data?.[0] ? `/projects/${projects.data[0].slug}` : null,
+      to: projects.data?.[0] ? ("/projects/$slug" as const) : undefined,
+      params: projects.data?.[0] ? { slug: projects.data[0].slug } : undefined,
       heading: projects.data?.[0]?.name ?? INTELLIGENCE_META.project.title,
       description: projects.data?.[0]?.summary ?? INTELLIGENCE_META.project.fallback,
       loading: projects.isLoading,

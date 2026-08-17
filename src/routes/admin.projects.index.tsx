@@ -560,7 +560,8 @@ function ProjectsList() {
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
                             <a
-                              href={`/projects/${p.slug}`}
+                              to={`/projects/$slug` as any}
+                              params={{ slug: p.slug } as any}
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted"

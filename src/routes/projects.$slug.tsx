@@ -8,7 +8,7 @@ import { Container } from "@/components/common/Container";
 import { PlaceholderCard } from "@/components/common/PlaceholderCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
-import { ProjectPublicService } from "@/lib/services/projects-public";
+import { ProjectPublicService, type PublicProject } from "@/lib/services/projects-public";
 import { useQuery } from "@tanstack/react-query";
 
 // Import new modular components
@@ -142,19 +142,64 @@ function ProjectNotFound() {
 
 function ProjectDetailPage() {
   const { slug } = Route.useParams();
-  const { data: projectData, isPending, isError } = useQuery({
+  const loaderData = Route.useLoaderData() as PublicProject | null;
+  const { data: queryData, isPending, isError } = useQuery({
     queryKey: ["projects", "slug", slug],
     queryFn: () => ProjectPublicService.getProjectBySlug(slug!),
     enabled: !!slug,
   });
 
-  if (isPending) return <ProjectSkeleton />;
-  if (isError || !projectData) return <ProjectNotFound />;
+  const projectData = queryData || loaderData;
+
+  if (isPending && !projectData) return <ProjectSkeleton />;
+  if ((isError || !projectData) && !isPending) return <ProjectNotFound />;
 
   const { project, risks, promises, media, decisionEntity } = projectData;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `https://www.nesthunt.in/projects/${slug}#webpage`,
+        "url": `https://www.nesthunt.in/projects/${slug}`,
+        "name": `${project.name} | Project Intelligence | NestHunt`,
+        "description": project.summary || project.short_description,
+        "breadcrumb": { "@id": `https://www.nesthunt.in/projects/${slug}#breadcrumb` }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `https://www.nesthunt.in/projects/${slug}#breadcrumb`,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.nesthunt.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Projects",
+            "item": "https://www.nesthunt.in/projects"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": project.name,
+            "item": `https://www.nesthunt.in/projects/${slug}`
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <ProjectShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Breadcrumb */}
       <div className="border-b border-border bg-surface">
         <Container>
