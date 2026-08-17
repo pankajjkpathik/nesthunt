@@ -333,6 +333,8 @@ function ScoreCell({ score, dimension, entity }: { score: any, dimension: any, e
     source = `${entity.placeData?.name || 'Place'} Intelligence`;
   } else if (dimension.compatibility_group === 'builder_standard_v1') {
     source = `${entity.builderData?.builder?.name || 'Builder'} Intelligence`;
+  } else if (dimension.entity_applicability === 'project') {
+    source = `${entity.name || 'Project'} Intelligence`;
   }
 
   return (
