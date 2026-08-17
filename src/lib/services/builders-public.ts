@@ -117,8 +117,6 @@ export const BuilderPublicService = {
     };
   },
 
-  },
-
   async getBuilderById(id: string): Promise<PublicBuilder | null> {
     const { data, error } = await supabase
       .from("builders")
