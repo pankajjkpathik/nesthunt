@@ -1,9 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   FileText, 
-  Download, 
-  ExternalLink,
-  ChevronRight
+  Download
 } from "lucide-react";
 import type { ProjectRow } from "@/lib/services/projects-admin";
 import { Button } from "@/components/ui/button";
@@ -13,8 +11,8 @@ interface ProjectDocumentsProps {
 }
 
 export function ProjectDocuments({ project }: ProjectDocumentsProps) {
-  const rera = project.rera ?? {};
-  const hero = project.hero ?? {};
+  const rera = (project.rera || {}) as any;
+  const hero = (project.hero || {}) as any;
   
   const docs = [
     { 
@@ -41,7 +39,7 @@ export function ProjectDocuments({ project }: ProjectDocumentsProps) {
       <h2 id="documents-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
         Project Documents
       </h2>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4">
         {docs.map((doc) => (
           <Card key={doc.name} className="border-border bg-surface shadow-none hover:border-accent/40 transition-colors group">
             <CardContent className="p-4 flex items-center justify-between gap-4">

@@ -2,14 +2,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 
 interface ProjectAmenitiesProps {
-  amenities: string[];
+  amenities: any;
 }
 
 export function ProjectAmenities({ amenities }: ProjectAmenitiesProps) {
-  if (!amenities || amenities.length === 0) return null;
+  if (!amenities) return null;
+  
+  const amenityArray = Array.isArray(amenities) ? amenities : [];
+  if (amenityArray.length === 0) return null;
 
   // Group by category if format is "Category:Amenity"
-  const grouped = amenities.reduce((acc, curr) => {
+  const grouped = amenityArray.reduce((acc, curr) => {
+    if (typeof curr !== 'string') return acc;
     const [cat, name] = curr.includes(':') ? curr.split(':') : ['Other', curr];
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(name);
