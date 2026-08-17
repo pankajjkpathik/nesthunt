@@ -29,6 +29,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RelationshipsTab } from "@/components/admin/relationships/RelationshipsTab";
 import { RisksTab } from "@/components/admin/intelligence/RisksTab";
 import { PromisesTab } from "@/components/admin/intelligence/PromisesTab";
+import { DecisionFactorsTab } from "@/components/admin/intelligence/DecisionFactorsTab";
 import { MediaPicker } from "@/components/admin/media/MediaPicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -852,8 +853,11 @@ export function ProjectEditor({ id }: Props) {
                   items={form.less_suitable_for}
                   onChange={(v) => set("less_suitable_for", v)}
                 />
-                <StringListField label="Strengths" items={form.strengths} onChange={(v) => set("strengths", v)} />
-                <StringListField label="Risks" items={form.risks} onChange={(v) => set("risks", v)} />
+                <StringListField label="Suitable for" items={form.suitable_for} onChange={(v) => set("suitable_for", v)} />
+                <div className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 p-4 text-xs text-muted-foreground">
+                  <p className="font-semibold mb-1">Intelligence Migration Active</p>
+                  Strengths, Risks, and Promises are now managed under the <strong>Intelligence</strong> tab using the generic Decision Intelligence architecture.
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -890,6 +894,7 @@ export function ProjectEditor({ id }: Props) {
               <>
                 <RisksTab entityType="project" entityId={id} />
                 <PromisesTab entityType="project" entityId={id} />
+                <DecisionFactorsTab entityType="project" entityId={id} />
               </>
             )}
             {isNew && (

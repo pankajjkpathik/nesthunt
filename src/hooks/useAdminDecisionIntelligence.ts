@@ -14,8 +14,7 @@ export function useCreateRisk() {
   return useMutation({
     mutationFn: (input: EntityRiskInsert) => RiskService.create(input),
     onSuccess: (row) => {
-      qc.invalidateQueries({ queryKey: ["admin", "builders", row.entity_id, "risks"] });
-      qc.invalidateQueries({ queryKey: ["builder-risks", row.entity_id] });
+      qc.invalidateQueries({ queryKey: ["di", "risks", row.entity_type, row.entity_id] });
     },
   });
 }
@@ -25,8 +24,7 @@ export function useUpdateRisk() {
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: EntityRiskUpdate }) => RiskService.update(id, patch),
     onSuccess: (row) => {
-      qc.invalidateQueries({ queryKey: ["admin", "builders", row.entity_id, "risks"] });
-      qc.invalidateQueries({ queryKey: ["builder-risks", row.entity_id] });
+      qc.invalidateQueries({ queryKey: ["di", "risks", row.entity_type, row.entity_id] });
     },
   });
 }
@@ -36,8 +34,7 @@ export function useDeleteRisk(entityId: string | undefined, entityType: Decision
   return useMutation({
     mutationFn: (id: string) => RiskService.remove(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin", "builders", entityId, "risks"] });
-      qc.invalidateQueries({ queryKey: ["builder-risks", entityId] });
+      qc.invalidateQueries({ queryKey: ["di", "risks", entityType, entityId] });
     },
   });
 }
@@ -47,8 +44,7 @@ export function useCreatePromise() {
   return useMutation({
     mutationFn: (input: PromiseLedgerInsert) => PromiseLedgerService.create(input),
     onSuccess: (row) => {
-      qc.invalidateQueries({ queryKey: ["admin", "builders", row.entity_id, "promises"] });
-      qc.invalidateQueries({ queryKey: ["builder-promises", row.entity_id] });
+      qc.invalidateQueries({ queryKey: ["di", "promises", row.entity_type, row.entity_id] });
     },
   });
 }
@@ -58,8 +54,7 @@ export function useUpdatePromise() {
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: PromiseLedgerUpdate }) => PromiseLedgerService.update(id, patch),
     onSuccess: (row) => {
-      qc.invalidateQueries({ queryKey: ["admin", "builders", row.entity_id, "promises"] });
-      qc.invalidateQueries({ queryKey: ["builder-promises", row.entity_id] });
+      qc.invalidateQueries({ queryKey: ["di", "promises", row.entity_type, row.entity_id] });
     },
   });
 }
@@ -69,8 +64,7 @@ export function useDeletePromise(entityId: string | undefined, entityType: Decis
   return useMutation({
     mutationFn: (id: string) => PromiseLedgerService.remove(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin", "builders", entityId, "promises"] });
-      qc.invalidateQueries({ queryKey: ["builder-promises", entityId] });
+      qc.invalidateQueries({ queryKey: ["di", "promises", entityType, entityId] });
     },
   });
 }

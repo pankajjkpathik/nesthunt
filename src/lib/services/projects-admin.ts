@@ -257,6 +257,14 @@ export async function adminCreateProject(input: ProjectInsert): Promise<ProjectR
 }
 
 export async function adminUpdateProject(id: string, patch: ProjectUpdate): Promise<ProjectRow> {
+  // Preserve JSONB metrics integrity if being updated
+  if (patch.metrics) {
+    const existing = await adminGetProject(id);
+    if (existing) {
+      patch.metrics = { ...existing.metrics, ...patch.metrics };
+    }
+  }
+
   const { data, error } = await db.from(TABLE).update(patch).eq("id", id).select("*").single();
   if (error) throw error;
   return data as ProjectRow;
