@@ -1,4 +1,4 @@
-import { ComparisonService } from "@/lib/services/comparison";
+// Service definition for project comparisons
 import { ProjectPublicService, type PublicProject } from "./projects-public";
 import { BuilderPublicService, type PublicBuilder } from "./builders-public";
 import { getPlaceById } from "./places";
