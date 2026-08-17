@@ -3,7 +3,7 @@ import type { Project } from "@/types";
 import { 
   RiskService, 
   PromiseLedgerService,
-  DecisionIntelligenceService
+  DecisionEntityService
 } from "./decision-intelligence";
 
 type Row = {
