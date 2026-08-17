@@ -1,7 +1,9 @@
 import { ReactNode } from "react";
 import { Building2, MapPin, BadgeInfo, Calendar, IndianRupee, LayoutGrid } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { SaveToJourneyButton } from "@/components/journey/SaveToJourneyButton";
 import type { ProjectRow, ProjectHero as ProjectHeroMeta } from "@/lib/services/projects-admin";
 import { cn } from "@/lib/utils";
 
@@ -38,9 +40,25 @@ export function ProjectHero({ project }: ProjectHeroProps) {
                 </Badge>
               )}
             </div>
-            <h1 className="font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              {project.name}
-            </h1>
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+                {project.name}
+              </h1>
+              <SaveToJourneyButton
+                type="project"
+                id={project.id}
+                name={project.name}
+                size="sm"
+                className="hidden sm:flex"
+              />
+            </div>
+            <div className="flex sm:hidden mt-4">
+              <SaveToJourneyButton
+                type="project"
+                id={project.id}
+                name={project.name}
+                className="w-full"
+              />
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground">
               {project.place && (
                 <div className="flex items-center gap-1.5">
