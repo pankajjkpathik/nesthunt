@@ -42,7 +42,12 @@ export const Route = createFileRoute("/builder/omaxe")({
         content:
           "Can you trust this builder? A structured, balanced intelligence report on Omaxe.",
       },
+      { property: "og:url", content: "https://www.nesthunt.in/builder/omaxe" },
+      { property: "og:type", content: "profile" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "index, follow" },
     ],
+    links: [{ rel: "canonical", href: "https://www.nesthunt.in/builder/omaxe" }],
   }),
   component: BuilderPage,
 });
