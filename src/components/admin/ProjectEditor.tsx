@@ -768,9 +768,22 @@ export function ProjectEditor({ id }: Props) {
                 hint={!reraOk ? "Enter a valid RERA number (6+ alphanumeric)" : "Primary registration"}
               />
               <TextField
-                label="Authority"
-                value={form.rera.authority ?? ""}
-                onChange={(v) => set("rera", { ...form.rera, authority: v })}
+                label="RERA Authority"
+                value={form.metrics.reraAuthority ?? ""}
+                onChange={(v) => set("metrics", { ...form.metrics, reraAuthority: v })}
+                hint="e.g. Haryana Real Estate Regulatory Authority"
+              />
+              <TextField
+                label="RERA Status"
+                value={form.metrics.reraStatus ?? ""}
+                onChange={(v) => set("metrics", { ...form.metrics, reraStatus: v })}
+                hint="e.g. Registered, Applied"
+              />
+              <TextField
+                label="RERA Portal URL"
+                value={form.metrics.reraUrl ?? ""}
+                onChange={(v) => set("metrics", { ...form.metrics, reraUrl: v })}
+                hint="Direct link to project on RERA website"
               />
               <TextField
                 label="Registration date"
@@ -797,9 +810,6 @@ export function ProjectEditor({ id }: Props) {
                   placeholder="e.g. Land title verified by Amicus & Co."
                 />
               </div>
-              <p className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-                Support for multiple RERA registrations is on the roadmap.
-              </p>
             </CardContent>
           </Card>
         </TabsContent>
