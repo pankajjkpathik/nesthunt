@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { to: "/places/new-chandigarh", label: "Places" },
-  { to: "/builder/omaxe", label: "Builders" },
+  { to: "/builders", label: "Builders" },
   { to: "/project/hero-homes", label: "Projects" },
   { to: "/journey", label: "My Journey" },
 ] as const;

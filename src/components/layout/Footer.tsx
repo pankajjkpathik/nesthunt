@@ -6,7 +6,7 @@ const COLUMNS = [
     title: "Platform",
     links: [
       { label: "Places", to: "/places/new-chandigarh" as const },
-      { label: "Builders", to: "/builder/omaxe" as const },
+      { label: "Builders", to: "/builders" as const },
       { label: "Projects", to: "/project/hero-homes" as const },
     ],
   },

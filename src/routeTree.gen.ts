@@ -13,6 +13,7 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BuildersIndexRouteImport } from './routes/builders/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProjectHeroHomesRouteImport } from './routes/project.hero-homes'
 import { Route as PlacesNewChandigarhRouteImport } from './routes/places.new-chandigarh'
@@ -66,6 +67,11 @@ const AdminRoute = AdminRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildersIndexRoute = BuildersIndexRouteImport.update({
+  id: '/builders/',
+  path: '/builders/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -256,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
+  '/builders/': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/amenities/$id': typeof AdminAmenitiesIdRoute
   '/admin/amenities/new': typeof AdminAmenitiesNewRoute
@@ -295,6 +302,7 @@ export interface FileRoutesByTo {
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin': typeof AdminIndexRoute
+  '/builders': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/amenities/$id': typeof AdminAmenitiesIdRoute
   '/admin/amenities/new': typeof AdminAmenitiesNewRoute
@@ -336,6 +344,7 @@ export interface FileRoutesById {
   '/places/new-chandigarh': typeof PlacesNewChandigarhRoute
   '/project/hero-homes': typeof ProjectHeroHomesRoute
   '/admin/': typeof AdminIndexRoute
+  '/builders/': typeof BuildersIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/amenities/$id': typeof AdminAmenitiesIdRoute
   '/admin/amenities/new': typeof AdminAmenitiesNewRoute
@@ -378,6 +387,7 @@ export interface FileRouteTypes {
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin/'
+    | '/builders/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/amenities/$id'
     | '/admin/amenities/new'
@@ -417,6 +427,7 @@ export interface FileRouteTypes {
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin'
+    | '/builders'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/amenities/$id'
     | '/admin/amenities/new'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/places/new-chandigarh'
     | '/project/hero-homes'
     | '/admin/'
+    | '/builders/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/amenities/$id'
     | '/admin/amenities/new'
@@ -497,6 +509,7 @@ export interface RootRouteChildren {
   BuildersSlugRoute: typeof BuildersSlugRoute
   PlacesNewChandigarhRoute: typeof PlacesNewChandigarhRoute
   ProjectHeroHomesRoute: typeof ProjectHeroHomesRoute
+  BuildersIndexRoute: typeof BuildersIndexRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicSitemapRoute: typeof ApiPublicSitemapRoute
 }
@@ -529,6 +542,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/builders/': {
+      id: '/builders/'
+      path: '/builders'
+      fullPath: '/builders/'
+      preLoaderRoute: typeof BuildersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -843,6 +863,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuildersSlugRoute: BuildersSlugRoute,
   PlacesNewChandigarhRoute: PlacesNewChandigarhRoute,
   ProjectHeroHomesRoute: ProjectHeroHomesRoute,
+  BuildersIndexRoute: BuildersIndexRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicSitemapRoute: ApiPublicSitemapRoute,
 }
