@@ -9,6 +9,7 @@ import {
   Loader2,
   Inbox,
   Bookmark,
+  Target,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
@@ -22,6 +23,7 @@ import { BuilderPublicService } from "@/lib/services/builders-public";
 import { getPlaceById } from "@/lib/services/places";
 import { Badge } from "@/components/ui/badge";
 import { type JourneyItem, type JourneyEntityType } from "@/lib/services/journey";
+import { DecisionCriteriaManager } from "@/components/journey/DecisionCriteriaManager";
 
 export const Route = createFileRoute("/journey")({
   head: () => ({
@@ -38,7 +40,7 @@ export const Route = createFileRoute("/journey")({
 });
 
 function JourneyPage() {
-  const { items, isLoading, remove, isRemoving } = useJourney();
+  const { items, isLoading, remove } = useJourney();
 
   if (isLoading) {
     return (
@@ -69,7 +71,7 @@ function JourneyPage() {
         title="My Journey"
         description="A private space to shortlist and refine your property decisions over time."
       />
-      <Container>
+      <Container className="pb-20">
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center border-2 border-dashed border-border rounded-3xl bg-muted/20">
             <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-6">
@@ -91,39 +93,47 @@ function JourneyPage() {
             </div>
           </div>
         ) : (
-          <div className="grid gap-8 py-10 lg:grid-cols-2">
-            <JourneySection
-              title="Saved places"
-              icon={<MapPin className="h-4 w-4" />}
-              items={places}
-              remove={remove}
-            />
-            <JourneySection
-              title="Saved builders"
-              icon={<Building2 className="h-4 w-4" />}
-              items={builders}
-              remove={remove}
-            />
-            <JourneySection
-              title="Saved projects"
-              icon={<Home className="h-4 w-4" />}
-              items={projects}
-              remove={remove}
-            />
-            
-            <Card className="rounded-xl border-border border-dashed bg-muted/30 shadow-none">
-              <CardContent className="p-6 flex flex-col items-center justify-center text-center">
-                <div className="h-10 w-10 bg-muted rounded-full flex items-center justify-center mb-4">
-                  <Inbox className="h-5 w-5 text-muted-foreground/40" />
-                </div>
-                <h3 className="font-display text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                  Future Intelligence
-                </h3>
-                <p className="mt-2 text-xs text-muted-foreground max-w-[200px]">
-                  Comparison tools and decision metrics will appear here in future updates.
-                </p>
-              </CardContent>
-            </Card>
+          <div className="space-y-12">
+            {/* BUILD-032 Decision Criteria Foundation */}
+            <DecisionCriteriaManager />
+
+            <div className="space-y-6">
+              <h2 className="font-display text-xl font-bold text-foreground">Shortlist</h2>
+              <div className="grid gap-8 lg:grid-cols-2">
+                <JourneySection
+                  title="Saved places"
+                  icon={<MapPin className="h-4 w-4" />}
+                  items={places}
+                  remove={remove}
+                />
+                <JourneySection
+                  title="Saved builders"
+                  icon={<Building2 className="h-4 w-4" />}
+                  items={builders}
+                  remove={remove}
+                />
+                <JourneySection
+                  title="Saved projects"
+                  icon={<Home className="h-4 w-4" />}
+                  items={projects}
+                  remove={remove}
+                />
+                
+                <Card className="rounded-xl border-border border-dashed bg-muted/30 shadow-none">
+                  <CardContent className="p-6 flex flex-col items-center justify-center text-center">
+                    <div className="h-10 w-10 bg-muted rounded-full flex items-center justify-center mb-4">
+                      <Inbox className="h-5 w-5 text-muted-foreground/40" />
+                    </div>
+                    <h3 className="font-display text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                      Decision Intelligence
+                    </h3>
+                    <p className="mt-2 text-xs text-muted-foreground max-w-[200px]">
+                      Comparison tools and personalized metrics will appear here in future updates.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         )}
       </Container>
@@ -232,7 +242,7 @@ function JourneyItemRow({
   const getHref = () => {
     if (entity.type === "project") return { to: "/projects/$slug" as const, params: { slug: entity.slug } };
     if (entity.type === "builder") return { to: "/builders/$slug" as const, params: { slug: entity.slug } };
-    if (entity.type === "place") return { to: "/places/new-chandigarh" as const }; // Using existing specific route for place
+    if (entity.type === "place") return { to: "/places/new-chandigarh" as const };
     return { to: "/" as const };
   };
 
