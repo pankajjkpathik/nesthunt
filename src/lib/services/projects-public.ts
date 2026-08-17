@@ -14,8 +14,9 @@ import { listEntityImages, type EntityImage } from "@/lib/services/media";
 import type { ProjectRow } from "./projects-admin";
 
 /**
- * PROJECT INTELLIGENCE V1
- * This service provides public access to published projects and their intelligence data.
+ * PROJECT INTELLIGENCE V1 FROZEN
+ * Project Intelligence V1 is feature-complete. Future changes should be limited to bug fixes, 
+ * security fixes, data-integrity fixes and explicitly approved V2 work.
  */
 
 export interface PublicProject {
