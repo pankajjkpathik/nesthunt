@@ -5,6 +5,7 @@
  * See: src/docs/decision-layer-v1.md
  */
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 type Tables = Database["public"]["Tables"];
 
