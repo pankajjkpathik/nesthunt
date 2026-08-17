@@ -1,4 +1,5 @@
 // Service definition for project comparisons
+import { supabase } from "@/integrations/supabase/client";
 import { ProjectPublicService, type PublicProject } from "./projects-public";
 import { BuilderPublicService, type PublicBuilder } from "./builders-public";
 import { getPlaceById } from "./places";
@@ -47,7 +48,7 @@ export const ComparisonService = {
         const placeId = pp.project.place_id;
 
         const [builderData, placeData, decisionEntity] = await Promise.all([
-          builderId ? BuilderPublicService.getBuilderById(builderId).catch(() => null) : Promise.resolve(null),
+          builderId ? ComparisonService.getBuilderMinimal(builderId) : Promise.resolve(null),
           placeId ? getPlaceById(placeId).catch(() => null) : Promise.resolve(null),
           DecisionEntityService.getByEntity("project", pp.project.id).catch(() => null)
         ]);
@@ -97,6 +98,31 @@ export const ComparisonService = {
       entities,
       dimensions,
       preferences
+    };
+  },
+  
+  async getBuilderMinimal(id: string): Promise<PublicBuilder | null> {
+    const { data, error } = await supabase
+      .from("builders")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data || (data.status ?? "draft") !== "published") return null;
+    
+    return {
+      builder: data as any,
+      media: [],
+      relationships: [],
+      seo: (data.seo as any) || {},
+      risks: [],
+      evidence: [],
+      promises: [],
+      leadership: [],
+      certifications: [],
+      awards: [],
+      rera: [],
+      faqs: []
     };
   },
 
