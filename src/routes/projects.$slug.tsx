@@ -21,7 +21,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Link } from "@tanstack/react-router";
-import { useProject } from "@/hooks/useNestHunt";
+import { ProjectPublicService } from "@/lib/services/projects-public";
+import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -115,10 +116,16 @@ function ProjectNotFound() {
 
 function ProjectDetailPage() {
   const { slug } = Route.useParams();
-  const { data: project, isPending, isError } = useProject(slug);
+  const { data: projectData, isPending, isError } = useQuery({
+    queryKey: ["projects", "slug", slug],
+    queryFn: () => ProjectPublicService.getProjectBySlug(slug!),
+    enabled: !!slug,
+  });
 
   if (isPending) return <ProjectSkeleton />;
-  if (isError || !project) return <ProjectNotFound />;
+  if (isError || !projectData) return <ProjectNotFound />;
+
+  const { project, risks, promises } = projectData;
 
   // Foundations only - simple placeholder using existing Project data
   return (
@@ -165,7 +172,7 @@ function ProjectDetailPage() {
                       Key Strengths
                     </h3>
                     <ul className="space-y-2">
-                      {project.strengths.map((s, i) => (
+                      {project.strengths.map((s: string, i: number) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
                           <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-success/60 shrink-0" />
                           {s}
@@ -181,7 +188,7 @@ function ProjectDetailPage() {
                       Risks
                     </h3>
                     <ul className="space-y-2">
-                      {project.risks.map((r, i) => (
+                      {project.risks.map((r: string, i: number) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
                           <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-destructive/60 shrink-0" />
                           {r}
