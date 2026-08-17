@@ -107,11 +107,11 @@ function ProjectComparisonPage() {
       <Container className="py-12 pb-24">
         {isLoading ? (
           <ComparisonLoadingState count={projectIds.length} />
-        ) : isError || !context ? (
+        ) : (isError || !context || context.entities.length < 2) ? (
           <div className="text-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed border-border">
             <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
             <h2 className="text-xl font-bold mb-2">Comparison unavailable</h2>
-            <p className="text-muted-foreground mb-6">We couldn't load the comparison data at this time.</p>
+            <p className="text-muted-foreground mb-6">Insufficient published projects found for comparison.</p>
             <Button asChild>
               <Link to="/journey">Return to Journey</Link>
             </Button>
