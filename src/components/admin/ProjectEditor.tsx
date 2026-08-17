@@ -74,6 +74,7 @@ import {
   type ProjectSeo,
   type ProjectStatus,
   type UnitType,
+  type ProjectMetrics,
 } from "@/lib/services/projects-admin";
 
 interface Props {
@@ -162,6 +163,13 @@ const EMPTY: FormState = {
   progress: [],
   seo: {},
   gallery: [],
+  highlights: [],
+  metrics: {
+    unitTypes: "",
+    priceRange: "",
+    possessionYear: 0,
+    totalUnits: 0,
+  },
 };
 
 function rowToForm(row: ProjectRow): FormState {
