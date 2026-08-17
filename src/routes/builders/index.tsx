@@ -71,7 +71,7 @@ function BuildersIndexPage() {
                       {builder.name}
                     </h3>
                     <p className="text-xs text-muted-foreground">
-                      {builder.year_established ? `Est. ${builder.year_established}` : "Verified Developer"}
+                      {builder.yearsActive ? `Est. ${new Date().getFullYear() - builder.yearsActive}` : "Verified Developer"}
                     </p>
                   </div>
                 </div>
@@ -83,9 +83,9 @@ function BuildersIndexPage() {
                     View Intelligence
                     <ArrowRight className="h-3 w-3" />
                   </div>
-                  {builder.trust_score && (
+                  {builder.decision?.score && (
                     <Badge variant="secondary" className="font-mono">
-                      {builder.trust_score} / 10
+                      {builder.decision.score} / 10
                     </Badge>
                   )}
                 </div>
