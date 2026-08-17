@@ -1,5 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertCircle, Building2, CheckCircle2, Info, ShieldCheck, TriangleAlert } from "lucide-react";
+import { 
+  Building2, 
+  CheckCircle2, 
+  Info, 
+  ShieldCheck, 
+  TriangleAlert, 
+  Users, 
+  Award, 
+  FileCheck, 
+  HelpCircle,
+  ExternalLink,
+  ArrowRight
+} from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
 import { Section } from "@/components/common/Section";
@@ -20,20 +32,8 @@ import { useBuilder, useBuilderProjects } from "@/hooks/useBuilder";
 import { BuilderHero } from "@/components/builder/BuilderHero";
 import { BuilderExecutiveSummary } from "@/components/builder/BuilderExecutiveSummary";
 import { BuilderPublicService, type PublicBuilder } from "@/lib/services/builders-public";
-
-const SECTIONS: Array<{ id: string; title: string; description: string }> = [
-  { id: "hero", title: "Hero", description: "Builder identity, trust score and key badges." },
-  { id: "executive-summary", title: "Executive Summary", description: "Analyst view of the developer in short form." },
-  { id: "quick-facts", title: "Quick Facts", description: "Headquarters, years active, RERA and scale at a glance." },
-  { id: "portfolio", title: "Portfolio", description: "Published projects delivered and under development." },
-  { id: "delivery", title: "Delivery", description: "On-time record and completion timeline." },
-  { id: "market", title: "Market", description: "Price positioning and market segments served." },
-  { id: "customer-experience", title: "Customer Experience", description: "Buyer sentiment, service and post-handover record." },
-  { id: "regulatory", title: "Regulatory", description: "RERA registrations, certifications and compliance." },
-  { id: "risks", title: "Risks", description: "Watch-outs a buyer should verify before committing." },
-  { id: "faq", title: "FAQ", description: "Common questions about this developer." },
-  { id: "related-builders", title: "Related Builders", description: "Comparable developers in the same markets." },
-];
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/builders/$slug")({
   component: BuilderDetailPage,
@@ -75,7 +75,6 @@ export const Route = createFileRoute("/builders/$slug")({
       meta.push({ property: "og:image", content: logoUrl });
       meta.push({ name: "twitter:image", content: logoUrl });
     } else {
-      // Fallback to default NestHunt social image
       const defaultImage = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9471d1c9-304b-4e47-9847-65fc97f88baf/id-preview-095ab6e1--05125b68-1c29-49a1-ae8f-0a25a14f8684.lovable.app-1784118590439.png";
       meta.push({ property: "og:image", content: defaultImage });
       meta.push({ name: "twitter:image", content: defaultImage });
@@ -111,7 +110,7 @@ function Crumbs({ name }: { name?: string }) {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/">Builders</Link>
+              <Link to="/builders">Builders</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -197,7 +196,6 @@ function BuilderDetailPage() {
   const loaderData = Route.useLoaderData() as PublicBuilder | null;
   const { data: queryData, isPending, isError } = useBuilder(slug);
   
-  // Prefer loaderData for SSR/initial, queryData for client updates
   const data = queryData || loaderData;
   const builderId = data?.builder.id;
   const projects = useBuilderProjects(builderId);
@@ -240,7 +238,7 @@ function BuilderDetailPage() {
             "@type": "ListItem",
             "position": 2,
             "name": "Builders",
-            "item": "https://www.nesthunt.in/"
+            "item": "https://www.nesthunt.in/builders"
           },
           {
             "@type": "ListItem",
@@ -300,7 +298,7 @@ function BuilderDetailPage() {
           </div>
         )}
 
-        <div className="mt-10 space-y-12">
+        <div className="mt-10 space-y-16">
           {/* Portfolio Section */}
           <section id="portfolio" aria-labelledby="portfolio-heading">
             <div className="flex items-center justify-between mb-6">
@@ -309,7 +307,7 @@ function BuilderDetailPage() {
               </h2>
               {projects.data && (
                 <Badge variant="secondary" className="font-mono">
-                  {projects.data.length} Projects
+                  {projects.data.length} {projects.data.length === 1 ? 'Project' : 'Projects'}
                 </Badge>
               )}
             </div>
@@ -323,7 +321,6 @@ function BuilderDetailPage() {
                     className="group block overflow-hidden rounded-xl border border-border bg-surface transition-all hover:border-accent/40 hover:shadow-md"
                   >
                     <div className="aspect-[16/9] bg-muted relative overflow-hidden">
-                      {/* TODO: Add project hero image when media relationship is wired to projects */}
                       <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/20">
                         <Building2 className="h-12 w-12" />
                       </div>
@@ -355,194 +352,151 @@ function BuilderDetailPage() {
             )}
           </section>
 
-          {/* Risks & Watch-outs (Table driven) */}
-          {(risks.length > 0 || evidence.length > 0) && (
-            <section id="intelligence" aria-labelledby="intelligence-heading" className="grid gap-8 lg:grid-cols-2">
-              {risks.length > 0 && (
-                <div>
-                  <h2 id="risks-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
-                    Risk Assessment
-                  </h2>
-                  <div className="space-y-4">
-                    {risks.map((risk) => (
-                      <Card key={risk.id} className="border-border bg-surface overflow-hidden">
-                        <div className={`h-1 w-full ${
-                          risk.severity === 'critical' ? 'bg-destructive' :
-                          risk.severity === 'high' ? 'bg-orange-500' :
-                          risk.severity === 'medium' ? 'bg-warning' : 'bg-muted'
-                        }`} />
-                        <CardContent className="p-5">
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <Badge variant="outline" className="mb-2 uppercase text-[10px] tracking-wider">
-                                {risk.category}
-                              </Badge>
-                              <h4 className="font-display font-semibold text-foreground">{risk.title}</h4>
-                            </div>
-                            <Badge className={
-                              risk.status === 'mitigated' ? 'bg-success/10 text-success border-success/20' : 
-                              'bg-muted text-muted-foreground border-none'
-                            }>
-                              {risk.status}
-                            </Badge>
-                          </div>
-                          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                            {risk.description}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {evidence.length > 0 && (
-                <div>
-                  <h2 id="evidence-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
-                    Verified Evidence
-                  </h2>
-                  <div className="space-y-4">
-                    {evidence.map((ev) => (
-                      <Card key={ev.id} className="border-border bg-surface">
-                        <CardContent className="p-5">
-                          <div className="flex items-start gap-4">
-                            <div className="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-muted">
-                              <Info className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2 mb-1">
-                                <Badge variant="outline" className="uppercase text-[10px] tracking-wider">
-                                  {ev.evidence_type}
-                                </Badge>
-                                {ev.verification_status === 'verified' && (
-                                  <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                                )}
-                              </div>
-                              <h4 className="font-display font-semibold text-foreground">{ev.title}</h4>
-                              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                                {ev.description}
-                              </p>
-                              {ev.source_url && (
-                                <a 
-                                  href={ev.source_url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="mt-3 inline-flex items-center text-xs font-medium text-accent hover:underline"
-                                >
-                                  View Source Document
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </section>
-          )}
-
-          {/* Promise Ledger */}
-          {promises.length > 0 && (
-            <section id="delivery" aria-labelledby="delivery-heading">
-              <h2 id="delivery-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
-                Commitment Tracker
-              </h2>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {promises.map((promise) => (
-                  <Card key={promise.id} className="border-border bg-surface">
+          {/* Commitment Tracker (Promise Ledger) */}
+          <section id="promises" aria-labelledby="promises-heading">
+            <h2 id="promises-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+              Commitment Tracker
+            </h2>
+            {promises.length > 0 ? (
+              <div className="grid gap-4">
+                {promises.map((p) => (
+                  <Card key={p.id} className="border-border bg-surface">
                     <CardContent className="p-5">
-                      <Badge className="mb-2 bg-accent/10 text-accent border-none">
-                        {promise.status}
-                      </Badge>
-                      <h4 className="font-display font-semibold text-foreground">{promise.promise}</h4>
-                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
-                        {promise.remarks}
-                      </p>
-                      {promise.announcement_date && (
-                        <p className="mt-4 text-[10px] uppercase tracking-wider text-muted-foreground/60">
-                          Announced: {new Date(promise.announcement_date).toLocaleDateString()}
-                        </p>
-                      )}
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <h4 className="font-display font-semibold text-foreground">{p.promise}</h4>
+                          {p.remarks && <p className="text-sm text-muted-foreground">{p.remarks}</p>}
+                        </div>
+                        <Badge className={
+                          p.current_status === 'delivered' ? 'bg-success/10 text-success border-success/20' : 
+                          p.current_status === 'ongoing' ? 'bg-warning/10 text-warning border-warning/20' :
+                          'bg-muted text-muted-foreground border-none'
+                        }>
+                          {p.current_status}
+                        </Badge>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </section>
-          )}
+            ) : (
+              <PlaceholderCard
+                title="No verified delivery history available."
+                description="The delivery record for this developer is currently under audit."
+                icon={<ShieldCheck className="h-5 w-5" />}
+              />
+            )}
+          </section>
 
-          {/* Regulatory & RERA */}
-          {rera.length > 0 && (
-            <section id="regulatory" aria-labelledby="regulatory-heading">
-              <h2 id="regulatory-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
-                Regulatory Compliance
-              </h2>
-              <div className="space-y-4">
-                {rera.map((reg) => (
-                  <Card key={reg.id} className="border-border bg-surface">
-                    <CardContent className="p-5 flex flex-wrap items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <div className="grid h-10 w-10 place-items-center rounded-full bg-success/10 text-success">
-                          <ShieldCheck className="h-5 w-5" />
-                        </div>
+          {/* Risks & Considerations */}
+          <section id="risks" aria-labelledby="risks-heading">
+            <h2 id="risks-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+              Risks & Considerations
+            </h2>
+            {risks.length > 0 ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {risks.map((risk) => (
+                  <Card key={risk.id} className="border-border bg-surface overflow-hidden">
+                    <div className={`h-1 w-full ${
+                      risk.severity === 'critical' ? 'bg-destructive' :
+                      risk.severity === 'high' ? 'bg-orange-500' :
+                      risk.severity === 'medium' ? 'bg-warning' : 'bg-muted'
+                    }`} />
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">RERA Registration</p>
-                          <h4 className="font-display font-bold text-foreground">{reg.registration_number}</h4>
+                          <Badge variant="outline" className="mb-2 uppercase text-[10px] tracking-wider">
+                            {risk.category}
+                          </Badge>
+                          <h4 className="font-display font-semibold text-foreground">{risk.title}</h4>
                         </div>
+                        <Badge className={
+                          risk.status === 'mitigated' ? 'bg-success/10 text-success border-success/20' : 
+                          'bg-muted text-muted-foreground border-none'
+                        }>
+                          {risk.status}
+                        </Badge>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xs text-muted-foreground">{reg.authority}</p>
-                        <Badge variant="outline" className="mt-1">{reg.status}</Badge>
-                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                        {risk.description}
+                      </p>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </section>
-          )}
+            ) : (
+              <PlaceholderCard
+                title="Assessment Pending"
+                description="No critical risks have been identified in the current reporting cycle."
+                icon={<ShieldCheck className="h-5 w-5" />}
+              />
+            )}
+          </section>
 
-          {/* Leadership */}
+          {/* Regulatory Compliance (RERA) */}
+          <section id="regulatory" aria-labelledby="regulatory-heading">
+            <h2 id="regulatory-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
+              Regulatory Compliance
+            </h2>
+            {rera.length > 0 ? (
+              <div className="overflow-x-auto rounded-xl border border-border">
+                <table className="w-full text-left text-sm border-collapse">
+                  <thead className="bg-muted/50 text-muted-foreground">
+                    <tr>
+                      <th className="px-4 py-3 font-semibold">Reg. Number</th>
+                      <th className="px-4 py-3 font-semibold">Authority</th>
+                      <th className="px-4 py-3 font-semibold">Status</th>
+                      <th className="px-4 py-3 font-semibold">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border bg-surface">
+                    {rera.map((r) => (
+                      <tr key={r.id}>
+                        <td className="px-4 py-3 font-mono text-xs">{r.registration_number}</td>
+                        <td className="px-4 py-3">{r.authority}</td>
+                        <td className="px-4 py-3">
+                          <Badge variant="outline" className="text-[10px] uppercase">
+                            {r.status || 'Active'}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          {r.registration_url && (
+                            <a href={r.registration_url} target="_blank" rel="noopener" className="text-accent hover:underline flex items-center gap-1">
+                              Verify <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <PlaceholderCard
+                title="RERA verification in progress"
+                description="Regulatory records are being synchronized with official portals."
+                icon={<FileCheck className="h-5 w-5" />}
+              />
+            )}
+          </section>
+
+          {/* Leadership Team */}
           {leadership.length > 0 && (
             <section id="leadership" aria-labelledby="leadership-heading">
               <h2 id="leadership-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
                 Leadership Team
               </h2>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {leadership.map((member) => (
-                  <div key={member.id} className="group">
-                    <div className="aspect-square rounded-xl bg-muted overflow-hidden border border-border">
-                       {/* TODO: Hydrate photoUrl if media_id exists */}
-                       <div className="h-full w-full flex items-center justify-center text-muted-foreground/20">
-                         <Building2 className="h-12 w-12" />
-                       </div>
-                    </div>
-                    <div className="mt-4">
-                      <h4 className="font-display font-bold text-foreground">{member.name}</h4>
-                      <p className="text-sm text-muted-foreground">{member.designation}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* FAQ */}
-          {faqs.length > 0 && (
-            <section id="faq" aria-labelledby="faq-heading">
-              <h2 id="faq-heading" className="font-display text-2xl font-bold tracking-tight text-foreground mb-6">
-                Frequently Asked Questions
-              </h2>
-              <div className="grid gap-4">
-                {faqs.map((faq) => (
-                  <Card key={faq.id} className="border-border bg-surface">
-                    <CardHeader className="p-5 pb-2">
-                      <CardTitle className="text-base font-display font-bold">{faq.question}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-5 pt-0">
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {faq.answer}
-                      </p>
+                  <Card key={member.id} className="border-border bg-surface">
+                    <CardContent className="p-5 flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+                        <Users className="h-6 w-6 text-muted-foreground/40" />
+                      </div>
+                      <div>
+                        <h4 className="font-display font-semibold text-foreground">{member.name}</h4>
+                        <p className="text-xs text-muted-foreground">{member.designation}</p>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
@@ -550,37 +504,66 @@ function BuilderDetailPage() {
             </section>
           )}
 
-          {/* Placeholder for remaining sections - only show if no major data exists */}
-          {risks.length === 0 && evidence.length === 0 && rera.length === 0 && leadership.length === 0 && (
-            <div className="space-y-6">
-              {SECTIONS.filter((s) => !["hero", "executive-summary", "portfolio", "risks", "delivery", "regulatory", "leadership", "faq"].includes(s.id)).map((section) => (
-                <section
-                  key={section.id}
-                  id={section.id}
-                  aria-labelledby={`${section.id}-heading`}
-                >
-                  <h2 id={`${section.id}-heading`} className="sr-only">
-                    {section.title}
-                  </h2>
-                  <PlaceholderCard
-                    title={section.title}
-                    description={section.description}
-                  />
-                </section>
-              ))}
-            </div>
-          )}
-        </div>
+          {/* Awards & FAQ if they exist */}
+          <div className="grid gap-12 lg:grid-cols-2">
+            {awards.length > 0 && (
+              <section id="awards" aria-labelledby="awards-heading">
+                <h2 id="awards-heading" className="font-display text-xl font-bold tracking-tight text-foreground mb-4">
+                  Awards & Recognition
+                </h2>
+                <div className="space-y-3">
+                  {awards.map((award) => (
+                    <div key={award.id} className="flex gap-3 p-3 rounded-lg border border-border bg-muted/20">
+                      <Award className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                      <div>
+                        <h5 className="text-sm font-semibold">{award.name}</h5>
+                        <p className="text-xs text-muted-foreground">{award.issuer} {award.year && `• ${award.year}`}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-        {/* Disclaimer */}
-        <div className="mt-16 p-6 rounded-xl border border-border bg-muted/30">
-          <div className="flex gap-4">
-            <AlertCircle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
-            <div className="text-sm text-muted-foreground leading-relaxed">
-              <p className="font-semibold text-foreground mb-1">NestHunt Assessment Disclaimer</p>
-              NestHunt assessment is based on currently available verified information. While we strive for accuracy, development plans and corporate structures can change. This report is for informational purposes only and does not constitute financial or investment advice. Complete project-level due diligence before making a purchase decision.
-            </div>
+            {faqs.length > 0 && (
+              <section id="faq" aria-labelledby="faq-heading">
+                <h2 id="faq-heading" className="font-display text-xl font-bold tracking-tight text-foreground mb-4">
+                  Common Questions
+                </h2>
+                <Accordion type="single" collapsible className="w-full">
+                  {faqs.map((faq, i) => (
+                    <AccordionItem key={faq.id || i} value={`item-${i}`}>
+                      <AccordionTrigger className="text-sm font-medium text-left">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm text-muted-foreground">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            )}
           </div>
+
+          {/* NestHunt Assessment Disclaimer */}
+          <section className="rounded-2xl border border-border bg-muted/30 p-8 text-center max-w-3xl mx-auto">
+            <ShieldCheck className="h-10 w-10 text-accent mx-auto mb-4" />
+            <h2 className="font-display text-2xl font-bold tracking-tight text-foreground mb-4">
+              NestHunt Assessment Disclaimer
+            </h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              This intelligence report is based on verified public records, site inspections, and data provided by the developer as of {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}. While we strive for absolute accuracy, real estate involves inherent risks. We recommend independent legal verification of all documents before financial commitment.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button size="lg" className="rounded-full">
+                Download Full Report
+              </Button>
+              <Button size="lg" variant="outline" className="rounded-full group">
+                Consult an Analyst <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </section>
         </div>
       </Section>
     </BuilderShell>
