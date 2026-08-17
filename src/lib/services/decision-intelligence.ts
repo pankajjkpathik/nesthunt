@@ -102,6 +102,17 @@ export type RiskProbability = (typeof RISK_PROBABILITIES)[number];
 export const RISK_STATUSES = ["active", "resolved", "monitoring"] as const;
 export type RiskStatus = (typeof RISK_STATUSES)[number];
 
+export const DECISION_SOURCE_TYPES = [
+  "LEGACY_MIGRATION",
+  "CMS_ASSESSMENT",
+  "DERIVED_METRIC",
+  "VERIFIED_EVIDENCE",
+  "SYSTEM_CALCULATION",
+  "USER_INPUT",
+] as const;
+export type DecisionSourceType = (typeof DECISION_SOURCE_TYPES)[number];
+
+
 // ============================================================
 // DecisionEntityService
 // ============================================================
@@ -256,6 +267,24 @@ export const DecisionScoreService = {
     const { error } = await supabase.from("decision_scores").delete().eq("id", id);
     if (error) throw error;
   },
+
+  /** Check if a dimension is compatible for cross-entity comparison based on compatibility_group. */
+  async isCompatible(dim1Code: string, dim2Code: string): Promise<boolean> {
+    const d1 = await DecisionDimensionService.getByCode(dim1Code);
+    const d2 = await DecisionDimensionService.getByCode(dim2Code);
+    if (!d1 || !d2) return false;
+    return !!d1.compatibility_group && d1.compatibility_group === d2.compatibility_group;
+  },
+
+  /** Classify the provenance of a score. */
+  classifyProvenance(score: DecisionScoreRow): "VERIFIED" | "PARTIAL" | "LEGACY" | "PLACEHOLDER" | "UNUSABLE" {
+    if (score.calculation_version === "v1_migration" && score.score === 0) return "PLACEHOLDER";
+    if (score.source_type === "LEGACY_MIGRATION") return "LEGACY";
+    if (score.source_type === "VERIFIED_EVIDENCE" && score.confidence === "high") return "VERIFIED";
+    if (score.source_type && score.confidence && score.reason_summary) return "PARTIAL";
+    return "UNUSABLE";
+  },
+
 };
 
 // ============================================================

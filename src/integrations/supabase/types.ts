@@ -641,39 +641,48 @@ export type Database = {
         Row: {
           code: string
           color: string | null
+          compatibility_group: string | null
           created_at: string
           description: string | null
           display_order: number
+          entity_applicability: string[] | null
           icon: string | null
           id: string
           is_active: boolean
           name: string
+          semantic_definition: string | null
           updated_at: string
           weight_default: number
         }
         Insert: {
           code: string
           color?: string | null
+          compatibility_group?: string | null
           created_at?: string
           description?: string | null
           display_order?: number
+          entity_applicability?: string[] | null
           icon?: string | null
           id?: string
           is_active?: boolean
           name: string
+          semantic_definition?: string | null
           updated_at?: string
           weight_default?: number
         }
         Update: {
           code?: string
           color?: string | null
+          compatibility_group?: string | null
           created_at?: string
           description?: string | null
           display_order?: number
+          entity_applicability?: string[] | null
           icon?: string | null
           id?: string
           is_active?: boolean
           name?: string
+          semantic_definition?: string | null
           updated_at?: string
           weight_default?: number
         }
@@ -945,6 +954,8 @@ export type Database = {
           max_score: number
           reason_summary: string | null
           score: number
+          source_type: string | null
+          status: string
           updated_at: string
           weight: number
         }
@@ -960,6 +971,8 @@ export type Database = {
           max_score?: number
           reason_summary?: string | null
           score: number
+          source_type?: string | null
+          status?: string
           updated_at?: string
           weight?: number
         }
@@ -975,6 +988,8 @@ export type Database = {
           max_score?: number
           reason_summary?: string | null
           score?: number
+          source_type?: string | null
+          status?: string
           updated_at?: string
           weight?: number
         }
