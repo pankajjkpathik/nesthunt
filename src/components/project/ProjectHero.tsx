@@ -3,6 +3,7 @@ import { Building2, MapPin, BadgeInfo, Calendar, IndianRupee, LayoutGrid } from 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { ProjectRow, ProjectHero as ProjectHeroMeta } from "@/lib/services/projects-admin";
+import { cn } from "@/lib/utils";
 
 interface ProjectHeroProps {
   project: ProjectRow & {
@@ -13,14 +14,14 @@ interface ProjectHeroProps {
 
 export function ProjectHero({ project }: ProjectHeroProps) {
   const hero = (project.hero ?? {}) as ProjectHeroMeta;
-  const metrics = project.metrics ?? {};
+  const metrics = (project.metrics ?? {}) as any;
   
-  const heroImageUrl = hero.heroImageUrl || hero.coverImageUrl || project.hero?.heroImageUrl;
+  const heroImageUrl = hero.heroImageUrl || hero.coverImageUrl || (project.hero as any)?.heroImageUrl;
   const status = project.construction_status || project.status || "Status information unavailable";
   
   const formattedPrice = project.starting_price 
     ? `₹${(project.starting_price / 10000000).toFixed(2)} Cr+`
-    : project.metrics.priceRange || "Price on request";
+    : metrics.priceRange || "Price on request";
 
   return (
     <div className="space-y-8">
@@ -114,5 +115,3 @@ function HeroMetric({ icon, label, value, className }: { icon: ReactNode; label:
     </Card>
   );
 }
-
-import { cn } from "@/lib/utils";

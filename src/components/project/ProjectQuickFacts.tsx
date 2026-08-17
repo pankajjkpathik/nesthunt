@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { ProjectRow } from "@/lib/services/projects-admin";
 import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface ProjectQuickFactsProps {
   project: ProjectRow & {
@@ -20,8 +21,8 @@ interface ProjectQuickFactsProps {
 }
 
 export function ProjectQuickFacts({ project }: ProjectQuickFactsProps) {
-  const metrics = project.metrics ?? {};
-  const rera = project.rera ?? {};
+  const metrics = (project.metrics || {}) as any;
+  const rera = (project.rera || {}) as any;
 
   const facts = [
     { 
@@ -95,5 +96,3 @@ export function ProjectQuickFacts({ project }: ProjectQuickFactsProps) {
     </Card>
   );
 }
-
-import { cn } from "@/lib/utils";
