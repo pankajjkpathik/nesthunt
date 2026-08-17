@@ -68,7 +68,7 @@ export async function getProjectIntelligence(projectId: string) {
   const [risks, promises, decisionEntity] = await Promise.all([
     RiskService.listByEntity("project", projectId),
     PromiseLedgerService.listByEntity("project", projectId),
-    DecisionIntelligenceService.getEntity("project", projectId)
+    DecisionEntityService.getByEntity("project", projectId)
   ]);
 
   return {
