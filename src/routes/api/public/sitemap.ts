@@ -13,6 +13,12 @@ export const Route = createFileRoute("/api/public/sitemap")({
           .select("slug, updated_at")
           .eq("status", "published");
 
+        // Fetch published projects
+        const { data: projects } = await supabase
+          .from("projects")
+          .select("slug, updated_at")
+          .eq("publish_status", "published");
+
         const staticPages = [
           "/",
           "/journey",
@@ -36,6 +42,18 @@ export const Route = createFileRoute("/api/public/sitemap")({
             xml += '<url>';
             xml += `<loc>${baseUrl}/builders/${builder.slug}</loc>`;
             xml += `<lastmod>${new Date(builder.updated_at).toISOString().split('T')[0]}</lastmod>`;
+            xml += '<changefreq>weekly</changefreq>';
+            xml += '<priority>0.7</priority>';
+            xml += '</url>';
+          }
+        }
+
+        // Add projects
+        if (projects) {
+          for (const project of projects) {
+            xml += '<url>';
+            xml += `<loc>${baseUrl}/projects/${project.slug}</loc>`;
+            xml += `<lastmod>${new Date(project.updated_at).toISOString().split('T')[0]}</lastmod>`;
             xml += '<changefreq>weekly</changefreq>';
             xml += '<priority>0.7</priority>';
             xml += '</url>';

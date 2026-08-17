@@ -285,7 +285,7 @@ function FeaturedIntelligence() {
     },
     {
       key: "project",
-      href: projects.data?.[0] ? `/project/${projects.data[0].slug}` : null,
+      href: projects.data?.[0] ? `/projects/${projects.data[0].slug}` : null,
       heading: projects.data?.[0]?.name ?? INTELLIGENCE_META.project.title,
       description: projects.data?.[0]?.summary ?? INTELLIGENCE_META.project.fallback,
       loading: projects.isLoading,

@@ -146,7 +146,7 @@ const PORTFOLIO = [
     category: "Township",
     status: "Selling",
     price: "₹95 L",
-    href: "/project/hero-homes",
+    href: "/projects/hero-homes",
   },
   {
     name: "Omaxe Connaught Place",
@@ -404,7 +404,7 @@ function BuilderPage() {
                 </CardContent>
               </Card>
               <Button asChild className="w-full">
-                <Link to="/project/hero-homes">Explore Omaxe projects</Link>
+                <Link to="/projects/hero-homes">Explore Omaxe projects</Link>
               </Button>
             </div>
           </aside>
@@ -690,7 +690,7 @@ function BuilderPage() {
                 asChild
                 className="bg-accent text-foreground hover:bg-accent/90"
               >
-                <Link to="/project/hero-homes">Explore Omaxe Projects</Link>
+                <Link to="/projects/hero-homes">Explore Omaxe Projects</Link>
               </Button>
               <Button
                 asChild

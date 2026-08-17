@@ -213,7 +213,7 @@ const PROJECTS = [
     config: "2, 3 & 4 BHK",
     price: "₹1.1 Cr – ₹2.4 Cr",
     status: "Under Construction",
-    href: "/project/hero-homes",
+    href: "/projects/hero-homes",
   },
   {
     name: "Omaxe New Chandigarh",
@@ -417,7 +417,7 @@ function PlacePage() {
                 </CardContent>
               </Card>
               <Button asChild className="w-full">
-                <Link to="/project/hero-homes">Explore projects</Link>
+                <Link to="/projects/hero-homes">Explore projects</Link>
               </Button>
             </div>
           </aside>
@@ -671,7 +671,7 @@ function PlacePage() {
                 asChild
                 className="bg-accent text-foreground hover:bg-accent/90"
               >
-                <Link to="/project/hero-homes">Explore Projects</Link>
+                <Link to="/projects/hero-homes">Explore Projects</Link>
               </Button>
               <Button
                 asChild

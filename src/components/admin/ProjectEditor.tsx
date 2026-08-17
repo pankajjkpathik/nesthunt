@@ -392,7 +392,7 @@ export function ProjectEditor({ id }: Props) {
         <div className="flex flex-wrap gap-2">
           {!isNew && form.slug ? (
             <a
-              href={`/project/${form.slug}`}
+              href={`/projects/${form.slug}`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"

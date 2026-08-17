@@ -44,7 +44,7 @@ interface JourneyItem {
 
 const RECENTLY_VIEWED: JourneyItem[] = [
   { primary: "New Chandigarh", secondary: "Place · viewed 2h ago", href: { to: "/places/new-chandigarh" } },
-  { primary: "Hero Homes", secondary: "Project · viewed yesterday", href: { to: "/project/hero-homes" } },
+  { primary: "Hero Homes", secondary: "Project · viewed yesterday", href: { to: "/projects/hero-homes" } },
   { primary: "Omaxe", secondary: "Builder · viewed 3 days ago", href: { to: "/builder/omaxe" } },
 ];
 
@@ -59,7 +59,7 @@ const SAVED_BUILDERS: JourneyItem[] = [
 ];
 
 const SAVED_PROJECTS: JourneyItem[] = [
-  { primary: "Hero Homes", secondary: "New Chandigarh · Omaxe", meta: "₹1.1–2.4 Cr", href: { to: "/project/hero-homes" } },
+  { primary: "Hero Homes", secondary: "New Chandigarh · Omaxe", meta: "₹1.1–2.4 Cr", href: { to: "/projects/hero-homes" } },
   { primary: "The Palm Drive", secondary: "Zirakpur · Emaar", meta: "₹0.9–1.6 Cr" },
 ];
 

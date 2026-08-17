@@ -835,7 +835,7 @@ function ProjectsPanel({ builderId }: { builderId?: string }) {
                   <p className="text-xs text-muted-foreground">/{p.slug} · {p.status}</p>
                 </div>
                 <a
-                  href={`/project/${p.slug}`}
+                  href={`/projects/${p.slug}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-xs text-accent hover:underline"
