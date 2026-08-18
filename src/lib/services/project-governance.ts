@@ -53,7 +53,7 @@ export const ProjectGovernanceService = {
       .eq("project_id", projectId)
       .maybeSingle();
     if (error) throw error;
-    return data as ProjectGovernanceRow | null;
+    return data as any as any as ProjectGovernanceRow | null;
   },
 
   async ensureGovernance(projectId: string): Promise<ProjectGovernanceRow> {
@@ -66,7 +66,7 @@ export const ProjectGovernanceService = {
       .select("*")
       .single();
     if (error) throw error;
-    return data as ProjectGovernanceRow;
+    return data as any as ProjectGovernanceRow;
   },
 
   async updateGovernance(id: string, patch: ProjectGovernanceUpdate): Promise<ProjectGovernanceRow> {
@@ -77,7 +77,7 @@ export const ProjectGovernanceService = {
       .select("*")
       .single();
     if (error) throw error;
-    return data as ProjectGovernanceRow;
+    return data as any as ProjectGovernanceRow;
   },
 
   async listExceptions(projectId: string): Promise<ProjectExceptionRow[]> {
@@ -87,7 +87,7 @@ export const ProjectGovernanceService = {
       .eq("project_id", projectId)
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return (data ?? []) as ProjectExceptionRow[];
+    return (data ?? []) as any as any as ProjectExceptionRow[];
   },
 
   async createException(input: ProjectExceptionInsert): Promise<ProjectExceptionRow> {
@@ -97,7 +97,7 @@ export const ProjectGovernanceService = {
       .select("*")
       .single();
     if (error) throw error;
-    return data as ProjectExceptionRow;
+    return data as any as ProjectExceptionRow;
   },
 
   async updateException(id: string, patch: ProjectExceptionUpdate): Promise<ProjectExceptionRow> {
@@ -115,7 +115,7 @@ export const ProjectGovernanceService = {
       .select("*")
       .single();
     if (error) throw error;
-    return data as ProjectExceptionRow;
+    return data as any as ProjectExceptionRow;
   },
 
   calculateReadiness(project: any, governance: ProjectGovernanceRow | null, exceptions: ProjectExceptionRow[]): PublicationReadiness {
