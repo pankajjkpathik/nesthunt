@@ -38,7 +38,9 @@ import { MediaPicker } from "@/components/admin/media/MediaPicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { getPublicUrl } from "@/lib/services/media";
-import { ProjectAdminService } from "@/lib/services/projects-cms-integration";
+import { ProjectGovernanceTab } from "@/components/admin/ProjectGovernanceTab";
+import { useProjectGovernance, useProjectExceptions } from "@/hooks/useProjectGovernance";
+import { ProjectGovernanceService } from "@/lib/services/project-governance";
 
 /**
  * PROJECT INTELLIGENCE V1 FROZEN
