@@ -141,8 +141,8 @@ function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button size="lg" className="gap-2" asChild>
-                <Link to="/places/new-chandigarh">
-                  Explore Places
+                <Link to="/discover">
+                  Explore Discovery
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
