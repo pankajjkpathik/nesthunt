@@ -969,6 +969,10 @@ export function ProjectEditor({ id }: Props) {
           </div>
         </TabsContent>
 
+        <TabsContent value="governance">
+          <ProjectGovernanceTab project={form} />
+        </TabsContent>
+
         <TabsContent value="seo">
           <Card>
             <CardContent className="grid gap-4 p-6 md:grid-cols-2">
