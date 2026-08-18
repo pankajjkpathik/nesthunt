@@ -41,6 +41,7 @@ import { getPublicUrl } from "@/lib/services/media";
 import { ProjectGovernanceTab } from "@/components/admin/ProjectGovernanceTab";
 import { useProjectGovernance, useProjectExceptions } from "@/hooks/useProjectGovernance";
 import { ProjectGovernanceService } from "@/lib/services/project-governance";
+import { ProjectAdminService } from "@/lib/services/projects-cms-integration";
 
 /**
  * PROJECT INTELLIGENCE V1 FROZEN
