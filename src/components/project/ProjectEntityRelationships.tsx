@@ -27,7 +27,7 @@ export function ProjectEntityRelationships({ project }: ProjectEntityRelationshi
           slug={project.builder.slug}
           type="builder"
           icon={<ShieldCheck className="h-5 w-5 text-accent" />}
-          description="View verified builder track record, delivery history, and trust score."
+          description="Explore Builder Intelligence"
         />
       )}
       {project.place && (
@@ -37,7 +37,7 @@ export function ProjectEntityRelationships({ project }: ProjectEntityRelationshi
           slug={project.place.slug}
           type="place"
           icon={<MapPin className="h-5 w-5 text-accent" />}
-          description="Explore location intelligence, infrastructure timeline, and locality risks."
+          description="Explore Place Intelligence"
         />
       )}
     </div>
