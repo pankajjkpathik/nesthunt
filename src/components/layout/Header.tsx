@@ -6,6 +6,7 @@ import { Container } from "@/components/common/Container";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
+  { to: "/discover", label: "Discover" },
   { to: "/places/new-chandigarh", label: "Places" },
   { to: "/builders", label: "Builders" },
   { to: "/projects/$slug" as const, params: { slug: "hero-homes" }, label: "Projects" },
