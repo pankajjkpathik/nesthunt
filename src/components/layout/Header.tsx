@@ -6,7 +6,22 @@ import { Container } from "@/components/common/Container";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { to: "/discover", label: "Discover" },
+  { 
+    to: "/discover", 
+    label: "Discover",
+    search: { 
+      type: 'all', 
+      q: '', 
+      sort: 'name_asc',
+      location: '',
+      builder: '',
+      status: '',
+      propertyType: '',
+      configuration: '',
+      rera: '',
+      priceMax: null
+    }
+  },
   { to: "/places/new-chandigarh", label: "Places" },
   { to: "/builders", label: "Builders" },
   { to: "/projects/$slug" as const, params: { slug: "hero-homes" }, label: "Projects" },
@@ -52,6 +67,8 @@ export function Header() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
+                    search={"search" in link ? link.search : undefined}
+                    params={"params" in link ? (link.params as any) : undefined}
                     className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     activeProps={{
                       className:
@@ -98,6 +115,8 @@ export function Header() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
+                    search={"search" in link ? link.search : undefined}
+                    params={"params" in link ? (link.params as any) : undefined}
                     onClick={() => setOpen(false)}
                     className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                     activeProps={{
