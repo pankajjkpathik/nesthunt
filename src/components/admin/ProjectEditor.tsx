@@ -38,6 +38,9 @@ import { MediaPicker } from "@/components/admin/media/MediaPicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { getPublicUrl } from "@/lib/services/media";
+import { ProjectGovernanceTab } from "@/components/admin/ProjectGovernanceTab";
+import { useProjectGovernance, useProjectExceptions } from "@/hooks/useProjectGovernance";
+import { ProjectGovernanceService } from "@/lib/services/project-governance";
 import { ProjectAdminService } from "@/lib/services/projects-cms-integration";
 
 /**
@@ -350,7 +353,7 @@ export function ProjectEditor({ id }: Props) {
         toast.success("Project created");
         navigate({ to: "/admin/projects/$id", params: { id: created.id } });
       } else {
-        await ProjectAdminService.updateProjectIntelligence(id!, payload as never);
+        await ProjectAdminService.updateProjectIntelligence(id!, payload as any);
         toast.success("Project saved");
         if (nextPublish) set("publish_status", nextPublish);
       }
@@ -433,6 +436,7 @@ export function ProjectEditor({ id }: Props) {
           <TabsTrigger value="nearby">Nearby</TabsTrigger>
           <TabsTrigger value="investment">Investment</TabsTrigger>
           <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
+          <TabsTrigger value="governance">Intake & Verification</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
         </TabsList>
 
@@ -963,6 +967,10 @@ export function ProjectEditor({ id }: Props) {
               </Card>
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="governance">
+          <ProjectGovernanceTab project={form} />
         </TabsContent>
 
         <TabsContent value="seo">
