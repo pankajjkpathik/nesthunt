@@ -53,14 +53,14 @@ const str = (v: unknown) => (typeof v === "string" ? v : "");
 export const Route = createFileRoute("/discover")({
   validateSearch: (search: Record<string, unknown>): DiscoverSearch => ({
     type: (str(search.type) || "all") as DiscoverType,
-    q: str(search.q),
+    q: str(search.q) || "",
     sort: (str(search.sort) || "name_asc") as SortOption,
-    location: str(search.location),
-    builder: str(search.builder),
-    status: str(search.status),
-    propertyType: str(search.propertyType),
-    configuration: str(search.configuration),
-    rera: str(search.rera),
+    location: str(search.location) || "",
+    builder: str(search.builder) || "",
+    status: str(search.status) || "",
+    propertyType: str(search.propertyType) || "",
+    configuration: str(search.configuration) || "",
+    rera: str(search.rera) || "",
     priceMax:
       search.priceMax === undefined || search.priceMax === null || search.priceMax === ""
         ? null
