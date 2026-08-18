@@ -67,6 +67,8 @@ export function Header() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
+                    search={"search" in link ? link.search : undefined}
+                    params={"params" in link ? (link.params as any) : undefined}
                     className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     activeProps={{
                       className:
@@ -113,6 +115,8 @@ export function Header() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
+                    search={"search" in link ? link.search : undefined}
+                    params={"params" in link ? (link.params as any) : undefined}
                     onClick={() => setOpen(false)}
                     className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                     activeProps={{
