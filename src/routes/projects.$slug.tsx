@@ -21,7 +21,7 @@ import { ProjectEntityRelationships } from "@/components/project/ProjectEntityRe
 import { ProjectAmenities } from "@/components/project/ProjectAmenities";
 import { ProjectDocuments } from "@/components/project/ProjectDocuments";
 import { ProjectDueDiligence } from "@/components/project/ProjectDueDiligence";
-import { ProjectIntelligenceSummary } from "@/components/project/ProjectIntelligenceSummary";
+import { ProjectNestHuntIntelligence } from "@/components/project/ProjectNestHuntIntelligence";
 import { ProjectNearbyInfrastructure } from "@/components/project/ProjectNearbyInfrastructure";
 import { ProjectConfigurations } from "@/components/project/ProjectConfigurations";
 
@@ -227,8 +227,8 @@ function ProjectDetailPage() {
       <Container>
         <div className="grid gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:py-14">
           <div className="min-w-0 space-y-20">
-            {/* 01 · Intelligence Summary */}
-            <ProjectIntelligenceSummary decisionEntity={decisionEntity} insights={insights} />
+            {/* 01 · NestHunt Intelligence */}
+            <ProjectNestHuntIntelligence project={project} decisionEntity={decisionEntity} insights={insights} />
 
             {/* 02 · Executive Summary */}
             <ProjectExecutiveSummary summary={project.summary} />
@@ -259,7 +259,7 @@ function ProjectDetailPage() {
             {/* 09 · Regulatory & Documents */}
             <div className="grid gap-12 md:grid-cols-2">
               <ProjectDocuments project={project} />
-              <ProjectDueDiligence />
+              <ProjectDueDiligence project={project} />
             </div>
           </div>
 

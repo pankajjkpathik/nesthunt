@@ -59,7 +59,8 @@ export function ProjectQuickFacts({ project }: ProjectQuickFactsProps) {
     { 
       label: "Possession", 
       value: project.possession_date || (metrics.possessionYear ? String(metrics.possessionYear) : null), 
-      icon: <Calendar className="h-3.5 w-3.5" /> 
+      icon: <Calendar className="h-3.5 w-3.5" />,
+      className: !project.possession_date ? "italic text-muted-foreground/80" : ""
     },
     { 
       label: "RERA Number", 
@@ -68,10 +69,11 @@ export function ProjectQuickFacts({ project }: ProjectQuickFactsProps) {
     },
     { 
       label: "Price Range", 
-      value: metrics.priceRange || (project.starting_price ? `From ₹${(project.starting_price / 10000000).toFixed(2)} Cr` : null), 
-      icon: <Coins className="h-3.5 w-3.5" /> 
+      value: project.starting_price ? `From ₹${(project.starting_price / 10000000).toFixed(2)} Cr` : "On Request", 
+      icon: <Coins className="h-3.5 w-3.5" />,
+      className: !project.starting_price ? "italic text-muted-foreground/80" : ""
     },
-  ].filter(f => f.value);
+  ].filter(f => f.value !== null && f.value !== undefined);
 
   if (facts.length === 0) return null;
 

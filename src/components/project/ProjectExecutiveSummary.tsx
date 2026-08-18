@@ -6,8 +6,6 @@ interface ProjectExecutiveSummaryProps {
 }
 
 export function ProjectExecutiveSummary({ summary }: ProjectExecutiveSummaryProps) {
-  if (!summary) return null;
-
   return (
     <section aria-labelledby="summary-heading">
       <div className="flex items-center gap-2 mb-4">
@@ -19,9 +17,15 @@ export function ProjectExecutiveSummary({ summary }: ProjectExecutiveSummaryProp
       <Card className="border-border bg-surface shadow-none overflow-hidden">
         <div className="h-1 w-full bg-accent/20" />
         <CardContent className="p-6">
-          <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-            {summary}
-          </p>
+          {summary ? (
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+              {summary}
+            </p>
+          ) : (
+            <p className="text-muted-foreground/60 italic text-sm">
+              Executive summary not yet available for this project.
+            </p>
+          )}
         </CardContent>
       </Card>
     </section>
