@@ -42,10 +42,10 @@ const TYPES = [
 
 type DiscoverType = (typeof TYPES)[number]["value"];
 
-interface DiscoverSearch extends Filters {
-  type: DiscoverType;
-  q: string;
-  sort: SortOption;
+interface DiscoverSearch extends Partial<Filters> {
+  type?: DiscoverType;
+  q?: string;
+  sort?: SortOption;
 }
 
 const str = (v: unknown) => (typeof v === "string" ? v : "");
