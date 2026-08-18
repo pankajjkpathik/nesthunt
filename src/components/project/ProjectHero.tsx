@@ -149,7 +149,7 @@ function EvidenceBadge({ type, label }: { type: 'VERIFIED' | 'OFFICIAL UPDATE' |
   const icons = {
     'VERIFIED': <ShieldCheck className="h-2.5 w-2.5" />,
     'OFFICIAL UPDATE': <Clock className="h-2.5 w-2.5" />,
-    'REPORTED': <Info className="h-2.5 w-2.5" />,
+    'REPORTED': <AlertCircle className="h-2.5 w-2.5" />,
     'NOT AVAILABLE': <Search className="h-2.5 w-2.5" />
   };
 
