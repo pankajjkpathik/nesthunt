@@ -1,6 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Using explicit types to bypass stale Database types until next build
 export type IntakeStatus = 'DRAFT' | 'DATA_REVIEW' | 'VERIFIED';
 export type VerificationLevel = 'STANDARD' | 'ENHANCED' | 'DEEP_REVIEW';
 export type ExceptionType = 
@@ -54,7 +53,7 @@ export const ProjectGovernanceService = {
       .eq("project_id", projectId)
       .maybeSingle();
     if (error) throw error;
-    return data;
+    return data as ProjectGovernanceRow | null;
   },
 
   async ensureGovernance(projectId: string): Promise<ProjectGovernanceRow> {
@@ -67,7 +66,7 @@ export const ProjectGovernanceService = {
       .select("*")
       .single();
     if (error) throw error;
-    return data;
+    return data as ProjectGovernanceRow;
   },
 
   async updateGovernance(id: string, patch: ProjectGovernanceUpdate): Promise<ProjectGovernanceRow> {
@@ -78,7 +77,7 @@ export const ProjectGovernanceService = {
       .select("*")
       .single();
     if (error) throw error;
-    return data;
+    return data as ProjectGovernanceRow;
   },
 
   async listExceptions(projectId: string): Promise<ProjectExceptionRow[]> {
@@ -88,7 +87,7 @@ export const ProjectGovernanceService = {
       .eq("project_id", projectId)
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return data ?? [];
+    return (data ?? []) as ProjectExceptionRow[];
   },
 
   async createException(input: ProjectExceptionInsert): Promise<ProjectExceptionRow> {
@@ -98,7 +97,7 @@ export const ProjectGovernanceService = {
       .select("*")
       .single();
     if (error) throw error;
-    return data;
+    return data as ProjectExceptionRow;
   },
 
   async updateException(id: string, patch: ProjectExceptionUpdate): Promise<ProjectExceptionRow> {
@@ -116,7 +115,7 @@ export const ProjectGovernanceService = {
       .select("*")
       .single();
     if (error) throw error;
-    return data;
+    return data as ProjectExceptionRow;
   },
 
   calculateReadiness(project: any, governance: ProjectGovernanceRow | null, exceptions: ProjectExceptionRow[]): PublicationReadiness {
