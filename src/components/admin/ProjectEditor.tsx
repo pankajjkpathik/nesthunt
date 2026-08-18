@@ -436,6 +436,7 @@ export function ProjectEditor({ id }: Props) {
           <TabsTrigger value="nearby">Nearby</TabsTrigger>
           <TabsTrigger value="investment">Investment</TabsTrigger>
           <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
+          <TabsTrigger value="governance">Intake & Verification</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
         </TabsList>
 
