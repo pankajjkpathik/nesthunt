@@ -141,21 +141,7 @@ function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button size="lg" className="gap-2" asChild>
-                <Link 
-                  to="/discover"
-                  search={{
-                    type: "all",
-                    q: "",
-                    sort: "name_asc",
-                    location: "",
-                    builder: "",
-                    status: "",
-                    propertyType: "",
-                    configuration: "",
-                    rera: "",
-                    priceMax: null,
-                  }}
-                >
+                <Link to="/discover">
                   Explore Discovery
                   <ArrowRight className="h-4 w-4" />
                 </Link>
