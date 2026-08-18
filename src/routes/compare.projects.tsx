@@ -50,7 +50,13 @@ export const Route = createFileRoute("/compare/projects")({
     meta: [
       { title: "Compare Projects — NestHunt" },
       { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Compare Projects | NestHunt" },
+      { property: "og:description", content: "Side-by-side transparent project comparison on verified intelligence dimensions." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://www.nesthunt.in/compare/projects" }],
+
   }),
   component: ProjectComparisonPage,
 });

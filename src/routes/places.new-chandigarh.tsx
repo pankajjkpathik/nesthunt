@@ -47,7 +47,15 @@ export const Route = createFileRoute("/places/new-chandigarh")({
         content:
           "Should you invest or live in New Chandigarh? A structured, verified place intelligence report.",
       },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.nesthunt.in/places/new-chandigarh" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "New Chandigarh — Place Intelligence Report | NestHunt" },
+      { name: "twitter:description", content: "Independent decision report on New Chandigarh: infrastructure, livability, growth drivers, risks and featured projects." },
+      { name: "robots", content: "index, follow" },
     ],
+    links: [{ rel: "canonical", href: "https://www.nesthunt.in/places/new-chandigarh" }],
+
   }),
   component: PlacePage,
 });

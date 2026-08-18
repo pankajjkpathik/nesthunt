@@ -106,9 +106,14 @@ export const Route = createFileRoute("/discover")({
         content: "Search verified projects, builders and places on NestHunt.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:url", content: "https://www.nesthunt.in/discover" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Discover Projects, Builders & Places | NestHunt" },
+      { name: "twitter:description", content: "Search verified projects, builders and places across NestHunt's property intelligence library." },
       { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [{ rel: "canonical", href: "https://www.nesthunt.in/discover" }],
+
   }),
 });
 

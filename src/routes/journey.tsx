@@ -39,7 +39,13 @@ export const Route = createFileRoute("/journey")({
         name: "description",
         content: "Track your property decision journey — shortlist and evaluate projects.",
       },
+      { property: "og:title", content: "My Journey | NestHunt" },
+      { property: "og:description", content: "Track your property decision journey — shortlist and evaluate projects." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://www.nesthunt.in/journey" }],
+
   }),
   component: JourneyPage,
 });

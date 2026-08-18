@@ -86,6 +86,7 @@ export const Route = createFileRoute("/projects/$slug")({
       links: [{ rel: "canonical", href: url }],
     };
   },
+
   loader: async ({ params, context: { queryClient } }) => {
     return queryClient.ensureQueryData({
       queryKey: ["projects", "slug", params.slug],
