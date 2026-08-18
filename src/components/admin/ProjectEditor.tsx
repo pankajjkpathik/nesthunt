@@ -352,7 +352,7 @@ export function ProjectEditor({ id }: Props) {
         toast.success("Project created");
         navigate({ to: "/admin/projects/$id", params: { id: created.id } });
       } else {
-        await ProjectAdminService.updateProjectIntelligence(id!, payload as never);
+        await ProjectAdminService.updateProjectIntelligence(id!, payload as any);
         toast.success("Project saved");
         if (nextPublish) set("publish_status", nextPublish);
       }
