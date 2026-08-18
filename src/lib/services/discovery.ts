@@ -19,6 +19,9 @@ export interface DiscoveryProject {
   startingPrice: number | null;
   reraNumber: string | null;
   imageUrl: string | null;
+  propertyType: string | null;
+  startingPriceMax: number | null;
+  updatedAt: string | null;
 }
 
 export interface DiscoveryBuilder {
@@ -30,6 +33,9 @@ export interface DiscoveryBuilder {
   city: string | null;
   yearEstablished: number | null;
   logoUrl: string | null;
+  builderType: string | null;
+  state: string | null;
+  updatedAt: string | null;
 }
 
 export interface DiscoveryPlace {
@@ -40,6 +46,8 @@ export interface DiscoveryPlace {
   city: string | null;
   state: string | null;
   region: string | null;
+  localityType: string | null;
+  updatedAt: string | null;
 }
 
 export type DiscoveryResult = DiscoveryProject | DiscoveryBuilder | DiscoveryPlace;
@@ -74,7 +82,7 @@ export const DiscoveryService = {
     const { data, error } = await supabase
       .from("projects")
       .select(
-        "id,slug,name,status,construction_status,starting_price,rera_number,unit_types,hero,builder:builders(name),place:places(name,city)",
+        "id,slug,name,status,construction_status,starting_price,max_price,property_type,rera_number,unit_types,hero,updated_at,builder:builders(name),place:places(name,city)",
       )
       .eq("publish_status", "published")
       .order("name");
@@ -87,7 +95,10 @@ export const DiscoveryService = {
         status: string | null;
         construction_status: string | null;
         starting_price: number | null;
+        max_price: number | null;
+        property_type: string | null;
         rera_number: string | null;
+        updated_at: string | null;
         unit_types: unknown;
         hero: unknown;
         builder: { name: string } | null;
@@ -106,6 +117,9 @@ export const DiscoveryService = {
         startingPrice: row.starting_price ?? null,
         reraNumber: row.rera_number ?? null,
         imageUrl: readImage(row.hero),
+        propertyType: row.property_type || null,
+        startingPriceMax: row.max_price ?? null,
+        updatedAt: row.updated_at ?? null,
       };
     });
   },
@@ -113,7 +127,7 @@ export const DiscoveryService = {
   async listBuilders(): Promise<DiscoveryBuilder[]> {
     const { data, error } = await supabase
       .from("builders")
-      .select("id,slug,name,headquarters,city,year_established,hero")
+      .select("id,slug,name,headquarters,city,state,builder_type,year_established,hero,updated_at")
       .eq("status", "published")
       .order("name");
     if (error) throw error;
@@ -126,13 +140,16 @@ export const DiscoveryService = {
       city: r.city || null,
       yearEstablished: r.year_established ?? null,
       logoUrl: readImage(r.hero),
+      builderType: r.builder_type || null,
+      state: r.state || null,
+      updatedAt: r.updated_at ?? null,
     }));
   },
 
   async listPlaces(): Promise<DiscoveryPlace[]> {
     const { data, error } = await supabase
       .from("places")
-      .select("id,slug,name,city,state,region")
+      .select("id,slug,name,city,state,region,locality_type,updated_at")
       .eq("status", "published")
       .order("name");
     if (error) throw error;
@@ -144,6 +161,8 @@ export const DiscoveryService = {
       city: r.city || null,
       state: r.state || null,
       region: r.region || null,
+      localityType: r.locality_type || null,
+      updatedAt: r.updated_at ?? null,
     }));
   },
 };
