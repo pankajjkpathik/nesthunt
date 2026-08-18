@@ -45,6 +45,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
+import { ProjectGovernanceStats } from "@/components/admin/ProjectGovernanceStats";
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -274,6 +275,7 @@ function ProjectsList() {
 
   return (
     <div className="space-y-6">
+      <ProjectGovernanceStats />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Projects</h1>
