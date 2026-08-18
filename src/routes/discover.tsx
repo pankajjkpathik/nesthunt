@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { Search, AlertCircle, SlidersHorizontal } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Container } from "@/components/common/Container";
@@ -66,6 +66,22 @@ export const Route = createFileRoute("/discover")({
         ? null
         : Number(search.priceMax),
   }),
+  search: {
+    middlewares: [
+      stripSearchParams({
+        type: "all",
+        q: "",
+        sort: "name_asc",
+        location: "",
+        builder: "",
+        status: "",
+        propertyType: "",
+        configuration: "",
+        rera: "",
+        priceMax: null,
+      }),
+    ],
+  },
   component: DiscoverPage,
   errorComponent: ({ error }) => (
     <AppLayout>
