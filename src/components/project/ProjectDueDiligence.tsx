@@ -1,16 +1,28 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckSquare } from "lucide-react";
 
-export function ProjectDueDiligence() {
+import { ProjectRow } from "@/lib/services/projects-admin";
+
+interface ProjectDueDiligenceProps {
+  project?: ProjectRow;
+}
+
+export function ProjectDueDiligence({ project }: ProjectDueDiligenceProps) {
+  const latestProgress = project?.progress && project.progress.length > 0 
+    ? project.progress[project.progress.length - 1] 
+    : null;
+    
+  const progressDate = latestProgress?.split('as of')[1]?.split(')')[0]?.trim() || "the latest official update";
+
   const checklist = [
-    "Verify current RERA registration status on the official authority website.",
-    "Verify possession timeline and construction progress milestones.",
-    "Review all agreement terms, including penalty clauses and maintenance terms.",
-    "Verify unit-specific pricing, including additional charges (PLC, parking, taxes).",
-    "Confirm maintenance charges and what facilities are included.",
-    "Review project approvals (LU, environment, fire safety, height clearance).",
-    "Inspect the actual site and surrounding infrastructure.",
-    "Verify that promised amenities are part of the legally binding agreement."
+    "Verify the current RERA registration and latest quarterly update on the official authority website.",
+    `Request a current construction update because the latest official progress available to NestHunt is dated ${progressDate}.`,
+    "Verify the contractual possession date against the allotment/agreement documents and penalty clauses.",
+    "Obtain a current unit-specific cost sheet including applicable additional charges (PLC, parking, taxes).",
+    "Confirm maintenance charges and what specific facilities are covered in the agreement.",
+    "Review all project approvals including Land Use (LU), environment, and fire safety.",
+    "Inspect the actual site and surrounding infrastructure to verify access and quality.",
+    "Verify that promised amenities are part of the legally binding builder-buyer agreement."
   ];
 
   return (

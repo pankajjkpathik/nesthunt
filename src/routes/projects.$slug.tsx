@@ -259,7 +259,7 @@ function ProjectDetailPage() {
             {/* 09 · Regulatory & Documents */}
             <div className="grid gap-12 md:grid-cols-2">
               <ProjectDocuments project={project} />
-              <ProjectDueDiligence />
+              <ProjectDueDiligence project={project} />
             </div>
           </div>
 
