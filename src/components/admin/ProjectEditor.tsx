@@ -970,7 +970,7 @@ export function ProjectEditor({ id }: Props) {
         </TabsContent>
 
         <TabsContent value="governance">
-          <ProjectGovernanceTab project={form} />
+          <ProjectGovernanceTab project={{ ...form, id: id || "" }} />
         </TabsContent>
 
         <TabsContent value="seo">
