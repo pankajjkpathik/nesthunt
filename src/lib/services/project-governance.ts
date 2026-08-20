@@ -48,9 +48,9 @@ const EXC_TABLE = "project_exceptions";
 export const ProjectGovernanceService = {
   async getGovernance(projectId: string): Promise<ProjectGovernanceRow | null> {
     const { data, error } = await supabase
-      .from(GOV_TABLE as any)
+      .from(GOV_TABLE)
       .select("*")
-      .eq("project_id", projectId as any)
+      .eq("project_id", projectId)
       .maybeSingle();
     if (error) throw error;
     return (data as unknown as ProjectGovernanceRow) || null;
@@ -61,7 +61,7 @@ export const ProjectGovernanceService = {
     if (existing) return existing;
 
     const { data, error } = await supabase
-      .from(GOV_TABLE as any)
+      .from(GOV_TABLE)
       .insert({ project_id: projectId, intake_status: 'DRAFT', verification_level: 'STANDARD' })
       .select("*")
       .single();
@@ -71,9 +71,9 @@ export const ProjectGovernanceService = {
 
   async updateGovernance(id: string, patch: ProjectGovernanceUpdate): Promise<ProjectGovernanceRow> {
     const { data, error } = await supabase
-      .from(GOV_TABLE as any)
+      .from(GOV_TABLE)
       .update({ ...patch, updated_at: new Date().toISOString() })
-      .eq("id", id as any)
+      .eq("id", id)
       .select("*")
       .single();
     if (error) throw error;
@@ -82,9 +82,9 @@ export const ProjectGovernanceService = {
 
   async listExceptions(projectId: string): Promise<ProjectExceptionRow[]> {
     const { data, error } = await supabase
-      .from(EXC_TABLE as any)
+      .from(EXC_TABLE)
       .select("*")
-      .eq("project_id", projectId as any)
+      .eq("project_id", projectId)
       .order("created_at", { ascending: false });
     if (error) throw error;
     return (data ?? []) as unknown as ProjectExceptionRow[];
@@ -92,7 +92,7 @@ export const ProjectGovernanceService = {
 
   async createException(input: ProjectExceptionInsert): Promise<ProjectExceptionRow> {
     const { data, error } = await supabase
-      .from(EXC_TABLE as any)
+      .from(EXC_TABLE)
       .insert(input)
       .select("*")
       .single();
@@ -109,9 +109,9 @@ export const ProjectGovernanceService = {
       updatePayload.resolved_at = new Date().toISOString();
     }
     const { data, error } = await supabase
-      .from(EXC_TABLE as any)
+      .from(EXC_TABLE)
       .update(updatePayload)
-      .eq("id", id as any)
+      .eq("id", id)
       .select("*")
       .single();
     if (error) throw error;
@@ -170,7 +170,7 @@ export const ProjectGovernanceService = {
   },
 
   async getAdminStats() {
-    const { data: govData, error: govError } = await supabase.from(GOV_TABLE as any).select("intake_status, verification_level");
+    const { data: govData, error: govError } = await supabase.from(GOV_TABLE).select("intake_status, verification_level");
     const { data: projects, error: projError } = await supabase.from("projects").select("publish_status");
     
     if (govError || projError) throw govError || projError;
