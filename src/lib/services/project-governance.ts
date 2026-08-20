@@ -42,18 +42,18 @@ export interface PublicationReadiness {
   }[];
 }
 
-const GOV_TABLE = "project_governance" as any;
-const EXC_TABLE = "project_exceptions" as any;
+const GOV_TABLE = "project_governance";
+const EXC_TABLE = "project_exceptions";
 
 export const ProjectGovernanceService = {
   async getGovernance(projectId: string): Promise<ProjectGovernanceRow | null> {
     const { data, error } = await supabase
-      .from(GOV_TABLE)
+      .from(GOV_TABLE as any)
       .select("*")
-      .eq("project_id", projectId)
+      .eq("project_id", projectId as any)
       .maybeSingle();
     if (error) throw error;
-    return data as any as any as ProjectGovernanceRow | null;
+    return (data as unknown as ProjectGovernanceRow) || null;
   },
 
   async ensureGovernance(projectId: string): Promise<ProjectGovernanceRow> {
@@ -61,43 +61,43 @@ export const ProjectGovernanceService = {
     if (existing) return existing;
 
     const { data, error } = await supabase
-      .from(GOV_TABLE)
+      .from(GOV_TABLE as any)
       .insert({ project_id: projectId, intake_status: 'DRAFT', verification_level: 'STANDARD' })
       .select("*")
       .single();
     if (error) throw error;
-    return data as any as ProjectGovernanceRow;
+    return data as unknown as ProjectGovernanceRow;
   },
 
   async updateGovernance(id: string, patch: ProjectGovernanceUpdate): Promise<ProjectGovernanceRow> {
     const { data, error } = await supabase
-      .from(GOV_TABLE)
+      .from(GOV_TABLE as any)
       .update({ ...patch, updated_at: new Date().toISOString() })
-      .eq("id", id)
+      .eq("id", id as any)
       .select("*")
       .single();
     if (error) throw error;
-    return data as any as ProjectGovernanceRow;
+    return data as unknown as ProjectGovernanceRow;
   },
 
   async listExceptions(projectId: string): Promise<ProjectExceptionRow[]> {
     const { data, error } = await supabase
-      .from(EXC_TABLE)
+      .from(EXC_TABLE as any)
       .select("*")
-      .eq("project_id", projectId)
+      .eq("project_id", projectId as any)
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return (data ?? []) as any as any as ProjectExceptionRow[];
+    return (data ?? []) as unknown as ProjectExceptionRow[];
   },
 
   async createException(input: ProjectExceptionInsert): Promise<ProjectExceptionRow> {
     const { data, error } = await supabase
-      .from(EXC_TABLE)
+      .from(EXC_TABLE as any)
       .insert(input)
       .select("*")
       .single();
     if (error) throw error;
-    return data as any as ProjectExceptionRow;
+    return data as unknown as ProjectExceptionRow;
   },
 
   async updateException(id: string, patch: ProjectExceptionUpdate): Promise<ProjectExceptionRow> {
@@ -109,16 +109,16 @@ export const ProjectGovernanceService = {
       updatePayload.resolved_at = new Date().toISOString();
     }
     const { data, error } = await supabase
-      .from(EXC_TABLE)
+      .from(EXC_TABLE as any)
       .update(updatePayload)
-      .eq("id", id)
+      .eq("id", id as any)
       .select("*")
       .single();
     if (error) throw error;
-    return data as any as ProjectExceptionRow;
+    return data as unknown as ProjectExceptionRow;
   },
 
-  calculateReadiness(project: any, governance: ProjectGovernanceRow | null, exceptions: ProjectExceptionRow[]): PublicationReadiness {
+  calculateReadiness(project: { name?: string | null; slug?: string | null; builder_id?: string | null; place_id?: string | null; rera_number?: string | null }, governance: ProjectGovernanceRow | null, exceptions: ProjectExceptionRow[]): PublicationReadiness {
     const checks: PublicationReadiness["checks"] = [];
 
     checks.push({
@@ -170,8 +170,8 @@ export const ProjectGovernanceService = {
   },
 
   async getAdminStats() {
-    const { data: govData, error: govError } = await supabase.from(GOV_TABLE).select("intake_status, verification_level");
-    const { data: projects, error: projError } = await supabase.from("projects" as any).select("publish_status");
+    const { data: govData, error: govError } = await supabase.from(GOV_TABLE as any).select("intake_status, verification_level");
+    const { data: projects, error: projError } = await supabase.from("projects").select("publish_status");
     
     if (govError || projError) throw govError || projError;
 
