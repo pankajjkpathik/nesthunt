@@ -52,7 +52,7 @@ export const ProjectIntakeFactory = {
     // However, the instructions imply using standard application services.
     
     // Check by slug
-    const { data: bySlug } = await supabase.from('projects').select('id, name').eq('slug', slug).maybeSingle();
+    const { data: bySlug } = await supabaseAdmin.from('projects').select('id, name').eq('slug', slug).maybeSingle();
     if (bySlug) {
       return { status: 'SKIPPED_DUPLICATE', projectId: bySlug.id, reason: 'Duplicate slug detected' };
     }
