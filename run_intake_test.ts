@@ -5,19 +5,19 @@ import { supabase } from "./src/integrations/supabase/client";
 const BATCH: IntakeRecord[] = [
   // A. Valid projects
   {
-    name: "Valid Project Alpha",
-    slug: "valid-project-alpha",
-    builder_slug: "omaxe", // Assuming 'omaxe' exists
+    name: "Intake Test Alpha",
+    slug: "intake-test-alpha",
+    builder_slug: "omaxe",
     place_slug: "new-chandigarh",
-    rera_number: "PBRERA-VAL-001",
+    rera_number: "PBRERA-INT-001",
     property_type: "Apartment"
   },
   {
-    name: "Valid Project Beta",
-    slug: "valid-project-beta",
+    name: "Intake Test Beta",
+    slug: "intake-test-beta",
     builder_slug: "omaxe",
     place_slug: "new-chandigarh",
-    rera_number: "PBRERA-VAL-002"
+    rera_number: "PBRERA-INT-002"
   },
   // B. Duplicate test (Gardenia Floors exists)
   {
@@ -28,19 +28,18 @@ const BATCH: IntakeRecord[] = [
   },
   // C. Missing optional data test
   {
-    name: "Sparse Project",
-    slug: "sparse-project",
+    name: "Sparse Intake Project",
+    slug: "sparse-intake-project",
     builder_slug: "omaxe",
     place_slug: "new-chandigarh"
-    // No RERA, no property_type, no summary
   },
   // D. RERA test
   {
-    name: "RERA Test Project",
-    slug: "rera-test-project",
+    name: "RERA Intake Project",
+    slug: "rera-intake-project",
     builder_slug: "omaxe",
     place_slug: "new-chandigarh",
-    rera_number: "PBRERA-SAS80-PR9999"
+    rera_number: "PBRERA-SAS80-PR8888"
   },
   // E. Relationship failure test (Missing builder)
   {
@@ -65,10 +64,6 @@ async function run() {
   console.log("\nStarting Batch Run 2 (Idempotency)...");
   const results2 = await ProjectIntakeFactory.processBatch(BATCH);
   console.log("Run 2 Results:", JSON.stringify(results2, null, 2));
-
-  // Cleanup newly created projects to keep DB clean for future runs if needed, 
-  // but for the audit we should probably leave them or just check counts.
-  // Actually, for the report we need the counts.
 }
 
 run().catch(console.error);
