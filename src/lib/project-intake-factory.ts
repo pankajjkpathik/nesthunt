@@ -28,10 +28,11 @@ export interface IntakeResult {
  */
 export const ProjectIntakeFactory = {
   async processBatch(records: IntakeRecord[]): Promise<IntakeResult[]> {
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
     const results: IntakeResult[] = [];
     for (const record of records) {
       try {
-        const result = await this.processRecord(record);
+        const result = await this.processRecord(record, supabaseAdmin);
         results.push(result);
       } catch (error: any) {
         results.push({
@@ -43,14 +44,10 @@ export const ProjectIntakeFactory = {
     return results;
   },
 
-  async processRecord(record: IntakeRecord): Promise<IntakeResult> {
+  async processRecord(record: IntakeRecord, supabaseAdmin: any): Promise<IntakeResult> {
     const slug = record.slug || slugify(record.name);
     
     // 1. DUPLICATE CHECK
-    // Existing projects table uses RLS 'authenticated' for all ops.
-    // In a test environment (bun run), we are effectively anon unless a service role key is used.
-    // However, the instructions imply using standard application services.
-    
     // Check by slug
     const { data: bySlug } = await supabaseAdmin.from('projects').select('id, name').eq('slug', slug).maybeSingle();
     if (bySlug) {
@@ -59,7 +56,7 @@ export const ProjectIntakeFactory = {
 
     // Check by RERA
     if (record.rera_number) {
-       const { data: byRera } = await supabase.from('projects').select('id').eq('rera_number', record.rera_number).maybeSingle();
+       const { data: byRera } = await supabaseAdmin.from('projects').select('id').eq('rera_number', record.rera_number).maybeSingle();
        if (byRera) {
          return { status: 'SKIPPED_DUPLICATE', projectId: byRera.id, reason: 'Duplicate RERA number detected' };
        }
@@ -68,7 +65,7 @@ export const ProjectIntakeFactory = {
     // 2. RESOLVE BUILDER
     let builderId: string | null = null;
     if (record.builder_slug) {
-      const { data: builder } = await supabase.from('builders').select('id').eq('slug', record.builder_slug).maybeSingle();
+      const { data: builder } = await supabaseAdmin.from('builders').select('id').eq('slug', record.builder_slug).maybeSingle();
       if (!builder) {
         return { status: 'NEEDS_REVIEW', reason: `Builder resolution failed for slug: ${record.builder_slug}` };
       }
@@ -80,7 +77,7 @@ export const ProjectIntakeFactory = {
     // 3. RESOLVE PLACE
     let placeId: string | null = null;
     if (record.place_slug) {
-      const { data: place } = await supabase.from('places').select('id').eq('slug', record.place_slug).maybeSingle();
+      const { data: place } = await supabaseAdmin.from('places').select('id').eq('slug', record.place_slug).maybeSingle();
       if (!place) {
         return { status: 'NEEDS_REVIEW', reason: `Place resolution failed for slug: ${record.place_slug}` };
       }
@@ -90,10 +87,6 @@ export const ProjectIntakeFactory = {
     }
 
     // 4. CREATE DRAFT PROJECT
-    // NOTE: In this environment, we use supabaseAdmin if available for intake factory
-    // to bypass RLS for internal batch processing.
-    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
-    
     const insertData: any = {
       name: record.name,
       slug,
