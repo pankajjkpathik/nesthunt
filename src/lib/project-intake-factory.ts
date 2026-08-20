@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { ProjectAdminService, slugify } from "@/lib/services/projects-admin";
+import { slugify } from "@/lib/services/projects-admin";
 import { ProjectGovernanceService } from "@/lib/services/project-governance";
 import { DecisionEntityService } from "@/lib/services/decision-intelligence";
 
