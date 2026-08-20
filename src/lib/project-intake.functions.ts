@@ -26,14 +26,14 @@ const intakeRecordSchema = z.object({
 });
 
 export const validateIntakeBatch = createServerFn({ method: "POST" })
-  .input(z.array(intakeRecordSchema))
+  .validator(z.array(intakeRecordSchema))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
 
-    const builderSlugs = Array.from(new Set(data.map(r => r.builder_slug).filter(Boolean) as string[]));
-    const placeSlugs = Array.from(new Set(data.map(r => r.place_slug).filter(Boolean) as string[]));
-    const projectSlugs = data.map(r => r.slug || slugify(r.name));
-    const reraNumbers = data.map(r => r.rera_number).filter(Boolean) as string[];
+    const builderSlugs = Array.from(new Set(data.map((r: any) => r.builder_slug).filter(Boolean) as string[]));
+    const placeSlugs = Array.from(new Set(data.map((r: any) => r.place_slug).filter(Boolean) as string[]));
+    const projectSlugs = data.map((r: any) => r.slug || slugify(r.name));
+    const reraNumbers = data.map((r: any) => r.rera_number).filter(Boolean) as string[];
 
     const [buildersRes, placesRes, projectsBySlugRes, projectsByReraRes] = await Promise.all([
       supabaseAdmin.from('builders').select('id, slug, name').in('slug', builderSlugs),
@@ -49,7 +49,7 @@ export const validateIntakeBatch = createServerFn({ method: "POST" })
     const existingBySlug = new Map(projectsBySlugRes.data?.map(p => [p.slug, p]) || []);
     const existingByRera = new Map(projectsByReraRes.data?.map(p => [p.rera_number, p]) || []);
 
-    return data.map(record => {
+    return data.map((record: any) => {
       const slug = record.slug || slugify(record.name);
       
       if (!record.name) return { status: 'INVALID', reason: 'Missing project name' };
@@ -77,7 +77,7 @@ export const validateIntakeBatch = createServerFn({ method: "POST" })
   });
 
 export const executeIntakeBatch = createServerFn({ method: "POST" })
-  .input(z.array(intakeRecordSchema))
+  .validator(z.array(intakeRecordSchema))
   .handler(async ({ data }) => {
     return ProjectIntakeFactory.processBatch(data as any);
   });
