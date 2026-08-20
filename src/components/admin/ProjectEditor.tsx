@@ -84,6 +84,7 @@ import {
   type ProjectStatus,
   type UnitType,
   type ProjectMetrics,
+  type ProjectUpdate,
 } from "@/lib/services/projects-admin";
 
 interface Props {
