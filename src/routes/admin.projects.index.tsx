@@ -132,6 +132,9 @@ function ProjectsList() {
           <p className="text-sm text-muted-foreground">Manage property listings and intelligence.</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate({ to: "/admin/projects/intake" })}>
+            <Plus className="mr-1.5 h-4 w-4" /> Batch Intake
+          </Button>
           <Button size="sm" onClick={() => navigate({ to: "/admin/projects/new" })}>
             <Plus className="mr-1.5 h-4 w-4" /> New Project
           </Button>

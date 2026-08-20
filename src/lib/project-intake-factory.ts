@@ -6,9 +6,21 @@ export interface IntakeRecord {
   slug?: string;
   builder_slug?: string;
   place_slug?: string;
-  rera_number?: string;
-  property_type?: string;
-  summary?: string;
+  rera_number?: string | null;
+  rera_authority?: string | null;
+  rera_status?: string | null;
+  rera_url?: string | null;
+  property_type?: string | null;
+  construction_status?: string | null;
+  possession_date?: string | null;
+  possession_year?: number | null;
+  starting_price?: number | null;
+  configurations?: any[] | null;
+  amenities?: string[] | null;
+  official_website?: string | null;
+  executive_summary?: string | null;
+  source_urls?: string[] | null;
+  evidence_notes?: string | null;
 }
 
 export interface IntakeResult {
@@ -122,9 +134,26 @@ export const ProjectIntakeFactory = {
       place_id: resolved.placeId,
       rera_number: record.rera_number || null,
       property_type: record.property_type || null,
-      summary: record.summary || '',
+      construction_status: record.construction_status || null,
+      starting_price: record.starting_price || null,
+      possession_date: record.possession_date || null,
+      summary: record.executive_summary || '',
+      executive_summary: record.executive_summary || null,
+      amenities: record.amenities || [],
+      unit_types: record.configurations || [],
       publish_status: 'draft',
-      verified: false
+      verified: false,
+      metrics: {
+        possessionYear: record.possession_year || null,
+        reraAuthority: record.rera_authority || null,
+        reraStatus: record.rera_status || null,
+        reraUrl: record.rera_url || null,
+      },
+      hero: {
+        url: record.official_website || null,
+      },
+      progress: record.evidence_notes ? [record.evidence_notes] : [],
+      legal: record.source_urls || [],
     };
 
     const { data: project, error: createError } = await supabaseAdmin

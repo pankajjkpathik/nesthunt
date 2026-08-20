@@ -39,6 +39,7 @@ import { Route as ApiPublicSitemapRouteImport } from './routes/api/public/sitema
 import { Route as AdminUnitTypesNewRouteImport } from './routes/admin.unit-types.new'
 import { Route as AdminUnitTypesIdRouteImport } from './routes/admin.unit-types.$id'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
+import { Route as AdminProjectsIntakeRouteImport } from './routes/admin.projects.intake'
 import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
 import { Route as AdminPlacesNewRouteImport } from './routes/admin.places.new'
 import { Route as AdminPlacesIdRouteImport } from './routes/admin.places.$id'
@@ -205,6 +206,11 @@ const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
   path: '/projects/new',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProjectsIntakeRoute = AdminProjectsIntakeRouteImport.update({
+  id: '/projects/intake',
+  path: '/projects/intake',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
   id: '/projects/$id',
   path: '/projects/$id',
@@ -296,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/intake': typeof AdminProjectsIntakeRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
@@ -339,6 +346,7 @@ export interface FileRoutesByTo {
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/intake': typeof AdminProjectsIntakeRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
@@ -384,6 +392,7 @@ export interface FileRoutesById {
   '/admin/places/$id': typeof AdminPlacesIdRoute
   '/admin/places/new': typeof AdminPlacesNewRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/admin/projects/intake': typeof AdminProjectsIntakeRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/unit-types/$id': typeof AdminUnitTypesIdRoute
   '/admin/unit-types/new': typeof AdminUnitTypesNewRoute
@@ -430,6 +439,7 @@ export interface FileRouteTypes {
     | '/admin/places/$id'
     | '/admin/places/new'
     | '/admin/projects/$id'
+    | '/admin/projects/intake'
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
@@ -473,6 +483,7 @@ export interface FileRouteTypes {
     | '/admin/places/$id'
     | '/admin/places/new'
     | '/admin/projects/$id'
+    | '/admin/projects/intake'
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
@@ -517,6 +528,7 @@ export interface FileRouteTypes {
     | '/admin/places/$id'
     | '/admin/places/new'
     | '/admin/projects/$id'
+    | '/admin/projects/intake'
     | '/admin/projects/new'
     | '/admin/unit-types/$id'
     | '/admin/unit-types/new'
@@ -765,6 +777,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsNewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/projects/intake': {
+      id: '/admin/projects/intake'
+      path: '/projects/intake'
+      fullPath: '/admin/projects/intake'
+      preLoaderRoute: typeof AdminProjectsIntakeRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/projects/$id': {
       id: '/admin/projects/$id'
       path: '/projects/$id'
@@ -865,6 +884,7 @@ interface AdminRouteChildren {
   AdminPlacesIdRoute: typeof AdminPlacesIdRoute
   AdminPlacesNewRoute: typeof AdminPlacesNewRoute
   AdminProjectsIdRoute: typeof AdminProjectsIdRoute
+  AdminProjectsIntakeRoute: typeof AdminProjectsIntakeRoute
   AdminProjectsNewRoute: typeof AdminProjectsNewRoute
   AdminUnitTypesIdRoute: typeof AdminUnitTypesIdRoute
   AdminUnitTypesNewRoute: typeof AdminUnitTypesNewRoute
@@ -893,6 +913,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPlacesIdRoute: AdminPlacesIdRoute,
   AdminPlacesNewRoute: AdminPlacesNewRoute,
   AdminProjectsIdRoute: AdminProjectsIdRoute,
+  AdminProjectsIntakeRoute: AdminProjectsIntakeRoute,
   AdminProjectsNewRoute: AdminProjectsNewRoute,
   AdminUnitTypesIdRoute: AdminUnitTypesIdRoute,
   AdminUnitTypesNewRoute: AdminUnitTypesNewRoute,
