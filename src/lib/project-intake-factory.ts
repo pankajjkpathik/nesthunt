@@ -21,10 +21,83 @@ export interface IntakeResult {
 export const ProjectIntakeFactory = {
   async processBatch(records: IntakeRecord[]): Promise<IntakeResult[]> {
     const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    
+    // 1. PRE-FETCH DATA FOR OPTIMIZATION (Prevent N+1)
+    const builderSlugs = Array.from(new Set(records.map(r => r.builder_slug).filter(Boolean) as string[]));
+    const placeSlugs = Array.from(new Set(records.map(r => r.place_slug).filter(Boolean) as string[]));
+    const projectSlugs = records.map(r => r.slug || slugify(r.name));
+    const reraNumbers = records.map(r => r.rera_number).filter(Boolean) as string[];
+
+    const [buildersRes, placesRes, projectsBySlugRes, projectsByReraRes] = await Promise.all([
+      supabaseAdmin.from('builders').select('id, slug').in('slug', builderSlugs),
+      supabaseAdmin.from('places').select('id, slug').in('slug', placeSlugs),
+      supabaseAdmin.from('projects').select('id, slug, name, verified').in('slug', projectSlugs),
+      reraNumbers.length > 0 
+        ? supabaseAdmin.from('projects').select('id, rera_number, verified').in('rera_number', reraNumbers)
+        : Promise.resolve({ data: [] })
+    ]);
+
+    const builderMap = new Map(buildersRes.data?.map(b => [b.slug, b.id]) || []);
+    const placeMap = new Map(placesRes.data?.map(p => [p.slug, p.id]) || []);
+    const existingBySlug = new Map(projectsBySlugRes.data?.map(p => [p.slug, p]) || []);
+    const existingByRera = new Map(projectsByReraRes.data?.map(p => [p.rera_number, p]) || []);
+
     const results: IntakeResult[] = [];
+    
     for (const record of records) {
       try {
-        const result = await this.processRecord(record, supabaseAdmin);
+        const slug = record.slug || slugify(record.name);
+        
+        // 2. DUPLICATE CHECK (Using pre-fetched data)
+        const duplicateBySlug = existingBySlug.get(slug);
+        if (duplicateBySlug) {
+          results.push({ 
+            status: 'SKIPPED_DUPLICATE', 
+            projectId: duplicateBySlug.id, 
+            reason: `Duplicate slug detected: ${slug}` 
+          });
+          continue;
+        }
+
+        if (record.rera_number) {
+          const duplicateByRera = existingByRera.get(record.rera_number);
+          if (duplicateByRera) {
+            results.push({ 
+              status: 'SKIPPED_DUPLICATE', 
+              projectId: duplicateByRera.id, 
+              reason: `Duplicate RERA number detected: ${record.rera_number}` 
+            });
+            continue;
+          }
+        }
+
+        // 3. RESOLVE RELATIONSHIPS (Using pre-fetched maps)
+        let builderId: string | null = null;
+        if (record.builder_slug) {
+          builderId = builderMap.get(record.builder_slug) || null;
+          if (!builderId) {
+            results.push({ status: 'NEEDS_REVIEW', reason: `Builder resolution failed for slug: ${record.builder_slug}` });
+            continue;
+          }
+        } else {
+          results.push({ status: 'NEEDS_REVIEW', reason: 'Missing builder_slug' });
+          continue;
+        }
+
+        let placeId: string | null = null;
+        if (record.place_slug) {
+          placeId = placeMap.get(record.place_slug) || null;
+          if (!placeId) {
+            results.push({ status: 'NEEDS_REVIEW', reason: `Place resolution failed for slug: ${record.place_slug}` });
+            continue;
+          }
+        } else {
+          results.push({ status: 'NEEDS_REVIEW', reason: 'Missing place_slug' });
+          continue;
+        }
+
+        // 4. CREATE RECORD
+        const result = await this.processRecord(record, supabaseAdmin, { builderId, placeId, slug });
         results.push(result);
       } catch (error: any) {
         results.push({
@@ -36,52 +109,17 @@ export const ProjectIntakeFactory = {
     return results;
   },
 
-  async processRecord(record: IntakeRecord, supabaseAdmin: any): Promise<IntakeResult> {
-    const slug = record.slug || slugify(record.name);
-    
-    // 1. DUPLICATE CHECK
-    const { data: bySlug } = await supabaseAdmin.from('projects').select('id, name').eq('slug', slug).maybeSingle();
-    if (bySlug) {
-      return { status: 'SKIPPED_DUPLICATE', projectId: bySlug.id, reason: 'Duplicate slug detected' };
-    }
-
-    if (record.rera_number) {
-       const { data: byRera } = await supabaseAdmin.from('projects').select('id').eq('rera_number', record.rera_number).maybeSingle();
-       if (byRera) {
-         return { status: 'SKIPPED_DUPLICATE', projectId: byRera.id, reason: 'Duplicate RERA number detected' };
-       }
-    }
-
-    // 2. RESOLVE BUILDER
-    let builderId: string | null = null;
-    if (record.builder_slug) {
-      const { data: builder } = await supabaseAdmin.from('builders').select('id').eq('slug', record.builder_slug).maybeSingle();
-      if (!builder) {
-        return { status: 'NEEDS_REVIEW', reason: `Builder resolution failed for slug: ${record.builder_slug}` };
-      }
-      builderId = builder.id;
-    } else {
-        return { status: 'NEEDS_REVIEW', reason: 'Missing builder_slug' };
-    }
-
-    // 3. RESOLVE PLACE
-    let placeId: string | null = null;
-    if (record.place_slug) {
-      const { data: place } = await supabaseAdmin.from('places').select('id').eq('slug', record.place_slug).maybeSingle();
-      if (!place) {
-        return { status: 'NEEDS_REVIEW', reason: `Place resolution failed for slug: ${record.place_slug}` };
-      }
-      placeId = place.id;
-    } else {
-        return { status: 'NEEDS_REVIEW', reason: 'Missing place_slug' };
-    }
-
-    // 4. CREATE DRAFT PROJECT
+  async processRecord(
+    record: IntakeRecord, 
+    supabaseAdmin: any, 
+    resolved: { builderId: string, placeId: string, slug: string }
+  ): Promise<IntakeResult> {
+    // CREATE DRAFT PROJECT
     const insertData: any = {
       name: record.name,
-      slug,
-      builder_id: builderId,
-      place_id: placeId,
+      slug: resolved.slug,
+      builder_id: resolved.builderId,
+      place_id: resolved.placeId,
       rera_number: record.rera_number || null,
       property_type: record.property_type || null,
       summary: record.summary || '',
@@ -97,26 +135,22 @@ export const ProjectIntakeFactory = {
 
     if (createError) throw createError;
 
-    // 5. INFRASTRUCTURE REGISTRATION (Direct to bypass schema cache issues in certain runtimes)
-    // Note: Use string literals for table names to avoid any potential resolution issues
+    // INFRASTRUCTURE REGISTRATION
     try {
-      await supabaseAdmin.from('project_governance').insert({ 
-        project_id: project.id, 
-        intake_status: 'DRAFT', 
-        verification_level: 'STANDARD' 
-      });
+      await Promise.all([
+        supabaseAdmin.from('project_governance').insert({ 
+          project_id: project.id, 
+          intake_status: 'DRAFT', 
+          verification_level: 'STANDARD' 
+        }),
+        supabaseAdmin.from('decision_entities').insert({ 
+          entity_type: 'project', 
+          entity_id: project.id, 
+          status: 'draft' 
+        })
+      ]);
     } catch (e) {
-      console.warn("Project Governance registration skipped/failed:", e);
-    }
-
-    try {
-      await supabaseAdmin.from('decision_entities').insert({ 
-        entity_type: 'project', 
-        entity_id: project.id, 
-        status: 'draft' 
-      });
-    } catch (e) {
-      console.warn("Decision Entity registration skipped/failed:", e);
+      console.warn("Infrastructure registration partial failure for:", project.id, e);
     }
 
     return { status: 'CREATED', projectId: project.id };
