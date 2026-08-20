@@ -26,10 +26,9 @@ export const ingestProjectEvidence = createServerFn({ method: "POST" })
       .select('id, code');
     
     const riskDimensionId = dimensions?.find(d => d.code === 'risk')?.id;
-    const builderTrustDimensionId = dimensions?.find(d => d.code === 'builder_trust')?.id;
     
-    if (!riskDimensionId || !builderTrustDimensionId) {
-      throw new Error("Missing required dimensions (risk or builder_trust)");
+    if (!riskDimensionId) {
+      throw new Error("Missing required dimension (risk)");
     }
 
     for (const item of data) {
@@ -70,7 +69,7 @@ export const ingestProjectEvidence = createServerFn({ method: "POST" })
           .insert({
             decision_entity_id: entity.id,
             dimension_id: riskDimensionId,
-            score: 5.0, // Neutral start
+            score: 5.0,
             max_score: 10.0,
             weight: 1.0,
             confidence: 'medium',
@@ -82,7 +81,7 @@ export const ingestProjectEvidence = createServerFn({ method: "POST" })
           .single();
         
         if (scoreError) {
-          results.push({ project: item.projectSlug, result: 'CONFLICT_REQUIRES_REVIEW', error: 'Failed to create score' });
+          results.push({ project: project.name, result: 'CONFLICT_REQUIRES_REVIEW', error: 'Failed to create score' });
           continue;
         }
         score = newScore;
@@ -91,7 +90,7 @@ export const ingestProjectEvidence = createServerFn({ method: "POST" })
       // 3. Ensure Factor exists
       let { data: factor } = await supabaseAdmin
         .from('decision_factors')
-        .select('id')
+        .select('id, evidence_count')
         .eq('decision_score_id', score!.id)
         .eq('title', 'Regulatory Disclosures')
         .single();
@@ -107,11 +106,11 @@ export const ingestProjectEvidence = createServerFn({ method: "POST" })
             evidence_count: 0,
             display_order: 0
           })
-          .select('id')
+          .select('id, evidence_count')
           .single();
         
         if (factorError) {
-          results.push({ project: item.projectSlug, result: 'CONFLICT_REQUIRES_REVIEW', error: 'Failed to create factor' });
+          results.push({ project: project.name, result: 'CONFLICT_REQUIRES_REVIEW', error: 'Failed to create factor' });
           continue;
         }
         factor = newFactor;
@@ -146,7 +145,7 @@ export const ingestProjectEvidence = createServerFn({ method: "POST" })
           source_title: item.sourceTitle,
           source_url: item.sourceUrl,
           published_date: item.publishedDate,
-          verification_status: 'verified', // Using 'verified' as identified in R.1/schema
+          verification_status: 'verified',
           confidence: item.confidence,
           remarks: item.remarks
         });
@@ -154,8 +153,11 @@ export const ingestProjectEvidence = createServerFn({ method: "POST" })
       if (ingestError) {
         results.push({ project: project.name, result: 'CONFLICT_REQUIRES_REVIEW', error: ingestError.message });
       } else {
-        // Increment evidence count on factor
-        await supabaseAdmin.rpc('increment_evidence_count', { factor_id: factor!.id });
+        // Increment evidence count on factor manually since RPC missing
+        await supabaseAdmin
+          .from('decision_factors')
+          .update({ evidence_count: (factor!.evidence_count || 0) + 1 })
+          .eq('id', factor!.id);
         
         results.push({ 
           project: project.name, 
