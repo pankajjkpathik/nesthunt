@@ -1808,6 +1808,82 @@ export type Database = {
         }
         Relationships: []
       }
+      project_exceptions: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          project_id: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["exception_status"]
+          type: Database["public"]["Enums"]["exception_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          project_id: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["exception_status"]
+          type: Database["public"]["Enums"]["exception_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          project_id?: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["exception_status"]
+          type?: Database["public"]["Enums"]["exception_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_exceptions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_governance: {
+        Row: {
+          created_at: string
+          id: string
+          intake_status: Database["public"]["Enums"]["intake_status"]
+          project_id: string
+          updated_at: string
+          verification_level: Database["public"]["Enums"]["verification_level"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          intake_status?: Database["public"]["Enums"]["intake_status"]
+          project_id: string
+          updated_at?: string
+          verification_level?: Database["public"]["Enums"]["verification_level"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          intake_status?: Database["public"]["Enums"]["intake_status"]
+          project_id?: string
+          updated_at?: string
+          verification_level?: Database["public"]["Enums"]["verification_level"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_governance_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           amenities: Json
@@ -2256,6 +2332,20 @@ export type Database = {
         | "editor"
         | "reviewer"
         | "publisher"
+      exception_status: "OPEN" | "RESOLVED" | "WAIVED"
+      exception_type:
+        | "RERA_CONFLICT"
+        | "IDENTITY_CONFLICT"
+        | "BUILDER_CONFLICT"
+        | "PLACE_CONFLICT"
+        | "POSSESSION_CONFLICT"
+        | "PROGRESS_OUTDATED"
+        | "MISSING_RERA"
+        | "MISSING_EVIDENCE"
+        | "REGULATORY_REFERENCE"
+        | "PRICE_UNAVAILABLE"
+      intake_status: "DRAFT" | "DATA_REVIEW" | "VERIFIED"
+      verification_level: "STANDARD" | "ENHANCED" | "DEEP_REVIEW"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2391,6 +2481,21 @@ export const Constants = {
         "reviewer",
         "publisher",
       ],
+      exception_status: ["OPEN", "RESOLVED", "WAIVED"],
+      exception_type: [
+        "RERA_CONFLICT",
+        "IDENTITY_CONFLICT",
+        "BUILDER_CONFLICT",
+        "PLACE_CONFLICT",
+        "POSSESSION_CONFLICT",
+        "PROGRESS_OUTDATED",
+        "MISSING_RERA",
+        "MISSING_EVIDENCE",
+        "REGULATORY_REFERENCE",
+        "PRICE_UNAVAILABLE",
+      ],
+      intake_status: ["DRAFT", "DATA_REVIEW", "VERIFIED"],
+      verification_level: ["STANDARD", "ENHANCED", "DEEP_REVIEW"],
     },
   },
 } as const
