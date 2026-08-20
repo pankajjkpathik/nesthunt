@@ -221,7 +221,7 @@ function rowToForm(row: ProjectRow): FormState {
     progress: row.progress ?? [],
     seo: (row.seo ?? {}) as ProjectSeo,
     gallery: Array.isArray(row.hero?.gallery) ? row.hero.gallery : [],
-    highlights: (row as any).highlights ?? [],
+    highlights: (row as unknown as ProjectRow & { highlights: string[] }).highlights ?? [],
     metrics: (row.metrics ?? {}) as ProjectMetrics,
   };
 }
@@ -353,7 +353,7 @@ export function ProjectEditor({ id }: Props) {
         toast.success("Project created");
         navigate({ to: "/admin/projects/$id", params: { id: created.id } });
       } else {
-        await ProjectAdminService.updateProjectIntelligence(id!, payload as any);
+        await ProjectAdminService.updateProjectIntelligence(id!, payload as ProjectUpdate);
         toast.success("Project saved");
         if (nextPublish) set("publish_status", nextPublish);
       }
@@ -894,7 +894,7 @@ export function ProjectEditor({ id }: Props) {
                   items={form.less_suitable_for}
                   onChange={(v) => set("less_suitable_for", v)}
                 />
-                <StringListField label="Suitable for" items={form.suitable_for} onChange={(v) => set("suitable_for", v)} />
+                
                 <div className="md:col-span-2 rounded-md border border-dashed border-border bg-muted/20 p-4 text-xs text-muted-foreground">
                   <p className="font-semibold mb-1">Intelligence Migration Active</p>
                   Strengths, Risks, and Promises are now managed under the <strong>Intelligence</strong> tab using the generic Decision Intelligence architecture.

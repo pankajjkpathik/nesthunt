@@ -1,5 +1,5 @@
 import { useProjectGovernance, useProjectExceptions, useUpdateGovernance, useCreateException, useUpdateException } from "@/hooks/useProjectGovernance";
-import { ProjectGovernanceService, type IntakeStatus, type VerificationLevel, type ExceptionType, type ExceptionStatus } from "@/lib/services/project-governance";
+import { ProjectGovernanceService, type IntakeStatus, type VerificationLevel, type ExceptionType, type ExceptionStatus, type ProjectGovernanceRow, type ProjectExceptionRow } from "@/lib/services/project-governance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,7 @@ const EXCEPTION_TYPES: { value: ExceptionType; label: string }[] = [
   { value: "PRICE_UNAVAILABLE", label: "Price Unavailable" },
 ];
 
-export function ProjectGovernanceTab({ project }: { project: any }) {
+export function ProjectGovernanceTab({ project }: { project: { id: string; name?: string | null; slug?: string | null; builder_id?: string | null; place_id?: string | null; rera_number?: string | null } }) {
   const { data: gov, isLoading: loadingGov } = useProjectGovernance(project.id);
   const { data: exceptions = [], isLoading: loadingExceptions } = useProjectExceptions(project.id);
   const updateGov = useUpdateGovernance();
