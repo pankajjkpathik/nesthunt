@@ -1,5 +1,4 @@
 import { supabase } from "@/integrations/supabase/client";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export type IntakeStatus = 'DRAFT' | 'DATA_REVIEW' | 'VERIFIED';
 export type VerificationLevel = 'STANDARD' | 'ENHANCED' | 'DEEP_REVIEW';
@@ -48,7 +47,7 @@ const EXC_TABLE = "project_exceptions";
 
 export const ProjectGovernanceService = {
   async getGovernance(projectId: string): Promise<ProjectGovernanceRow | null> {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from(GOV_TABLE as any)
       .select("*")
       .eq("project_id", projectId as any)
@@ -61,7 +60,7 @@ export const ProjectGovernanceService = {
     const existing = await this.getGovernance(projectId);
     if (existing) return existing;
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from(GOV_TABLE as any)
       .insert({ project_id: projectId, intake_status: 'DRAFT', verification_level: 'STANDARD' })
       .select("*")
@@ -71,7 +70,7 @@ export const ProjectGovernanceService = {
   },
 
   async updateGovernance(id: string, patch: ProjectGovernanceUpdate): Promise<ProjectGovernanceRow> {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from(GOV_TABLE as any)
       .update({ ...patch, updated_at: new Date().toISOString() })
       .eq("id", id as any)
@@ -82,7 +81,7 @@ export const ProjectGovernanceService = {
   },
 
   async listExceptions(projectId: string): Promise<ProjectExceptionRow[]> {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from(EXC_TABLE as any)
       .select("*")
       .eq("project_id", projectId as any)
@@ -92,7 +91,7 @@ export const ProjectGovernanceService = {
   },
 
   async createException(input: ProjectExceptionInsert): Promise<ProjectExceptionRow> {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from(EXC_TABLE as any)
       .insert(input)
       .select("*")
@@ -109,7 +108,7 @@ export const ProjectGovernanceService = {
     if (patch.status === "RESOLVED" || patch.status === "WAIVED") {
       updatePayload.resolved_at = new Date().toISOString();
     }
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from(EXC_TABLE as any)
       .update(updatePayload)
       .eq("id", id as any)
@@ -171,8 +170,8 @@ export const ProjectGovernanceService = {
   },
 
   async getAdminStats() {
-    const { data: govData, error: govError } = await supabaseAdmin.from(GOV_TABLE as any).select("intake_status, verification_level");
-    const { data: projects, error: projError } = await supabaseAdmin.from("projects").select("publish_status");
+    const { data: govData, error: govError } = await supabase.from(GOV_TABLE as any).select("intake_status, verification_level");
+    const { data: projects, error: projError } = await supabase.from("projects").select("publish_status");
     
     if (govError || projError) throw govError || projError;
 

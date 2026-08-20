@@ -1,7 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
 import { slugify } from "@/lib/services/projects-admin";
-import { ProjectGovernanceService } from "@/lib/services/project-governance";
-import { DecisionEntityService } from "@/lib/services/decision-intelligence";
 
 export interface IntakeRecord {
   name: string;
@@ -20,12 +18,6 @@ export interface IntakeResult {
   details?: any;
 }
 
-/**
- * ProjectIntakeFactory
- * 
- * Logic to process project records with duplicate protection,
- * relationship resolution, and infrastructure registration.
- */
 export const ProjectIntakeFactory = {
   async processBatch(records: IntakeRecord[]): Promise<IntakeResult[]> {
     const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
@@ -47,14 +39,11 @@ export const ProjectIntakeFactory = {
   async processRecord(record: IntakeRecord, supabaseAdmin: any): Promise<IntakeResult> {
     const slug = record.slug || slugify(record.name);
     
-    // 1. DUPLICATE CHECK
-    // Check by slug
     const { data: bySlug } = await supabaseAdmin.from('projects').select('id, name').eq('slug', slug).maybeSingle();
     if (bySlug) {
       return { status: 'SKIPPED_DUPLICATE', projectId: bySlug.id, reason: 'Duplicate slug detected' };
     }
 
-    // Check by RERA
     if (record.rera_number) {
        const { data: byRera } = await supabaseAdmin.from('projects').select('id').eq('rera_number', record.rera_number).maybeSingle();
        if (byRera) {
@@ -62,7 +51,6 @@ export const ProjectIntakeFactory = {
        }
     }
 
-    // 2. RESOLVE BUILDER
     let builderId: string | null = null;
     if (record.builder_slug) {
       const { data: builder } = await supabaseAdmin.from('builders').select('id').eq('slug', record.builder_slug).maybeSingle();
@@ -74,7 +62,6 @@ export const ProjectIntakeFactory = {
         return { status: 'NEEDS_REVIEW', reason: 'Missing builder_slug' };
     }
 
-    // 3. RESOLVE PLACE
     let placeId: string | null = null;
     if (record.place_slug) {
       const { data: place } = await supabaseAdmin.from('places').select('id').eq('slug', record.place_slug).maybeSingle();
@@ -86,7 +73,6 @@ export const ProjectIntakeFactory = {
         return { status: 'NEEDS_REVIEW', reason: 'Missing place_slug' };
     }
 
-    // 4. CREATE DRAFT PROJECT
     const insertData: any = {
       name: record.name,
       slug,
@@ -107,11 +93,18 @@ export const ProjectIntakeFactory = {
 
     if (createError) throw createError;
 
-    // 5. ENSURE GOVERNANCE
-    await ProjectGovernanceService.ensureGovernance(project.id);
+    // Direct registration bypassing service layer for test run
+    await supabaseAdmin.from('project_governance').insert({ 
+      project_id: project.id, 
+      intake_status: 'DRAFT', 
+      verification_level: 'STANDARD' 
+    });
 
-    // 6. ENSURE DECISION ENTITY
-    await DecisionEntityService.ensure('project', project.id);
+    await supabaseAdmin.from('decision_entities').insert({ 
+      entity_type: 'project', 
+      entity_id: project.id, 
+      status: 'draft' 
+    });
 
     return { status: 'CREATED', projectId: project.id };
   }
