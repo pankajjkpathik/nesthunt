@@ -26,7 +26,7 @@ const intakeRecordSchema = z.object({
 });
 
 export const validateIntakeBatch = createServerFn({ method: "POST" })
-  .validator((data: unknown) => z.array(intakeRecordSchema).parse(data))
+  .validator((d: unknown) => z.array(intakeRecordSchema).parse(d))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
 
@@ -77,7 +77,7 @@ export const validateIntakeBatch = createServerFn({ method: "POST" })
   });
 
 export const executeIntakeBatch = createServerFn({ method: "POST" })
-  .validator((data: unknown) => z.array(intakeRecordSchema).parse(data))
+  .validator((d: unknown) => z.array(intakeRecordSchema).parse(d))
   .handler(async ({ data }) => {
     return ProjectIntakeFactory.processBatch(data as any);
   });
