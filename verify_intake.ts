@@ -8,17 +8,10 @@ async function check() {
     .in("slug", ["intake-test-alpha", "intake-test-beta", "sparse-intake-project", "rera-intake-project"]);
   
   if (pErr) throw pErr;
-  console.log("PROJECTS:", JSON.stringify(projects, null, 2));
+  console.log("PROJECTS_COUNT:", projects?.length || 0);
   
   if (projects && projects.length > 0) {
     const ids = projects.map(p => p.id);
-    const { data: gov, error: gErr } = await supabaseAdmin
-      .from("project_governance")
-      .select("*")
-      .in("project_id", ids);
-    
-    if (gErr) throw gErr;
-    console.log("GOVERNANCE:", JSON.stringify(gov, null, 2));
     
     const { data: entities, error: eErr } = await supabaseAdmin
       .from("decision_entities")
