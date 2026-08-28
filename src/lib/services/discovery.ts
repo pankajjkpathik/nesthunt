@@ -82,9 +82,11 @@ export const DiscoveryService = {
     const { data, error } = await supabase
       .from("projects")
       .select(
-        "id,slug,name,status,construction_status,starting_price,max_price,property_type,rera_number,unit_types,hero,updated_at,builder:builders(name),place:places(name,city)",
+        "id,slug,name,status,construction_status,starting_price,max_price,property_type,rera_number,unit_types,hero,updated_at,builder:builders(name),place:places(name,city),governance:project_governance!inner(record_classification)",
       )
       .eq("publish_status", "published")
+      // LAUNCH-002S: test artifacts / quarantined records never surface publicly
+      .eq("project_governance.record_classification", "PRODUCTION")
       .order("name");
     if (error) throw error;
     return (data ?? []).map((r) => {
