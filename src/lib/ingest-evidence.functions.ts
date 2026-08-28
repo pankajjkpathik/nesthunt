@@ -75,7 +75,9 @@ export const ingestProjectEvidence = createServerFn({ method: "POST" })
             confidence: 'medium',
             calculation_version: '1.0.0',
             calculated_at: new Date().toISOString(),
-            status: 'active'
+            // LAUNCH-002S: structural shell required to anchor evidence — never an assessment
+            is_placeholder: true,
+            status: 'draft'
           })
           .select('id')
           .single();
