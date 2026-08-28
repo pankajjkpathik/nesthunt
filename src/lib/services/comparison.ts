@@ -58,14 +58,14 @@ export const ComparisonService = {
         ]);
 
         const scores = decisionEntity 
-          ? await DecisionScoreService.listByEntity(decisionEntity.id).catch(() => [])
+          ? await DecisionScoreService.listAssessmentsByEntity(decisionEntity.id).catch(() => [])
           : [];
 
         let placeScores: DecisionScoreRow[] = [];
         if (placeId) {
           const placeDE = await DecisionEntityService.getByEntity("place", placeId).catch(() => null);
           if (placeDE) {
-            placeScores = await DecisionScoreService.listByEntity(placeDE.id).catch(() => []);
+            placeScores = await DecisionScoreService.listAssessmentsByEntity(placeDE.id).catch(() => []);
           }
         }
 
@@ -73,7 +73,7 @@ export const ComparisonService = {
         if (builderId) {
           const builderDE = await DecisionEntityService.getByEntity("builder", builderId).catch(() => null);
           if (builderDE) {
-            builderScores = await DecisionScoreService.listByEntity(builderDE.id).catch(() => []);
+            builderScores = await DecisionScoreService.listAssessmentsByEntity(builderDE.id).catch(() => []);
           }
         }
 

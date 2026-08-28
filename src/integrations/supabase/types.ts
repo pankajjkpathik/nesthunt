@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -951,6 +951,7 @@ export type Database = {
           decision_entity_id: string
           dimension_id: string
           id: string
+          is_placeholder: boolean
           max_score: number
           reason_summary: string | null
           score: number
@@ -968,6 +969,7 @@ export type Database = {
           decision_entity_id: string
           dimension_id: string
           id?: string
+          is_placeholder?: boolean
           max_score?: number
           reason_summary?: string | null
           score: number
@@ -985,6 +987,7 @@ export type Database = {
           decision_entity_id?: string
           dimension_id?: string
           id?: string
+          is_placeholder?: boolean
           max_score?: number
           reason_summary?: string | null
           score?: number
@@ -1855,6 +1858,7 @@ export type Database = {
           id: string
           intake_status: Database["public"]["Enums"]["intake_status"]
           project_id: string
+          record_classification: string
           updated_at: string
           verification_level: Database["public"]["Enums"]["verification_level"]
         }
@@ -1863,6 +1867,7 @@ export type Database = {
           id?: string
           intake_status?: Database["public"]["Enums"]["intake_status"]
           project_id: string
+          record_classification?: string
           updated_at?: string
           verification_level?: Database["public"]["Enums"]["verification_level"]
         }
@@ -1871,6 +1876,7 @@ export type Database = {
           id?: string
           intake_status?: Database["public"]["Enums"]["intake_status"]
           project_id?: string
+          record_classification?: string
           updated_at?: string
           verification_level?: Database["public"]["Enums"]["verification_level"]
         }

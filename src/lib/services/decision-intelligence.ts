@@ -244,6 +244,20 @@ export const DecisionScoreService = {
     return data ?? [];
   },
 
+  /**
+   * LAUNCH-002S: Scores usable for any intelligence output (display, comparison,
+   * aggregation). Infrastructure placeholders are structurally excluded.
+   */
+  async listAssessmentsByEntity(decisionEntityId: string): Promise<DecisionScoreRow[]> {
+    const { data, error } = await supabase
+      .from("decision_scores")
+      .select("*")
+      .eq("decision_entity_id", decisionEntityId)
+      .eq("is_placeholder", false);
+    if (error) throw error;
+    return data ?? [];
+  },
+
   async upsert(input: DecisionScoreInsert): Promise<DecisionScoreRow> {
     const { data: userRes } = await supabase.auth.getUser();
     const payload: DecisionScoreInsert = {
@@ -279,7 +293,18 @@ export const DecisionScoreService = {
   },
 
   /** Classify the provenance of a score. */
+  /** LAUNCH-002S: explicit structural marker, never a numeric heuristic. */
+  isInfrastructurePlaceholder(score: Pick<DecisionScoreRow, "is_placeholder">): boolean {
+    return score.is_placeholder === true;
+  },
+
+  /** LAUNCH-002S: filter helper for any calculation or presentation surface. */
+  excludePlaceholders(scores: DecisionScoreRow[]): DecisionScoreRow[] {
+    return scores.filter((s) => s.is_placeholder !== true);
+  },
+
   classifyProvenance(score: DecisionScoreRow): "VERIFIED" | "PARTIAL" | "LEGACY" | "PLACEHOLDER" | "UNUSABLE" {
+    if (score.is_placeholder === true) return "PLACEHOLDER";
     if (score.calculation_version === "v1_migration" && score.score === 0) return "PLACEHOLDER";
     if (score.source_type === "LEGACY_MIGRATION") return "LEGACY";
     if (score.source_type === "VERIFIED_EVIDENCE" && score.confidence === "high") return "VERIFIED";

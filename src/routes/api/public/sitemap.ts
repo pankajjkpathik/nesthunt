@@ -16,8 +16,10 @@ export const Route = createFileRoute("/api/public/sitemap")({
         // Fetch published projects
         const { data: projects } = await supabase
           .from("projects")
-          .select("slug, updated_at")
-          .eq("publish_status", "published");
+          .select("slug, updated_at, governance:project_governance!inner(record_classification)")
+          .eq("publish_status", "published")
+          // LAUNCH-002S: only PRODUCTION-classified projects are indexable
+          .eq("governance.record_classification", "PRODUCTION");
 
         const staticPages = [
           "/",

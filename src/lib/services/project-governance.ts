@@ -7,12 +7,15 @@ export type ExceptionType =
     | 'POSSESSION_CONFLICT' | 'PROGRESS_OUTDATED' | 'MISSING_RERA' | 'MISSING_EVIDENCE'
     | 'REGULATORY_REFERENCE' | 'PRICE_UNAVAILABLE';
 export type ExceptionStatus = 'OPEN' | 'RESOLVED' | 'WAIVED';
+/** LAUNCH-002S operational classification. Only PRODUCTION records enter operational workflows. */
+export type RecordClassification = 'PRODUCTION' | 'TEST_ARTIFACT' | 'QUARANTINED';
 
 export interface ProjectGovernanceRow {
   id: string;
   project_id: string;
   intake_status: IntakeStatus;
   verification_level: VerificationLevel;
+  record_classification: RecordClassification;
   created_at: string;
   updated_at: string;
 }
@@ -62,7 +65,7 @@ export const ProjectGovernanceService = {
 
     const { data, error } = await supabase
       .from(GOV_TABLE as any)
-      .insert({ project_id: projectId, intake_status: 'DRAFT', verification_level: 'STANDARD' })
+      .insert({ project_id: projectId, intake_status: 'DRAFT', verification_level: 'STANDARD', record_classification: 'PRODUCTION' })
       .select("*")
       .single();
     if (error) throw error;
@@ -169,18 +172,27 @@ export const ProjectGovernanceService = {
     return { isReady, checks };
   },
 
+  /** LAUNCH-002S: operational stats count PRODUCTION records only. */
   async getAdminStats() {
-    const { data: govData, error: govError } = await supabase.from(GOV_TABLE as any).select("intake_status, verification_level");
-    const { data: projects, error: projError } = await supabase.from("projects").select("publish_status");
-    
+    const { data: govData, error: govError } = await supabase
+      .from(GOV_TABLE as any)
+      .select("project_id, intake_status, verification_level, record_classification")
+      .eq("record_classification", "PRODUCTION" as any);
+    const { data: projects, error: projError } = await supabase
+      .from("projects")
+      .select("id, publish_status");
+
     if (govError || projError) throw govError || projError;
 
+    const productionIds = new Set((govData ?? []).map((g: any) => g.project_id));
+    const productionProjects = (projects ?? []).filter((p: any) => productionIds.has(p.id));
+
     return {
-      total: projects?.length ?? 0,
+      total: productionProjects.length,
       readyForQA: govData?.filter((g: any) => g.intake_status === "DATA_REVIEW").length ?? 0,
       verified: govData?.filter((g: any) => g.intake_status === "VERIFIED").length ?? 0,
       deepReview: govData?.filter((g: any) => g.verification_level === "DEEP_REVIEW").length ?? 0,
-      published: projects?.filter((p: any) => p.publish_status === "published").length ?? 0,
+      published: productionProjects.filter((p: any) => p.publish_status === "published").length,
     };
   }
 };
