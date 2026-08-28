@@ -115,9 +115,10 @@ export const ProjectPublicService = {
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   const { data, error } = await supabase
     .from("projects")
-    .select("*")
+    .select("*, governance:project_governance!inner(record_classification)")
     .eq("slug", slug)
     .eq("publish_status", "published")
+    .eq("project_governance.record_classification", "PRODUCTION")
     .maybeSingle();
     
   if (error) throw error;
@@ -162,8 +163,9 @@ export async function getProjectIntelligence(projectId: string) {
 export async function listPublicProjects() {
   const { data, error } = await supabase
     .from("projects")
-    .select("name, slug, summary, metrics, status")
+    .select("name, slug, summary, metrics, status, governance:project_governance!inner(record_classification)")
     .eq("publish_status", "published")
+    .eq("project_governance.record_classification", "PRODUCTION")
     .order("name");
 
   if (error) throw error;
