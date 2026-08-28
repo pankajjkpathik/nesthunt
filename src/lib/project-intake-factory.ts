@@ -170,7 +170,9 @@ export const ProjectIntakeFactory = {
         supabaseAdmin.from('project_governance').insert({ 
           project_id: project.id, 
           intake_status: 'DRAFT', 
-          verification_level: 'STANDARD' 
+          verification_level: 'STANDARD',
+          // LAUNCH-002S: real intake always enters the production workflow
+          record_classification: 'PRODUCTION' 
         }),
         supabaseAdmin.from('decision_entities').insert({ 
           entity_type: 'project', 
