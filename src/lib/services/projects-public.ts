@@ -38,10 +38,12 @@ export const ProjectPublicService = {
       .select(`
         *,
         builder:builders(id, name, slug),
-        place:places(id, name, slug)
+        place:places(id, name, slug),
+        governance:project_governance!inner(record_classification)
       `)
       .eq("slug", slug)
       .eq("publish_status", "published")
+      .eq("project_governance.record_classification", "PRODUCTION")
       .maybeSingle();
       
     if (error) throw error;
@@ -74,10 +76,12 @@ export const ProjectPublicService = {
       .select(`
         *,
         builder:builders(id, name, slug),
-        place:places(id, name, slug)
+        place:places(id, name, slug),
+        governance:project_governance!inner(record_classification)
       `)
       .eq("id", id)
       .eq("publish_status", "published")
+      .eq("project_governance.record_classification", "PRODUCTION")
       .maybeSingle();
 
     if (error) throw error;
