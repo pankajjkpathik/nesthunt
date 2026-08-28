@@ -43,7 +43,7 @@ export const ProjectPublicService = {
       `)
       .eq("slug", slug)
       .eq("publish_status", "published")
-      .eq("project_governance.record_classification", "PRODUCTION")
+      .eq("governance.record_classification", "PRODUCTION")
       .maybeSingle();
       
     if (error) throw error;
@@ -81,7 +81,7 @@ export const ProjectPublicService = {
       `)
       .eq("id", id)
       .eq("publish_status", "published")
-      .eq("project_governance.record_classification", "PRODUCTION")
+      .eq("governance.record_classification", "PRODUCTION")
       .maybeSingle();
 
     if (error) throw error;
@@ -118,7 +118,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     .select("*, governance:project_governance!inner(record_classification)")
     .eq("slug", slug)
     .eq("publish_status", "published")
-    .eq("project_governance.record_classification", "PRODUCTION")
+    .eq("governance.record_classification", "PRODUCTION")
     .maybeSingle();
     
   if (error) throw error;
@@ -165,7 +165,7 @@ export async function listPublicProjects() {
     .from("projects")
     .select("name, slug, summary, metrics, status, governance:project_governance!inner(record_classification)")
     .eq("publish_status", "published")
-    .eq("project_governance.record_classification", "PRODUCTION")
+    .eq("governance.record_classification", "PRODUCTION")
     .order("name");
 
   if (error) throw error;

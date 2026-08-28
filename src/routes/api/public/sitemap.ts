@@ -19,7 +19,7 @@ export const Route = createFileRoute("/api/public/sitemap")({
           .select("slug, updated_at, governance:project_governance!inner(record_classification)")
           .eq("publish_status", "published")
           // LAUNCH-002S: only PRODUCTION-classified projects are indexable
-          .eq("project_governance.record_classification", "PRODUCTION");
+          .eq("governance.record_classification", "PRODUCTION");
 
         const staticPages = [
           "/",

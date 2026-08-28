@@ -86,7 +86,7 @@ export const DiscoveryService = {
       )
       .eq("publish_status", "published")
       // LAUNCH-002S: test artifacts / quarantined records never surface publicly
-      .eq("project_governance.record_classification", "PRODUCTION")
+      .eq("governance.record_classification", "PRODUCTION")
       .order("name");
     if (error) throw error;
     return (data ?? []).map((r) => {
